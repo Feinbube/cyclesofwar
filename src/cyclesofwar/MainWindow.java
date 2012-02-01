@@ -1,3 +1,4 @@
+package cyclesofwar;
 import java.awt.*;
 import java.awt.event.*;
 
