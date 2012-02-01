@@ -97,7 +97,7 @@ public class Universe implements Updatable {
 		}
 		
 		for(int i=0; i<players.size(); i++){
-			drawText(g, "P" + i + ":" + statistics(players.get(i)), 5, (i+1)*15);
+			drawText(g, players.get(i).getClass().getSimpleName() + " P" + i + ":" + statistics(players.get(i)), 5, (i+1)*15);
 		}
 		
 	}
