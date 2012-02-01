@@ -10,13 +10,12 @@ public class Universe implements Updatable {
 
 	final int StarCount = 1000;
 	final int PlanetCount = 20;
-	final int PlayerCount = 5;
 
 	ArrayList<Star> stars = new ArrayList<Star>();
 	ArrayList<Planet> planets = new ArrayList<Planet>();
 	ArrayList<Fleet> fleets = new ArrayList<Fleet>();
 
-	ArrayList<Player> players = new ArrayList<Player>();
+	ArrayList<RandomPlayer> players = new ArrayList<RandomPlayer>();
 
 	Random random = new Random();
 
@@ -44,13 +43,22 @@ public class Universe implements Updatable {
 		fleetsAtDestination.clear();
 		
 		players.clear();
-		for (int i = 0; i < PlayerCount; i++) {
-			Planet planet = suitablePlanet(5);
-			planets.add(planet);
-			Color c = Color.getHSBColor((float) random.nextDouble(), 0.5f, 0.5f);
+		RandomPlayer player1 = new RandomPlayer(createPlayerColor(), createStarterPlanet());
+		players.add(player1);
+		
+		RandomPlayer player2 = new RandomPlayer(createPlayerColor(), createStarterPlanet());
+		players.add(player2);
+	}
 
-			players.add(new Player(c, planet));
-		}
+	private Color createPlayerColor() {
+		Color c = Color.getHSBColor((float) random.nextDouble(), 0.5f, 0.5f);
+		return c;
+	}
+
+	private Planet createStarterPlanet() {
+		Planet planet = suitablePlanet(5);
+		planets.add(planet);
+		return planet;
 	}
 
 	private Planet suitablePlanet(int d) {
@@ -86,7 +94,7 @@ public class Universe implements Updatable {
 			fleet.draw(g);
 		}
 		
-		for(int i=0; i<PlayerCount; i++){
+		for(int i=0; i<players.size(); i++){
 			drawText(g, "P" + i + ":" + statistics(players.get(i)), 5, (i+1)*15);
 		}
 		

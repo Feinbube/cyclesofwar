@@ -48,7 +48,7 @@ public class Fleet implements Updatable{
 
 	public void draw(Graphics g)
 	{
-		g.setColor(player.c);
+		g.setColor(player.color);
 	
     	g.fillRect((int)(x - force /2.0),(int)(y - force /2.0),force,force);
     	drawText(g, force + "");
