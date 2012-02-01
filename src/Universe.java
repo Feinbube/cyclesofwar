@@ -3,6 +3,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Universe implements Updatable {
@@ -146,7 +147,7 @@ public class Universe implements Updatable {
 		}
 	}
 
-	public ArrayList<Planet> PlanetsOfPlayer(Player player) {
+	public List<Planet> PlanetsOfPlayer(Player player) {
 		ArrayList<Planet> result = new ArrayList<Planet>();
 		for (Planet planet : planets) {
 			if (planet.player.equals(player)) {
@@ -157,7 +158,7 @@ public class Universe implements Updatable {
 		return result;
 	}
 
-	public ArrayList<Fleet> FleetsOfPlayer(Player player) {
+	public List<Fleet> FleetsOfPlayer(Player player) {
 		ArrayList<Fleet> result = new ArrayList<Fleet>();
 		for (Fleet fleet : fleets) {
 			if (fleet.player.equals(player)) {
@@ -173,7 +174,7 @@ public class Universe implements Updatable {
 		fleets.add(new Fleet(player, force, planet, target));
 	}
 
-	public ArrayList<Planet> AllPlanets() {
+	public List<Planet> AllPlanets() {
 		return planets;
 	}
 
