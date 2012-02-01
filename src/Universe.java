@@ -12,11 +12,11 @@ public class Universe implements Updatable {
 	final int StarCount = 1000;
 	final int PlanetCount = 20;
 
-	ArrayList<Star> stars = new ArrayList<Star>();
-	ArrayList<Planet> planets = new ArrayList<Planet>();
-	ArrayList<Fleet> fleets = new ArrayList<Fleet>();
+	List<Star> stars = new ArrayList<Star>();
+	List<Planet> planets = new ArrayList<Planet>();
+	List<Fleet> fleets = new ArrayList<Fleet>();
 
-	ArrayList<RandomPlayer> players = new ArrayList<RandomPlayer>();
+	List<Player> players = new ArrayList<Player>();
 
 	Random random = new Random();
 
@@ -44,10 +44,10 @@ public class Universe implements Updatable {
 		fleetsAtDestination.clear();
 		
 		players.clear();
-		RandomPlayer player1 = new RandomPlayer(createPlayerColor(), createStarterPlanet());
+		Player player1 = new RandomPlayer(createPlayerColor(), createStarterPlanet());
 		players.add(player1);
 		
-		RandomPlayer player2 = new RandomPlayer(createPlayerColor(), createStarterPlanet());
+		Player player2 = new AttackLargestPlayer(createPlayerColor(), createStarterPlanet());
 		players.add(player2);
 	}
 
@@ -71,7 +71,7 @@ public class Universe implements Updatable {
 		}
 	}
 
-	private boolean noCollision(ArrayList<Planet> planets, Planet planet) {
+	private boolean noCollision(List<Planet> planets, Planet planet) {
 		for (Planet other : planets)
 			if (other.collidesWith(planet))
 				return false;
