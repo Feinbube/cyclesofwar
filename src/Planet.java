@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Random;
@@ -10,7 +11,7 @@ class Planet extends Drawable implements Updatable {
 	double productionRatePerSecond;
 	
 	public Planet(Random random, Dimension size, int d) {
-		this.player = Player.NonePlayer;
+		this.player = Player.IdlePlayer;
 		
 		if(d <= 0) {
 			d = random.nextInt(3) + 1;
@@ -31,9 +32,9 @@ class Planet extends Drawable implements Updatable {
 		this(random, size, -1);
 	}
 	
-	public void draw(Graphics g)
-	{
-		c = player.c;
+	public void draw(Graphics g) {
+
+		super.c = player.color;
 		
 		super.draw(g);
 		
@@ -53,7 +54,7 @@ class Planet extends Drawable implements Updatable {
 
 	@Override
 	public void update(double elapsedSeconds) {
-		if(!player.equals(Player.NonePlayer))
+		if(!player.equals(Player.IdlePlayer))
 			forces += productionRatePerSecond * elapsedSeconds;
 	}
 }
