@@ -21,7 +21,7 @@ public class Universe {
 	double size;
 	
 	double nothingHappendCounter = 0;
-	boolean gameOver = false;
+	boolean gameOver = true;
 	Player winner = null;
 
 	SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<Double, Fleet>();
@@ -32,6 +32,8 @@ public class Universe {
 	}
 
 	void reInitialize() {
+		gameOver = true;
+		
 		List<Player> combatants = Arena.Combatants();
 
 		this.size = Math.sqrt(combatants.size());

@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JPanel;
 
@@ -21,6 +22,8 @@ class GamePanel extends JPanel {
 	int borderSize = 20;
 
 	static final double planetSizingFactor = 0.015;
+	
+	Random random = new Random();
 
 	public GamePanel() {
 		new Thread(new MainThread(this)).start();
@@ -39,7 +42,7 @@ class GamePanel extends JPanel {
 		
 		stars.clear();
 		for (int i = 0; i < StarCount; i++) {
-			stars.add(new Star(Universe.INSTANCE.random, Universe.INSTANCE.size));
+			stars.add(new Star(random, Universe.INSTANCE.size));
 		}
 
 		this.universeSize = Universe.INSTANCE.size;
@@ -143,9 +146,24 @@ class GamePanel extends JPanel {
 			int x = getX(g, fleet.x);
 			int y = getY(g, fleet.y);
 			int d = fleet.force;
-			g.fillRect(x - d / 2, y - d / 2, d, d);
-
-			drawStringCentered(g, fleet.force + "", x, y, fleet.player.getPlayerForeColor());
+			
+			for(int i=0; i<fleet.force; i++) {
+				double r = random.nextDouble()*d;
+				
+				double localX = random.nextDouble()*r;
+				if(random.nextBoolean()){
+					localX = -localX;
+				}
+				double localY = Math.sqrt(r*r - localX*localX);
+				if(random.nextBoolean()){
+					localY = -localY;
+				}
+				
+				g.fillOval(x + (int)localX/2, y + (int)localY/2, 4, 4);
+			}
+				
+			// g.fillRect(x - d / 2, y - d / 2, d, d);
+			// drawStringCentered(g, fleet.force + "", x, y, fleet.player.getPlayerForeColor());
 		}
 	}
 
