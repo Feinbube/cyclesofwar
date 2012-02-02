@@ -51,17 +51,17 @@ public class Universe {
 		players.add(player1);
 		createStarterPlanet(player1);
 		
-		Player player2 = new AttackLargestPlayer();
+		Player player2 = new Defender();
 		players.add(player2);
 		createStarterPlanet(player2);
 		
-		Player player3 = new IdlePlayer();
-		players.add(player3);
-		createStarterPlanet(player3);
+//		Player player3 = new IdlePlayer();
+//		players.add(player3);
+//		createStarterPlanet(player3);
 		
-		Player player4 = new RandomPlayer();
-		players.add(player4);
-		createStarterPlanet(player4);
+//		Player player4 = new RandomPlayer();
+//		players.add(player4);
+//		createStarterPlanet(player4);
 	}
 
 	private Planet createStarterPlanet(Player player) {
