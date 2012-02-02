@@ -81,15 +81,15 @@ public abstract class Player {
 	
 	// Fleets
 	public List<Fleet> getFleets() {
-		return Universe.INSTANCE.FleetsOfPlayer(this);
+		return Universe.INSTANCE.FleetsOfPlayer(this, this);
 	}
 	
 	protected List<Fleet> getAllFleets() {
-		return Universe.INSTANCE.AllFleets();
+		return Universe.INSTANCE.AllFleets(this);
 	}
 	
 	protected List<Fleet> getFleetsOf(Player player) {
-		return Universe.INSTANCE.FleetsOfPlayer(player);
+		return Universe.INSTANCE.FleetsOfPlayer(this, player);
 	}
 	
 	protected boolean isMyFleet(Fleet fleet) {
@@ -108,5 +108,14 @@ public abstract class Player {
 	
 	protected void sendFleet(Planet planet, int force, Planet target) {
 		Universe.INSTANCE.SendFleet(this, planet, force, target);
+	}
+	
+	// random
+	protected double getRandomDouble(){
+		return Universe.INSTANCE.getRandomDouble();
+	}
+	
+	protected int getRandomInt(int max){
+		return Universe.INSTANCE.getRandomInt(max);
 	}
 }

@@ -1,12 +1,8 @@
 package cyclesofwar;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-
 
 public class Fleet {
 
-	final static double speed = 100;
+	final static double speed = 0.5;
 
 	Player player;
 	int force;
@@ -53,7 +49,7 @@ public class Fleet {
 		double sqrt = Math.sqrt(xDiff*xDiff + yDiff*yDiff);
 		
 		if(sqrt < speed * elapsedSeconds)
-			hit();
+			hit(sqrt);
 		
 		xDiff = xDiff / sqrt;
 		yDiff = yDiff / sqrt;
@@ -62,26 +58,8 @@ public class Fleet {
 		y -= speed * elapsedSeconds * yDiff;
 	}
 	
-	private void hit() {
-		Universe.INSTANCE.fleetArrived(this);
-	}
-
-	void draw(Graphics g)
-	{
-		g.setColor(player.getPlayerBackColor());
-    	g.fillRect((int)(x - force /2.0),(int)(y - force /2.0),force,force);
-    	
-    	drawText(g, force + "", player.getPlayerForeColor());
-	}
-	
-	protected void drawText(Graphics g, String s, Color color) {
-		g.setColor(color);
-		g.setFont(new Font("Arial", Font.PLAIN, 10));
-		
-		int w = g.getFontMetrics().stringWidth(s);
-		int h = g.getFontMetrics().getHeight();
-		
-		g.drawString(s, (int)(x-w/2), (int)(y+h/2));
+	private void hit(double distance) {
+		Universe.INSTANCE.fleetArrived(this, distance);
 	}
 	
 	void land() {

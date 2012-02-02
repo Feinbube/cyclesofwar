@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 
-import javax.sound.sampled.ReverbType;
-
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
@@ -24,7 +22,6 @@ public class FastExpand extends Player {
 				sendFleet(planet, target.getForces() + 1, target);
 			}
 		}
-		
 	}
 
 	@Override
