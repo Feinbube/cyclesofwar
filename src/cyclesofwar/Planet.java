@@ -31,7 +31,7 @@ public class Planet extends Drawable {
 	}
 
 	Planet(Random random, Dimension size, int d) {
-		this.player = Player.IdlePlayer;
+		this.player = Player.NonePlayer;
 
 		if (d <= 0) {
 			d = random.nextInt(3) + 1;
@@ -73,13 +73,18 @@ public class Planet extends Drawable {
 	}
 
 	void update(double elapsedSeconds) {
-		if (!player.equals(Player.IdlePlayer))
+		if (!player.equals(Player.NonePlayer))
 			forces += productionRatePerSecond * elapsedSeconds;
 	}
 
 	public double distanceTo(Planet other) {
 		double xDiff = other.x - this.x;
 		double yDiff = other.y - this.y;
+		
 		return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+	}
+	
+	public double timeTo(Planet other) {
+		return distanceTo(other) * Fleet.speed;
 	}
 }

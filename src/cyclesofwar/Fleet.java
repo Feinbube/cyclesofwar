@@ -6,7 +6,7 @@ import java.awt.Graphics;
 
 public class Fleet {
 
-	final double speed = 100;
+	final static double speed = 100;
 
 	Player player;
 	int force;
@@ -95,5 +95,16 @@ public class Fleet {
 			target.forces = -target.forces;
 			target.player = player;
 		}
+	}
+	
+	public double distanceToTarget() {
+		double xDiff = target.x - this.x;
+		double yDiff = target.y - this.y;
+		
+		return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+	}
+	
+	public double timeToTarget() {
+		return distanceToTarget() * Fleet.speed;
 	}
 }
