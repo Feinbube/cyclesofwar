@@ -7,13 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import cyclesofwar.players.*;
-
 public class Universe {
 	static Universe INSTANCE = new Universe();
 
 	final int StarCount = 1000;
-	final int PlanetCount = 20;
 
 	List<Star> stars = new ArrayList<Star>();
 	List<Planet> planets = new ArrayList<Planet>();
@@ -39,7 +36,7 @@ public class Universe {
 		}
 
 		planets.clear();
-		for (int i = 0; i < PlanetCount; i++) {
+		for (int i = 0; i < Arena.PlanetCount; i++) {
 			planets.add(suitablePlanet(-1));
 		}
 
@@ -47,21 +44,10 @@ public class Universe {
 		fleetsAtDestination.clear();
 		
 		players.clear();
-		Player player1 = new Petra();
-		players.add(player1);
-		createStarterPlanet(player1);
-		
-		Player player2 = new Borg();
-		players.add(player2);
-		createStarterPlanet(player2);
-		
-//		Player player3 = new IdlePlayer();
-//		players.add(player3);
-//		createStarterPlanet(player3);
-		
-//		Player player4 = new RandomPlayer();
-//		players.add(player4);
-//		createStarterPlanet(player4);
+		for(Player player : Arena.Combatants()) {
+			players.add(player);
+			createStarterPlanet(player);	
+		}
 	}
 
 	private Planet createStarterPlanet(Player player) {
