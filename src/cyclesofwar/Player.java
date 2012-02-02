@@ -15,6 +15,21 @@ public abstract class Player {
 	protected abstract Color getPlayerForeColor();
 	protected abstract String getCreatorsName();
 	
+	double getFullForce() {
+		double result = 0.0;
+		for(Planet planet : getPlanets()){
+			result += planet.forces;
+		}
+		for(Fleet fleet : getFleets()){
+			result += fleet.force;
+		}
+		return result;
+	}
+	
+	String getName() {
+		return getCreatorsName() + "'s " + this.getClass().getSimpleName();
+	}
+	
 	// Players
 	protected List<Player> getOtherPlayers() {
 		return Universe.INSTANCE.OtherPlayers(this);
