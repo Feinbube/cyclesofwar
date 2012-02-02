@@ -20,24 +20,28 @@ public class AttackLargestPlayer extends Player {
 		for (Planet planet : myPlanets) {
 			int attackForceSize = (int)(planet.getForces()/2);
 			
-			List<Planet> possibleTargets = notUnderAttack();
-			for (Planet target : possibleTargets) {
-				if (target.getForces() < attackForceSize) {
-					sendFleet(planet, attackForceSize, target);
-					possibleTargets.remove(target);
-					break;
-				}	
+			Planet target = getLargestBeatablePlanet(attackForceSize);
+			if (target != null) {
+				sendFleet(planet, attackForceSize, target);
 			}
 		}
-
 	}
 	
-	public List<Planet> notUnderAttack() {
-		List<Planet> planets = getOtherPlanets();
-		for (Fleet fleet : this.getFleets()) {
-			planets.remove(fleet.getTarget());
+	private Planet getLargestBeatablePlanet(int attackForceSize) {
+		for (Planet target : getOtherPlanetsNotUnderAttack()) {
+			if (target.getForces() < attackForceSize) {				
+				return target;
+			}	
 		}
-		return planets;
+		return null;
+	}
+	
+	public List<Planet> getOtherPlanetsNotUnderAttack() {
+		List<Planet> result = getOtherPlanets();
+		for (Fleet fleet : this.getFleets()) {
+			result.remove(fleet.getTarget());
+		}
+		return result;
 	}
 	
 	public List<Planet> getOtherPlanets() {
