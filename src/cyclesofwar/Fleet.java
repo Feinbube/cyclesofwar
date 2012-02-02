@@ -4,10 +4,10 @@ import java.awt.Font;
 import java.awt.Graphics;
 
 
-public class Fleet implements Updatable{
+public class Fleet {
 
 	final double speed = 100;
-	
+
 	Player player;
 	int force;
 	
@@ -26,8 +26,27 @@ public class Fleet implements Updatable{
 		y = start.y;
 	}
 	
-	@Override
-	public void update(double elapsedSeconds) {
+	public Player getPlayer() {
+		return player;
+	}
+
+	public int getForce() {
+		return force;
+	}
+
+	public Planet getTarget() {
+		return target;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
+	}
+	
+	void update(double elapsedSeconds) {
 		double xDiff = x - target.x;
 		double yDiff = y - target.y;
 		
@@ -44,19 +63,19 @@ public class Fleet implements Updatable{
 	}
 	
 	private void hit() {
-		Universe.INSTANCE.FleetArrived(this);
+		Universe.INSTANCE.fleetArrived(this);
 	}
 
-	public void draw(Graphics g)
+	void draw(Graphics g)
 	{
-		g.setColor(player.color);
-	
+		g.setColor(player.getPlayerBackColor());
     	g.fillRect((int)(x - force /2.0),(int)(y - force /2.0),force,force);
-    	drawText(g, force + "");
+    	
+    	drawText(g, force + "", player.getPlayerForeColor());
 	}
 	
-	protected void drawText(Graphics g, String s) {
-		g.setColor(Color.white);
+	protected void drawText(Graphics g, String s, Color color) {
+		g.setColor(color);
 		g.setFont(new Font("Arial", Font.PLAIN, 10));
 		
 		int w = g.getFontMetrics().stringWidth(s);
@@ -64,8 +83,8 @@ public class Fleet implements Updatable{
 		
 		g.drawString(s, (int)(x-w/2), (int)(y+h/2));
 	}
-
-	public void land() {
+	
+	void land() {
 		if(target.player.equals(player))
 			target.forces += force;
 		else

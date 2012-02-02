@@ -1,30 +1,29 @@
-package cyclesofwar;
+package cyclesofwar.players;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import cyclesofwar.Fleet;
+import cyclesofwar.Planet;
+import cyclesofwar.Player;
+
 
 public class AttackLargestPlayer extends Player {
 
-	public AttackLargestPlayer(Color color, Planet starterPlanet) {
-		super(color, starterPlanet);
-	}
-
 	@Override
 	public void think() {
-		List<Planet> myPlanets = Universe.INSTANCE.PlanetsOfPlayer(this);
+		List<Planet> myPlanets = this.getPlanets();
 		sortByFleetSize(myPlanets);
 		
 		for (Planet planet : myPlanets) {
-			int attackForceSize = (int)(planet.forces/2);
+			int attackForceSize = (int)(planet.getForces()/2);
 			
 			List<Planet> possibleTargets = notUnderAttack();
 			for (Planet target : possibleTargets) {
-				if (target.forces < attackForceSize) {
-					Universe.INSTANCE.SendFleet(this, planet, attackForceSize, target);
+				if (target.getForces() < attackForceSize) {
+					sendFleet(planet, attackForceSize, target);
 					possibleTargets.remove(target);
 					break;
 				}	
@@ -33,27 +32,17 @@ public class AttackLargestPlayer extends Player {
 
 	}
 	
-	public List<Fleet> getAramada() {
-		List<Fleet> result = new ArrayList<Fleet>();
-		for (Fleet fleet : Universe.INSTANCE.fleets) {
-			if (fleet.player.equals(this)) {
-				result.add(fleet);
-			}
-		}
-		return result;
-	}
-	
 	public List<Planet> notUnderAttack() {
 		List<Planet> planets = getOtherPlanets();
-		for (Fleet fleet : getAramada()) {
-			planets.remove(fleet.target);
+		for (Fleet fleet : this.getFleets()) {
+			planets.remove(fleet.getTarget());
 		}
 		return planets;
 	}
 	
 	public List<Planet> getOtherPlanets() {
 		List<Planet> result = new LinkedList<Planet>();
-		for (Planet planet : Universe.INSTANCE.AllPlanets()) {
+		for (Planet planet : getAllPlanets()) {
 			if (isNotMyPlanet(planet)) {
 				result.add(planet);
 			}
@@ -68,13 +57,28 @@ public class AttackLargestPlayer extends Player {
 
 			@Override
 			public int compare(Planet o1, Planet o2) {
-				return (int) (o2.forces - o1.forces);
+				return (int) (o2.getForces() - o1.getForces());
 			}
 		});
 	}
 
 	private boolean isNotMyPlanet(Planet planet) {
-		return !planet.player.equals(this);
+		return !planet.getPlayer().equals(this);
+	}
+
+	@Override
+	public Color getPlayerBackColor() {
+		return Color.red;
+	}
+
+	@Override
+	public Color getPlayerForeColor() {
+		return Color.orange;
+	}
+
+	@Override
+	public String getCreatorsName() {
+		return "Robert";
 	}
 
 }

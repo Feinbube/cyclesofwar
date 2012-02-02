@@ -4,9 +4,10 @@ import java.awt.Dimension;
 import java.util.Random;
 
 
+
 class Star extends Drawable{
 	
-	public Star(Random random, Dimension size) {
+	Star(Random random, Dimension size) {
 		super();
 		
 		x = random.nextInt(size.width);
