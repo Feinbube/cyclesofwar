@@ -1,18 +1,22 @@
 package cyclesofwar;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.util.Random;
 
-
-
-class Star extends Drawable{
+class Star {
 	
-	Star(Random random, Dimension size) {
+	double size;
+	double x;
+	double y;
+	Color c;
+	double d;
+	
+	Star(Random random, double size) {
 		super();
 		
-		x = random.nextInt(size.width);
-		y = random.nextInt(size.height);
+		this.size = size;
+		x = random.nextDouble() * size;
+		y = random.nextDouble() * size; 
 		c = Color.getHSBColor(0, 0, (float)random.nextDouble());
-		d = random.nextInt(3) + 1;
+		d = random.nextDouble();
 	}
 }

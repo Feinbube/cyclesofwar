@@ -12,20 +12,20 @@ public class Defender extends Player {
 	protected void think() {
 		List<Planet> myPlanets = this.getPlanets();
 		sortByForceCount(myPlanets);
-		
+
 		if (myPlanets.size() == 0)
 			return;
-					
+
 		Planet capital = myPlanets.get(0);
 		myPlanets.remove(capital);
-		
+
 		List<Planet> other = getAllPlanetButMine();
 		sortByForceCount(other);
 		if (other.size() > 0) {
 			Planet target = other.get(other.size() - 1);
 			sendFleet(capital, target.getForces() + 1, target);
 		}
-		
+
 		for (Planet planet : myPlanets) {
 			if (planet.getForces() > 5) {
 				sendFleet(planet, planet.getForces() / 4, capital);
