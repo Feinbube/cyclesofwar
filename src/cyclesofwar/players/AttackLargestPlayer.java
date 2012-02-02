@@ -27,7 +27,7 @@ public class AttackLargestPlayer extends Player {
 		}
 	}
 	
-	private Planet getLargestBeatablePlanet(int attackForceSize) {
+	public Planet getLargestBeatablePlanet(int attackForceSize) {
 		for (Planet target : getOtherPlanetsNotUnderAttack()) {
 			if (target.getForces() < attackForceSize) {				
 				return target;
@@ -56,7 +56,7 @@ public class AttackLargestPlayer extends Player {
 		return result;
 	}
 
-	private void sortByFleetSize(List<Planet> result) {
+	public static void sortByFleetSize(List<Planet> result) {
 		Collections.sort(result, new Comparator<Planet>() {
 
 			@Override
