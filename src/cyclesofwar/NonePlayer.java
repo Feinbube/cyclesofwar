@@ -24,5 +24,10 @@ public class NonePlayer extends Player {
 	public String getCreatorsName() {
 		return "Frank";
 	}
+	
+	@Override
+	String getName(){
+		return "Nobody";
+	}
 
 }

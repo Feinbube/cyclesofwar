@@ -1,6 +1,8 @@
 package cyclesofwar;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.SortedMap;
@@ -17,18 +19,23 @@ public class Universe {
 	Random random = new Random();
 
 	double size;
+	
+	double nothingHappendCounter = 0;
+	boolean gameOver = false;
+	Player winner = null;
 
 	SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<Double, Fleet>();
 	List<Fleet> newFleets = new ArrayList<Fleet>();
 
 	private Universe() {
+		reInitialize();
 	}
 
 	void reInitialize() {
 		List<Player> combatants = Arena.Combatants();
 
 		this.size = Math.sqrt(combatants.size());
-
+		
 		long seed = new Random().nextLong();
 		random.setSeed(seed);
 
@@ -45,6 +52,8 @@ public class Universe {
 			players.add(player);
 			createStarterPlanet(player);
 		}
+		
+		gameOver = false;
 	}
 
 	private Planet createStarterPlanet(Player player) {
@@ -64,7 +73,7 @@ public class Universe {
 
 	private boolean planetFits(Planet planet) {
 		for (Planet other : planets) {
-			if(toClose(planet, other))
+			if (toClose(planet, other))
 				return false;
 		}
 
@@ -72,10 +81,17 @@ public class Universe {
 	}
 
 	private boolean toClose(Planet planet, Planet other) {
-		return planet.distanceTo(other) < (planet.productionRatePerSecond + other.productionRatePerSecond) * 2.1 * GamePanel.planetSizingFactor;
+		return planet.distanceTo(other) < (planet.productionRatePerSecond + other.productionRatePerSecond) * 2.1
+				* GamePanel.planetSizingFactor;
 	}
 
 	void update(double elapsedSeconds) {
+		if(gameOver) {
+			return;
+		}
+		
+		nothingHappendCounter += elapsedSeconds;
+		
 		for (Planet planet : planets) {
 			planet.update(elapsedSeconds);
 		}
@@ -90,14 +106,49 @@ public class Universe {
 		}
 		fleetsAtDestination.clear();
 
+		if (justOnePlayerLeft()) {
+			gameOver = true;
+			winner = bestPlayer();
+			return;
+		}
+
 		for (Player player : players) {
 			player.think();
+		}
+		
+		if (nothingHappendCounter > 30) {
+			gameOver = true;
+			winner = NonePlayer.NonePlayer;
+			return;
 		}
 
 		for (Fleet newFleet : newFleets) {
 			fleets.add(newFleet);
 		}
 		newFleets.clear();
+	}
+
+	boolean justOnePlayerLeft() {
+		int playersAlive = 0;
+		for (Player player : players) {
+			if (player.getFullForce() > 0) {
+				playersAlive++;
+			}
+		}
+
+		return playersAlive <= 1;
+	}
+	
+	Player bestPlayer() {
+		Collections.sort(players, new Comparator<Player>() {
+
+			@Override
+			public int compare(Player player1, Player player2) {
+				return (int)(player2.getFullForce() - player1.getFullForce());
+			}
+		});
+		
+		return players.get(0);
 	}
 
 	List<Player> OtherPlayers(Player player) {
@@ -183,6 +234,7 @@ public class Universe {
 
 		planet.forces -= force;
 		newFleets.add(new Fleet(player, force, planet, target));
+		nothingHappendCounter = 0.0;
 	}
 
 	void fleetArrived(Fleet fleet, double distance) {

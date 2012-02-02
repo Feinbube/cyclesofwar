@@ -19,7 +19,7 @@ class GamePanel extends JPanel {
 	List<Star> stars = new ArrayList<Star>();
 
 	int borderSize = 20;
-	
+
 	static final double planetSizingFactor = 0.015;
 
 	public GamePanel() {
@@ -34,9 +34,9 @@ class GamePanel extends JPanel {
 		drawUniverse(g);
 	}
 
-	private void reInitialize() {
+	private void reInitialize() {	
 		Universe.INSTANCE.reInitialize();
-
+		
 		stars.clear();
 		for (int i = 0; i < StarCount; i++) {
 			stars.add(new Star(Universe.INSTANCE.random, Universe.INSTANCE.size));
@@ -52,9 +52,38 @@ class GamePanel extends JPanel {
 		g.fillRect(0, 0, g.getClipBounds().width, g.getClipBounds().height);
 
 		drawStars(g);
-		drawPlanets(g);
-		drawFleets(g);
-		drawPlayers(g);
+		
+		if (!Universe.INSTANCE.gameOver) {	
+			drawPlanets(g);
+			drawFleets(g);
+			drawPlayers(g);
+		} else {
+			drawGameOverScreen(g);
+
+		}
+	}
+
+	private void drawGameOverScreen(Graphics g) {
+		String playerName = Universe.INSTANCE.winner.getName();
+		
+		g.setColor(Color.yellow);
+		
+		g.setFont(new Font("Courier New", Font.BOLD, 48));
+
+		String s = "GAME OVER";
+		int w = g.getFontMetrics().stringWidth(s);
+		int h = g.getFontMetrics().getHeight();
+
+		int hStart = g.getClipBounds().height/3 + h / 2;
+		g.drawString(s, g.getClipBounds().width/2 - w / 2, hStart);
+		
+		g.setFont(new Font("Courier New", Font.PLAIN, 32));
+
+		s = playerName + " has won!";
+		w = g.getFontMetrics().stringWidth(s);
+		h = g.getFontMetrics().getHeight();
+
+		g.drawString(s, g.getClipBounds().width/2 - w / 2, hStart + h * 2);
 	}
 
 	private void drawStars(Graphics g) {
@@ -110,7 +139,7 @@ class GamePanel extends JPanel {
 	private void drawFleets(Graphics g) {
 		for (Fleet fleet : Universe.INSTANCE.fleets) {
 			g.setColor(fleet.player.getPlayerBackColor());
-			
+
 			int x = getX(g, fleet.x);
 			int y = getY(g, fleet.y);
 			int d = fleet.force;
@@ -144,7 +173,7 @@ class GamePanel extends JPanel {
 	private String statistics(Player player) {
 		String result = "";
 
-		result += player.getCreatorsName() + "'s " + player.getClass().getSimpleName();
+		result += player.getName();
 
 		double groundForces = 0;
 		for (Planet planet : Universe.INSTANCE.PlanetsOfPlayer(player))
