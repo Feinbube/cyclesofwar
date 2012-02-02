@@ -9,15 +9,15 @@ class Drawable {
 	int y;
 	Color c;
 	int d;
-	
-	public void draw(Graphics g)
+
+	protected void draw(Graphics g)
 	{
 		g.setColor(c);
     	g.fillOval(x-d/2, y-d/2, d, d);
 	}
 	
-	protected void drawText(Graphics g, String s) {
-		g.setColor(Color.white);
+	protected void drawText(Graphics g, String s, Color color) {
+		g.setColor(color);
 		g.setFont(new Font("Arial", Font.PLAIN, 10));
 		
 		int w = g.getFontMetrics().stringWidth(s);

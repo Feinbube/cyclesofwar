@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Universe implements Updatable {
-	public static Universe INSTANCE = new Universe();
+import cyclesofwar.players.*;
+
+public class Universe {
+	static Universe INSTANCE = new Universe();
 
 	final int StarCount = 1000;
 	final int PlanetCount = 20;
@@ -28,7 +30,7 @@ public class Universe implements Updatable {
 	private Universe() {
 	}
 
-	public void reInitialize(Dimension size) {
+	void reInitialize(Dimension size) {
 		this.size = size;
 
 		stars.clear();
@@ -45,20 +47,18 @@ public class Universe implements Updatable {
 		fleetsAtDestination.clear();
 		
 		players.clear();
-		Player player1 = new RandomPlayer(createPlayerColor(), createStarterPlanet());
+		Player player1 = new Petra();
 		players.add(player1);
+		createStarterPlanet(player1);
 		
-		Player player2 = new AttackLargestPlayer(createPlayerColor(), createStarterPlanet());
+		Player player2 = new AttackLargestPlayer();
 		players.add(player2);
+		createStarterPlanet(player2);
 	}
 
-	private Color createPlayerColor() {
-		Color c = Color.getHSBColor((float) random.nextDouble(), 0.5f, 0.5f);
-		return c;
-	}
-
-	private Planet createStarterPlanet() {
+	private Planet createStarterPlanet(Player player) {
 		Planet planet = suitablePlanet(5);
+		planet.player = player;
 		planets.add(planet);
 		return planet;
 	}
@@ -80,7 +80,7 @@ public class Universe implements Updatable {
 		return true;
 	}
 
-	public void draw(Graphics g) {
+	void draw(Graphics g) {
 		g.setColor(Color.black);
 		g.fillRect(0, 0, size.width, size.height);
 
@@ -97,13 +97,15 @@ public class Universe implements Updatable {
 		}
 		
 		for(int i=0; i<players.size(); i++){
-			drawText(g, players.get(i).getClass().getSimpleName() + " P" + i + ":" + statistics(players.get(i)), 5, (i+1)*15);
+			drawText(g, "P" + i + ": " + statistics(players.get(i)), 5, (i+1)*15);
 		}
 		
 	}
 	
 	private String statistics(Player player) {
 		String result = "";
+	
+		result += player.getCreatorsName() + "'s " + player.getClass().getSimpleName();
 		
 		double groundForces = 0;
 		for(Planet planet : PlanetsOfPlayer(player))
@@ -126,9 +128,8 @@ public class Universe implements Updatable {
 		
 		g.drawString(s, x, y);
 	}
-
-	@Override
-	public void update(double elapsedSeconds) {
+	
+	void update(double elapsedSeconds) {
 		for (Planet planet : planets) {
 			planet.update(elapsedSeconds);
 		}
@@ -148,7 +149,27 @@ public class Universe implements Updatable {
 		}
 	}
 
-	public List<Planet> PlanetsOfPlayer(Player player) {
+	List<Player> OtherPlayers(Player player) {
+		ArrayList<Player> result = new ArrayList<Player>();
+		for (Player other : players) {
+			if (!other.equals(player)) {
+				result.add(other);
+			}
+		}
+
+		return result;
+	}
+	
+	List<Planet> AllPlanets() {
+		ArrayList<Planet> result = new ArrayList<Planet>();
+		for (Planet planet : planets) {
+				result.add(planet);
+		}
+
+		return result;
+	}
+	
+	List<Planet> PlanetsOfPlayer(Player player) {
 		ArrayList<Planet> result = new ArrayList<Planet>();
 		for (Planet planet : planets) {
 			if (planet.player.equals(player)) {
@@ -159,7 +180,16 @@ public class Universe implements Updatable {
 		return result;
 	}
 
-	public List<Fleet> FleetsOfPlayer(Player player) {
+	List<Fleet> AllFleets() {
+		ArrayList<Fleet> result = new ArrayList<Fleet>();
+		for (Fleet fleet : fleets) {
+				result.add(fleet);
+		}
+
+		return result;
+	}
+	
+	List<Fleet> FleetsOfPlayer(Player player) {
 		ArrayList<Fleet> result = new ArrayList<Fleet>();
 		for (Fleet fleet : fleets) {
 			if (fleet.player.equals(player)) {
@@ -170,16 +200,15 @@ public class Universe implements Updatable {
 		return result;
 	}
 	
-	public void SendFleet(Player player, Planet planet, int force, Planet target) {
+	void SendFleet(Player player, Planet planet, int force, Planet target) {
+		if(force <= 0 || force > planet.forces)
+			return;
+		
 		planet.forces -= force;
 		fleets.add(new Fleet(player, force, planet, target));
 	}
 
-	public List<Planet> AllPlanets() {
-		return planets;
-	}
-
-	public void FleetArrived(Fleet fleet) {
+	void fleetArrived(Fleet fleet) {
 		fleetsAtDestination.add(fleet);
 	}
 }

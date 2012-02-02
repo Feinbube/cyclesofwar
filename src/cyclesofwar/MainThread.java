@@ -2,6 +2,7 @@ package cyclesofwar;
 import java.util.Date;
 
 
+
 public class MainThread implements Runnable {
 
 	GamePanel gamePanel;
