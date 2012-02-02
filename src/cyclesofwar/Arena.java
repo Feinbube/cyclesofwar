@@ -11,12 +11,12 @@ public class Arena {
 	public static List<Player> Combatants(){
 		ArrayList<Player> result = new ArrayList<Player>();
 		
-		result.add(new Defender());
+//		result.add(new Defender());
 		result.add(new Petra());
 		
 		// result.add(new IdlePlayer());
 		// result.add(new RandomPlayer());
-		result.add(new AttackLargestPlayer());
+		result.add(new FastExpand());
 		
 		return result;
 	}
