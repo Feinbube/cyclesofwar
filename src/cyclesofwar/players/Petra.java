@@ -13,41 +13,67 @@ import cyclesofwar.Player;
 public class Petra extends Player {
 
 	List<Fleet> fleetsHandled = new ArrayList<Fleet>();
-	
+
 	@Override
 	public void think() {
-		for(Planet planet : this.getPlanets()) {
-			List<Planet> targets = notOwnedByMe(getOtherPlanetsSortedByDistance(planet));
-			if(targets.size() == 0)
+		for (Planet planet : this.getPlanets()) {
+			Planet target = getTarget(planet);
+			if (target == null)
 				continue;
-			
-			Planet target = targets.get(0);
-			if(planet.getForces() > target.getForces()*2)
-				this.sendFleet(planet, planet.getForces(), target);
+
+			if (planet.getForces() > target.getForces() * 1.5)
+				this.sendFleet(planet, (int) (planet.getForces() * 0.8), target);
 		}
 	}
-	
-	private List<Planet> notOwnedByMe(List<Planet> planets) {
-		List<Planet> result = new ArrayList<Planet>();
-		
-		for(Planet planet : planets)
-			if(!planet.getPlayer().equals(this))
-				result.add(planet);
-				
-		return result;
-	}
-	
-	private List<Planet> getOtherPlanetsSortedByDistance(final Planet planet) {
-		List<Planet> result = this.getAllPlanets();
-		result.remove(planet);
-		
-		Collections.sort(result, new Comparator<Planet>() {
+
+	private Planet getTarget(final Planet planet) {
+		List<Planet> targets = mostProductive(notOwnedByMe(getOtherPlanets(planet)));
+		if (targets.size() == 0)
+			return null;
+
+		Collections.sort(targets, new Comparator<Planet>() {
 			@Override
-			public int compare(Planet planet1, Planet planet2) {				
+			public int compare(Planet planet1, Planet planet2) {
 				return (int) (planet.distanceTo(planet1) - planet.distanceTo(planet2));
 			}
 		});
+
+		return targets.get(0);
+	}
+
+	private List<Planet> mostProductive(List<Planet> planets) {
+		double maxProductionRate = 0.0;
+		for (Planet planet : planets) {
+			if (planet.getProductionRatePerSecond() > maxProductionRate) {
+				maxProductionRate = planet.getProductionRatePerSecond();
+			}
+		}
+
+		List<Planet> result = new ArrayList<Planet>();
 		
+		for (Planet planet : planets) {
+			if (planet.getProductionRatePerSecond() == maxProductionRate) {
+				result.add(planet);
+			}
+		}
+
+		return result;
+	}
+
+	private List<Planet> notOwnedByMe(List<Planet> planets) {
+		List<Planet> result = new ArrayList<Planet>();
+
+		for (Planet planet : planets)
+			if (!planet.getPlayer().equals(this))
+				result.add(planet);
+
+		return result;
+	}
+
+	private List<Planet> getOtherPlanets(Planet planet) {
+		List<Planet> result = this.getAllPlanets();
+		result.remove(planet);
+
 		return result;
 	}
 
