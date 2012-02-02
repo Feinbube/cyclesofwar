@@ -20,12 +20,12 @@ public abstract class Player {
 	}
 	
 	// Planets
-	protected List<Planet> getAllPlanets() {
-		return Universe.INSTANCE.AllPlanets();
-	}
-	
 	public List<Planet> getPlanets() {
 		return Universe.INSTANCE.PlanetsOfPlayer(this);
+	}
+	
+	protected List<Planet> getAllPlanets() {
+		return Universe.INSTANCE.AllPlanets();
 	}
 	
 	protected List<Planet> getFreePlanets() {
@@ -37,12 +37,12 @@ public abstract class Player {
 	}
 	
 	// Fleets
-	protected List<Fleet> getAllFleets() {
-		return Universe.INSTANCE.AllFleets();
-	}
-	
 	public List<Fleet> getFleets() {
 		return Universe.INSTANCE.FleetsOfPlayer(this);
+	}
+	
+	protected List<Fleet> getAllFleets() {
+		return Universe.INSTANCE.AllFleets();
 	}
 	
 	protected List<Fleet> getFleetsOf(Player player) {

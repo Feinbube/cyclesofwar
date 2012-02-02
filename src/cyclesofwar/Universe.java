@@ -105,7 +105,7 @@ public class Universe {
 		}
 		
 		for(int i=0; i<players.size(); i++){
-			drawText(g, "P" + i + ": " + statistics(players.get(i)), 5, (i+1)*15);
+			drawPlayer(g, players.get(i), 5, i*20);
 		}
 		
 	}
@@ -130,11 +130,19 @@ public class Universe {
 		return result;
 	}
 
-	protected void drawText(Graphics g, String s, int x, int y) {
-		g.setColor(Color.white);
+	protected void drawPlayer(Graphics g, Player p, int x, int y) {
+		String s = statistics(p);
+		
 		g.setFont(new Font("Arial", Font.PLAIN, 12));
 		
-		g.drawString(s, x, y);
+		int w = g.getFontMetrics().stringWidth(s);
+		int h = g.getFontMetrics().getHeight();
+		
+		g.setColor(p.getPlayerBackColor());
+		g.fillRect(x-2, y+3, w+3, h);
+		
+		g.setColor(p.getPlayerForeColor());
+		g.drawString(s, x, y+h);
 	}
 	
 	void update(double elapsedSeconds) {

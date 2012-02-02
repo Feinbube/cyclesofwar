@@ -6,13 +6,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import cyclesofwar.Fleet;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
 public class Petra extends Player {
-
-	List<Fleet> fleetsHandled = new ArrayList<Fleet>();
 
 	@Override
 	public void think() {	
