@@ -12,7 +12,7 @@ import cyclesofwar.Player;
 public class Defender extends AttackLargestPlayer {
 
 	@Override
-	public void think() {
+	protected void think() {
 		List<Planet> myPlanets = this.getPlanets();
 		AttackLargestPlayer.sortByFleetSize(myPlanets);
 		
@@ -49,7 +49,7 @@ public class Defender extends AttackLargestPlayer {
 		return result;
 	}
 	
-	private boolean isNotMyPlanet(Planet planet) {
+	protected boolean isNotMyPlanet(Planet planet) {
 		return !planet.getPlayer().equals(this);
 	}
 	

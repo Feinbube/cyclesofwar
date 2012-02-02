@@ -51,7 +51,7 @@ public class Universe {
 		players.add(player1);
 		createStarterPlanet(player1);
 		
-		Player player2 = new Defender();
+		Player player2 = new Borg();
 		players.add(player2);
 		createStarterPlanet(player2);
 		

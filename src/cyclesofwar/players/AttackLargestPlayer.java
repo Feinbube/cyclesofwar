@@ -13,7 +13,7 @@ import cyclesofwar.Player;
 public class AttackLargestPlayer extends Player {
 
 	@Override
-	public void think() {
+	protected void think() {
 		List<Planet> myPlanets = this.getPlanets();
 		sortByFleetSize(myPlanets);
 		
