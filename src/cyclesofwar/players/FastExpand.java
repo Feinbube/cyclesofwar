@@ -19,7 +19,7 @@ public class FastExpand extends Player {
 			
 			while (planet.getForces() > 1 && !targets.isEmpty()) {
 				Planet target = targets.remove(0);
-				sendFleet(planet, (int)target.getForces() + 1, target);
+				sendFleetUpTo(planet, (int)target.getForces() + 1, target);
 			}
 		}
 	}

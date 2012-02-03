@@ -66,7 +66,7 @@ public class Planet {
 	}
 
 	public double timeTo(Planet other) {
-		return distanceTo(other) * Fleet.speed;
+		return distanceTo(other) * Universe.speedOfLight;
 	}
 	
 	void commit() {

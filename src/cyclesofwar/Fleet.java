@@ -2,8 +2,6 @@ package cyclesofwar;
 
 public class Fleet {
 
-	final static double speed = 0.5;
-
 	Player player;
 	int force;
 	
@@ -52,14 +50,14 @@ public class Fleet {
 		
 		double sqrt = Math.sqrt(xDiff*xDiff + yDiff*yDiff);
 		
-		if(sqrt < speed * elapsedSeconds)
+		if(sqrt < Universe.speedOfLight * elapsedSeconds)
 			hit(sqrt);
 		
 		xDiff = xDiff / sqrt;
 		yDiff = yDiff / sqrt;
 		
-		x -= speed * elapsedSeconds * xDiff;
-		y -= speed * elapsedSeconds * yDiff;
+		x -= Universe.speedOfLight * elapsedSeconds * xDiff;
+		y -= Universe.speedOfLight * elapsedSeconds * yDiff;
 	}
 	
 	private void hit(double distance) {
@@ -87,6 +85,6 @@ public class Fleet {
 	}
 	
 	public double timeToTarget() {
-		return distanceToTarget() * Fleet.speed;
+		return distanceToTarget() * Universe.speedOfLight;
 	}
 }

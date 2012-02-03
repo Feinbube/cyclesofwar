@@ -9,6 +9,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class Universe {
+
+	static final double speedOfLight = 0.05;
+
 	static Universe INSTANCE = new Universe();
 
 	List<Planet> planets = new ArrayList<Planet>();
@@ -19,11 +22,11 @@ public class Universe {
 	Random random = new Random();
 
 	double size;
-	
+
 	double nothingHappendCounter = 0;
 	boolean gameOver = true;
 	Player winner = null;
-	
+
 	Player currentPlayer = null;
 
 	SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<Double, Fleet>();
@@ -35,11 +38,11 @@ public class Universe {
 
 	void reInitialize() {
 		gameOver = true;
-		
+
 		List<Player> combatants = Arena.Combatants();
 
 		this.size = Math.sqrt(combatants.size());
-		
+
 		long seed = new Random().nextLong();
 		random.setSeed(seed);
 
@@ -56,7 +59,7 @@ public class Universe {
 			players.add(player);
 			createStarterPlanet(player);
 		}
-		
+
 		gameOver = false;
 	}
 
@@ -85,17 +88,16 @@ public class Universe {
 	}
 
 	private boolean toClose(Planet planet, Planet other) {
-		return planet.distanceTo(other) < (planet.productionRatePerSecond + other.productionRatePerSecond) * 2.1
-				* GamePanel.planetSizingFactor;
+		return planet.distanceTo(other) < (planet.productionRatePerSecond + other.productionRatePerSecond) / 2 * speedOfLight;
 	}
 
 	void update(double elapsedSeconds) {
-		if(gameOver) {
+		if (gameOver) {
 			return;
 		}
-		
+
 		nothingHappendCounter += elapsedSeconds;
-		
+
 		for (Planet planet : planets) {
 			planet.update(elapsedSeconds);
 		}
@@ -109,7 +111,7 @@ public class Universe {
 			fleets.remove(fleet);
 		}
 		fleetsAtDestination.clear();
-		
+
 		for (Planet planet : planets) {
 			planet.newForces = planet.forces;
 		}
@@ -124,8 +126,8 @@ public class Universe {
 			currentPlayer = player;
 			currentPlayer.think();
 		}
-		
-		if (nothingHappendCounter > 30) {
+
+		if (nothingHappendCounter > 60) {
 			gameOver = true;
 			winner = NonePlayer.NonePlayer;
 			return;
@@ -135,7 +137,7 @@ public class Universe {
 			fleets.add(newFleet);
 		}
 		newFleets.clear();
-		
+
 		for (Planet planet : planets) {
 			planet.commit();
 		}
@@ -151,16 +153,16 @@ public class Universe {
 
 		return playersAlive <= 1;
 	}
-	
+
 	Player bestPlayer() {
 		Collections.sort(players, new Comparator<Player>() {
 
 			@Override
 			public int compare(Player player1, Player player2) {
-				return (int)(player2.getFullForce() - player1.getFullForce());
+				return (int) (player2.getFullForce() - player1.getFullForce());
 			}
 		});
-		
+
 		return players.get(0);
 	}
 
