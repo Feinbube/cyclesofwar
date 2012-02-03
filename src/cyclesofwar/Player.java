@@ -83,7 +83,7 @@ public abstract class Player {
 		Collections.sort(planets, new Comparator<Planet>() {
 			@Override
 			public int compare(Planet planet1, Planet planet2) {
-				return (int) (planet.distanceTo(planet1) - planet.distanceTo(planet2));
+				return Double.compare(planet.distanceTo(planet1), planet.distanceTo(planet2));
 			}
 		});
 	}
