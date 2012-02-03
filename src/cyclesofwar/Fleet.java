@@ -13,6 +13,10 @@ public class Fleet {
 	double y;
 	
 	public Fleet(Player player, int force, Planet start, Planet target){
+		if (force < 1) {
+			throw new IllegalArgumentException("force must be greate 0 but was " + force);
+		}
+		
 		this.player = player;
 		this.force = force;
 		

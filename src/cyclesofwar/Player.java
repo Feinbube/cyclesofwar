@@ -121,11 +121,7 @@ public abstract class Player {
 		return result;
 	}
 	
-	protected void sendFleet(Planet planet, int force, Planet target) {
-		if (force > planet.getForces()) {
-			throw new IllegalArgumentException("fleet size exceeds planetary forces");
-		}
-		
+	protected void sendFleet(Planet planet, int force, Planet target) {		
 		Universe.INSTANCE.SendFleet(this, planet, force, target);
 	}
 	
