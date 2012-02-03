@@ -10,12 +10,15 @@ public class MainThread implements Runnable {
 	
 	boolean gameStarted = false;
 	
+	Object renderingLock = new Object();
+	
 	public MainThread(GamePanel gamePanel){
 		this.gamePanel = gamePanel;
 	}
 	
 	@Override
 	public void run() {
+		
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -33,7 +36,9 @@ public class MainThread implements Runnable {
 			lastTime = new Date();
 			
 			gamePanel.repaint();
+			synchronized (renderingLock) {
 			Universe.INSTANCE.update(elapsedSeconds*speedUp);
+			}
 			
 			try {
 				Thread.sleep(10);
