@@ -237,8 +237,9 @@ public class Universe {
 			throw new IllegalArgumentException("fleet must be send from owned planet");
 		}
 
-		origin.newForces -= force;
-		newFleets.add(new Fleet(player, force, origin, target));
+		Fleet newFleet = new Fleet(player, force, origin, target);
+		newFleets.add(newFleet);
+		origin.newForces -= newFleet.getForce();
 		nothingHappendCounter = 0.0;
 	}
 
