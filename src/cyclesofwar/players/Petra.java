@@ -25,13 +25,13 @@ public class Petra extends Player {
 				continue;
 
 			if (planet.getForces() > targets.get(0).getForces() * 1.5) {
-				this.sendFleet(planet, (int) (planet.getForces() * attackFirst), targets.get(0));
+				this.sendFleetUpTo(planet, (int) (planet.getForces() * attackFirst), targets.get(0));
 				attack = true;
 			} else if (targets.size() > 1 && planet.getForces() > targets.get(1).getForces() * 2) {
-				this.sendFleet(planet, (int) (planet.getForces() * attackSecond), targets.get(1));
+				this.sendFleetUpTo(planet, (int) (planet.getForces() * attackSecond), targets.get(1));
 				attack = true;
 			} else if (targets.size() > 2 && planet.getForces() > targets.get(2).getForces() * 3) {
-				this.sendFleet(planet, (int) (planet.getForces() * attackThird), targets.get(2));
+				this.sendFleetUpTo(planet, (int) (planet.getForces() * attackThird), targets.get(2));
 				attack = true;
 			}
 		}
@@ -49,7 +49,7 @@ public class Petra extends Player {
 
 			if (forces > targets.get(0).getForces() * 3) {
 				for (Planet planet : this.getPlanets()) {
-					this.sendFleet(planet, (int) (planet.getForces() * 0.5), targets.get(0));
+					this.sendFleetUpTo(planet, (int) (planet.getForces() * 0.5), targets.get(0));
 				}
 			}
 		}

@@ -21,8 +21,6 @@ class GamePanel extends JPanel {
 
 	int borderSize = 20;
 
-	static final double planetSizingFactor = 0.015;
-
 	Random random = new Random();
 
 	MainThread mainThread = new MainThread(this);
@@ -138,7 +136,7 @@ class GamePanel extends JPanel {
 	}
 
 	private int planetSize(int size, double productionRatePerSecond) {
-		return (int) (productionRatePerSecond * 15.0 * size / 1000.0);
+		return (int) (productionRatePerSecond * 7.0 * size / 1000.0);
 	}
 
 	private int getX(Graphics g, double x) {
