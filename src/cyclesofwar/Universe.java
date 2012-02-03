@@ -228,25 +228,17 @@ public class Universe {
 		return result;
 	}
 
-	void SendFleet(Player player, Planet planet, int force, Planet target) {
-		if (force == 0) {
-			return;
+	void SendFleet(Player player, Planet origin, int force, Planet target) {
+		if (force > origin.getForces()) {
+			throw new IllegalArgumentException("fleet size exceeds planetary forces");
 		}
 
-		if (force < 0 || force > planet.newForces) {
-			System.out.println("Player " + player.getCreatorsName() + " wants to cheat with " + player.getClass().getSimpleName()
-					+ " by sending a fleet of size " + force + " from a planet with " + planet.newForces + " troops!");
-			return;
+		if (!player.isMyPlanet(origin)) {
+			throw new IllegalArgumentException("fleet must be send from owned planet");
 		}
 
-		if (!planet.player.equals(player)) {
-			System.out.println("Player " + player.getCreatorsName() + " wants to cheat with " + player.getClass().getSimpleName()
-					+ " by sending a fleet from a planet owned by " + planet.player.getCreatorsName() + "!");
-			return;
-		}
-
-		planet.newForces -= force;
-		newFleets.add(new Fleet(player, force, planet, target));
+		origin.newForces -= force;
+		newFleets.add(new Fleet(player, force, origin, target));
 		nothingHappendCounter = 0.0;
 	}
 

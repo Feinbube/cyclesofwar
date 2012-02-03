@@ -23,12 +23,18 @@ public class Defender extends Player {
 		sortByForceCount(other);
 		if (other.size() > 0) {
 			Planet target = other.get(other.size() - 1);
-			sendFleet(capital, (int)target.getForces() + 1, target);
+			int requierdForce = (int)target.getForces() + 1;
+			if (requierdForce >= capital.getForces()) {
+				sendFleet(capital, requierdForce, target);
+			}
 		}
 
 		for (Planet planet : myPlanets) {
 			if (planet.getForces() > 5) {
-				sendFleet(planet, (int)planet.getForces() / 4, capital);
+				int requierdForce = (int)planet.getForces() / 4;
+				if (requierdForce >= planet.getForces()) {
+					sendFleet(planet, requierdForce, capital);
+				}
 			}
 		}
 
