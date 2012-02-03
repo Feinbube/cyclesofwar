@@ -15,6 +15,10 @@ public class Fleet {
 			throw new IllegalArgumentException("force must be greate 0 but was " + force);
 		}
 		
+		if (target == null) {
+			throw new IllegalArgumentException("fleet must have a target");
+		}
+		
 		this.player = player;
 		this.force = force;
 		
