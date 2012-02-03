@@ -25,7 +25,7 @@ public class Defender extends Player {
 			Planet target = other.get(other.size() - 1);
 			int requierdForce = (int)target.getForces() + 1;
 			if (requierdForce >= capital.getForces()) {
-				sendFleet(capital, requierdForce, target);
+				sendFleetUpTo(capital, requierdForce, target);
 			}
 		}
 
