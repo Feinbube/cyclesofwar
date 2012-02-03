@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import cyclesofwar.Fleet;
+import cyclesofwar.Fleet.Formation;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
@@ -52,6 +54,10 @@ public class Petra extends Player {
 					this.sendFleetUpTo(planet, (int) (planet.getForces() * 0.5), targets.get(0));
 				}
 			}
+		}
+		
+		for(Fleet fleet : this.getFleets()){
+			fleet.setFormation(Formation.ARROW);
 		}
 	}
 
@@ -105,5 +111,4 @@ public class Petra extends Player {
 	public String getCreatorsName() {
 		return "Frank";
 	}
-
 }

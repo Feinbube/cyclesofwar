@@ -2,6 +2,10 @@ package cyclesofwar;
 
 public class Fleet {
 
+	public enum Formation {
+		SWARM, ARROW 
+	}
+	
 	Player player;
 	int force;
 	
@@ -9,6 +13,8 @@ public class Fleet {
 	
 	double x;
 	double y;
+	
+	Formation formation = Formation.SWARM;
 	
 	public Fleet(Player player, int force, Planet start, Planet target){
 		if (force < 1) {
@@ -94,5 +100,13 @@ public class Fleet {
 	
 	public double getFlightSpeed() {
 		return Universe.speedOfLight;
+	}
+	
+	public Formation getFormation() {
+		return this.formation;
+	}
+	
+	public void setFormation(Formation formation) {
+		this.formation = formation;
 	}
 }

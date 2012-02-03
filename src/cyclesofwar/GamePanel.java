@@ -10,6 +10,8 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
+import cyclesofwar.Fleet.Formation;
+
 class GamePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -122,8 +124,8 @@ class GamePanel extends JPanel {
 		for (Planet planet : Universe.INSTANCE.planets) {
 			g.setColor(planet.player.getPlayerBackColor());
 
-			int x = getX(g, planet.x);
-			int y = getY(g, planet.y);
+			int x = (int) getX(g, planet.x);
+			int y = (int) getY(g, planet.y);
 			int planetSize = planetSize(g, planet.productionRatePerSecond);
 			g.fillOval(x - planetSize / 2, y - planetSize / 2, planetSize, planetSize);
 
@@ -139,12 +141,12 @@ class GamePanel extends JPanel {
 		return (int) (productionRatePerSecond * 7.0 * size / 1000.0);
 	}
 
-	private int getX(Graphics g, double x) {
-		return (int) ((g.getClipBounds().width - borderSize * 2) * x / universeSize) + borderSize;
+	private double getX(Graphics g, double x) {
+		return ((g.getClipBounds().width - borderSize * 2) * x / universeSize) + borderSize;
 	}
 
-	private int getY(Graphics g, double y) {
-		return (int) ((g.getClipBounds().height - borderSize * 2) * y / universeSize) + borderSize;
+	private double getY(Graphics g, double y) {
+		return ((g.getClipBounds().height - borderSize * 2) * y / universeSize) + borderSize;
 	}
 
 	private void drawStringCentered(Graphics g, String s, int x, int y, Color c) {
@@ -161,23 +163,44 @@ class GamePanel extends JPanel {
 		for (Fleet fleet : Universe.INSTANCE.fleets) {
 			g.setColor(fleet.player.getPlayerBackColor());
 
-			int x = getX(g, fleet.x);
-			int y = getY(g, fleet.y);
+			double x = getX(g, fleet.x);
+			double y = getY(g, fleet.y);
 			int d = fleet.force;
 
-			for (int i = 0; i < fleet.force; i++) {
-				double r = random.nextDouble() * d;
+			if (fleet.getFormation().equals(Formation.ARROW)) {
+				double xDiff = fleet.target.x - fleet.x;
+				double yDiff = fleet.target.y - fleet.y;
 
-				double localX = random.nextDouble() * r;
-				if (random.nextBoolean()) {
-					localX = -localX;
-				}
-				double localY = Math.sqrt(r * r - localX * localX);
-				if (random.nextBoolean()) {
-					localY = -localY;
-				}
+				xDiff *= 2.0;
+				
+				double dist = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
-				g.fillOval(x + (int) localX / 2, y + (int) localY / 2, 4, 4);
+				double sinAngle = yDiff / dist;
+				double cosAngle = xDiff / dist;
+
+				double length = Math.sqrt(d)*5;
+				for (int i = 0; i < d; i++) {
+					double localx = random.nextDouble() * length;
+					double localy = random.nextDouble() * localx - localx / 2.0;
+					localx -= length / 2;
+
+					double renderx = localx * cosAngle + localy * sinAngle;
+					double rendery = - localx * sinAngle + localy * cosAngle;
+
+					renderx = x - renderx;
+					rendery = y + rendery;
+
+					g.fillOval((int) renderx, (int) rendery, 3, 3);
+				}
+			} else {
+				for (int i = 0; i < fleet.force; i++) {
+					double r = random.nextDouble() *  Math.sqrt(d)*5;
+					double v = random.nextDouble() * r;
+					double localX = r * Math.cos(v);
+					double localY = r * Math.sin(v);
+
+					g.fillOval((int) (x + localX / 2), (int) (y + localY / 2), 3, 3);
+				}
 			}
 
 			// g.fillRect(x - d / 2, y - d / 2, d, d);
