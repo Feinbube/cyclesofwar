@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
+
 public abstract class Player {
 	
 	static Player NonePlayer = new NonePlayer();
@@ -124,6 +126,10 @@ public abstract class Player {
 	protected void sendFleet(Planet planet, int force, Planet target) {		
 		Universe.INSTANCE.SendFleet(this, planet, force, target);
 	}
+	
+	protected void sendFleetUpTo(Planet planet, int force, Planet target) {
+		Universe.INSTANCE.SendFleet(this, planet, (int) Math.max(force, planet.getForces()), target);
+	}	
 	
 	// random
 	protected double getRandomDouble(){
