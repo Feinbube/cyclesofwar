@@ -98,7 +98,6 @@ public class Universe {
 		
 		for (Planet planet : planets) {
 			planet.update(elapsedSeconds);
-			planet.newForces = planet.forces;
 		}
 
 		for (Fleet fleet : fleets) {
@@ -110,6 +109,10 @@ public class Universe {
 			fleets.remove(fleet);
 		}
 		fleetsAtDestination.clear();
+		
+		for (Planet planet : planets) {
+			planet.newForces = planet.forces;
+		}
 
 		if (justOnePlayerLeft()) {
 			gameOver = true;
