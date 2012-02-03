@@ -23,6 +23,8 @@ public class Universe {
 	double nothingHappendCounter = 0;
 	boolean gameOver = true;
 	Player winner = null;
+	
+	Player currentPlayer = null;
 
 	SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<Double, Fleet>();
 	List<Fleet> newFleets = new ArrayList<Fleet>();
@@ -96,6 +98,7 @@ public class Universe {
 		
 		for (Planet planet : planets) {
 			planet.update(elapsedSeconds);
+			planet.newForces = planet.forces;
 		}
 
 		for (Fleet fleet : fleets) {
@@ -115,7 +118,8 @@ public class Universe {
 		}
 
 		for (Player player : players) {
-			player.think();
+			currentPlayer = player;
+			currentPlayer.think();
 		}
 		
 		if (nothingHappendCounter > 30) {
@@ -128,6 +132,10 @@ public class Universe {
 			fleets.add(newFleet);
 		}
 		newFleets.clear();
+		
+		for (Planet planet : planets) {
+			planet.commit();
+		}
 	}
 
 	boolean justOnePlayerLeft() {
@@ -222,9 +230,9 @@ public class Universe {
 			return;
 		}
 
-		if (force < 0 || force > planet.forces) {
+		if (force < 0 || force > planet.newForces) {
 			System.out.println("Player " + player.getCreatorsName() + " wants to cheat with " + player.getClass().getSimpleName()
-					+ " by sending a fleet of size " + force + " from a planet with " + planet.forces + " troops!");
+					+ " by sending a fleet of size " + force + " from a planet with " + planet.newForces + " troops!");
 			return;
 		}
 
@@ -234,7 +242,7 @@ public class Universe {
 			return;
 		}
 
-		planet.forces -= force;
+		planet.newForces -= force;
 		newFleets.add(new Fleet(player, force, planet, target));
 		nothingHappendCounter = 0.0;
 	}

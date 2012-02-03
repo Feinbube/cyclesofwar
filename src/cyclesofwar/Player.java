@@ -71,7 +71,7 @@ public abstract class Player {
 
 			@Override
 			public int compare(Planet planet1, Planet planet2) {
-				return planet2.getForces() - planet1.getForces();
+				return (int)(planet2.getForces() - planet1.getForces());
 			}
 		});
 	}
