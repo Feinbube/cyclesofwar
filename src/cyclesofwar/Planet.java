@@ -10,6 +10,7 @@ public class Planet {
 
 	Player player;
 	double forces;
+	double newForces;
 
 	double productionRatePerSecond;
 
@@ -17,8 +18,12 @@ public class Planet {
 		return player;
 	}
 
-	public int getForces() {
-		return (int) forces;
+	public double getForces() {
+		if (Universe.INSTANCE.currentPlayer.equals(player)) {
+			return newForces;
+		} else {
+			return forces;
+		}
 	}
 
 	public double getProductionRatePerSecond() {
@@ -62,5 +67,9 @@ public class Planet {
 
 	public double timeTo(Planet other) {
 		return distanceTo(other) * Fleet.speed;
+	}
+	
+	void commit() {
+		forces = newForces;
 	}
 }

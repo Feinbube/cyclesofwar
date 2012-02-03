@@ -8,13 +8,23 @@ public class MainThread implements Runnable {
 	public final double speedUp = 5.0;
 	GamePanel gamePanel;
 	
+	boolean gameStarted = false;
+	
 	public MainThread(GamePanel gamePanel){
 		this.gamePanel = gamePanel;
 	}
 	
 	@Override
 	public void run() {
-
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		gameStarted = true;
+		
 		Date lastTime = new Date();
 		
 		while(true)

@@ -24,12 +24,14 @@ class GamePanel extends JPanel {
 	static final double planetSizingFactor = 0.015;
 	
 	Random random = new Random();
+	
+	MainThread mainThread = new MainThread(this);
 
 	public GamePanel() {
-		new Thread(new MainThread(this)).start();
+		new Thread(mainThread).start();
 	}
 
-	protected void paintComponent(Graphics g) {
+	protected void paintComponent(Graphics g) {	
 		if (!this.size.equals(getSize())) {
 			reInitialize();
 		}
@@ -56,7 +58,9 @@ class GamePanel extends JPanel {
 
 		drawStars(g);
 		
-		if (!Universe.INSTANCE.gameOver) {	
+		if(!mainThread.gameStarted){
+			drawTitleScreen(g);
+		}else if (!Universe.INSTANCE.gameOver) {	
 			drawPlanets(g);
 			drawFleets(g);
 			drawPlayers(g);
@@ -64,6 +68,20 @@ class GamePanel extends JPanel {
 			drawGameOverScreen(g);
 
 		}
+	}
+
+	private void drawTitleScreen(Graphics g) {
+		g.setColor(Color.yellow);
+		
+		g.setFont(new Font("Courier New", Font.BOLD, 48));
+
+		String s = "Cycles of War";
+		int w = g.getFontMetrics().stringWidth(s);
+		int h = g.getFontMetrics().getHeight();
+
+		int hStart = g.getClipBounds().height/2 + h / 2;
+		g.drawString(s, g.getClipBounds().width/2 - w / 2, hStart);
+		
 	}
 
 	private void drawGameOverScreen(Graphics g) {
