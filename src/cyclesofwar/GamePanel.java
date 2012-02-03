@@ -22,26 +22,28 @@ class GamePanel extends JPanel {
 	int borderSize = 20;
 
 	static final double planetSizingFactor = 0.015;
-	
+
 	Random random = new Random();
-	
+
 	MainThread mainThread = new MainThread(this);
 
 	public GamePanel() {
 		new Thread(mainThread).start();
 	}
 
-	protected void paintComponent(Graphics g) {	
-		if (!this.size.equals(getSize())) {
-			reInitialize();
-		}
+	protected void paintComponent(Graphics g) {
+		synchronized (mainThread.renderingLock) {
+			if (!this.size.equals(getSize())) {
+				reInitialize();
+			}
 
-		drawUniverse(g);
+			drawUniverse(g);
+		}
 	}
 
-	private void reInitialize() {	
+	private void reInitialize() {
 		Universe.INSTANCE.reInitialize();
-		
+
 		stars.clear();
 		for (int i = 0; i < StarCount; i++) {
 			stars.add(new Star(random, Universe.INSTANCE.size));
@@ -57,10 +59,10 @@ class GamePanel extends JPanel {
 		g.fillRect(0, 0, g.getClipBounds().width, g.getClipBounds().height);
 
 		drawStars(g);
-		
-		if(!mainThread.gameStarted){
+
+		if (!mainThread.gameStarted) {
 			drawTitleScreen(g);
-		}else if (!Universe.INSTANCE.gameOver) {	
+		} else if (!Universe.INSTANCE.gameOver) {
 			drawPlanets(g);
 			drawFleets(g);
 			drawPlayers(g);
@@ -72,39 +74,39 @@ class GamePanel extends JPanel {
 
 	private void drawTitleScreen(Graphics g) {
 		g.setColor(Color.yellow);
-		
+
 		g.setFont(new Font("Courier New", Font.BOLD, 48));
 
 		String s = "Cycles of War";
 		int w = g.getFontMetrics().stringWidth(s);
 		int h = g.getFontMetrics().getHeight();
 
-		int hStart = g.getClipBounds().height/2 + h / 2;
-		g.drawString(s, g.getClipBounds().width/2 - w / 2, hStart);
-		
+		int hStart = g.getClipBounds().height / 2 + h / 2;
+		g.drawString(s, g.getClipBounds().width / 2 - w / 2, hStart);
+
 	}
 
 	private void drawGameOverScreen(Graphics g) {
 		String playerName = Universe.INSTANCE.winner.getName();
-		
+
 		g.setColor(Color.yellow);
-		
+
 		g.setFont(new Font("Courier New", Font.BOLD, 48));
 
 		String s = "GAME OVER";
 		int w = g.getFontMetrics().stringWidth(s);
 		int h = g.getFontMetrics().getHeight();
 
-		int hStart = g.getClipBounds().height/3 + h / 2;
-		g.drawString(s, g.getClipBounds().width/2 - w / 2, hStart);
-		
+		int hStart = g.getClipBounds().height / 3 + h / 2;
+		g.drawString(s, g.getClipBounds().width / 2 - w / 2, hStart);
+
 		g.setFont(new Font("Courier New", Font.PLAIN, 32));
 
 		s = playerName + " has won!";
 		w = g.getFontMetrics().stringWidth(s);
 		h = g.getFontMetrics().getHeight();
 
-		g.drawString(s, g.getClipBounds().width/2 - w / 2, hStart + h * 2);
+		g.drawString(s, g.getClipBounds().width / 2 - w / 2, hStart + h * 2);
 	}
 
 	private void drawStars(Graphics g) {
@@ -164,24 +166,25 @@ class GamePanel extends JPanel {
 			int x = getX(g, fleet.x);
 			int y = getY(g, fleet.y);
 			int d = fleet.force;
-			
-			for(int i=0; i<fleet.force; i++) {
-				double r = random.nextDouble()*d;
-				
-				double localX = random.nextDouble()*r;
-				if(random.nextBoolean()){
+
+			for (int i = 0; i < fleet.force; i++) {
+				double r = random.nextDouble() * d;
+
+				double localX = random.nextDouble() * r;
+				if (random.nextBoolean()) {
 					localX = -localX;
 				}
-				double localY = Math.sqrt(r*r - localX*localX);
-				if(random.nextBoolean()){
+				double localY = Math.sqrt(r * r - localX * localX);
+				if (random.nextBoolean()) {
 					localY = -localY;
 				}
-				
-				g.fillOval(x + (int)localX/2, y + (int)localY/2, 4, 4);
+
+				g.fillOval(x + (int) localX / 2, y + (int) localY / 2, 4, 4);
 			}
-				
+
 			// g.fillRect(x - d / 2, y - d / 2, d, d);
-			// drawStringCentered(g, fleet.force + "", x, y, fleet.player.getPlayerForeColor());
+			// drawStringCentered(g, fleet.force + "", x, y,
+			// fleet.player.getPlayerForeColor());
 		}
 	}
 
