@@ -6,6 +6,8 @@ public class Fleet {
 		SWARM, ARROW 
 	}
 	
+	Universe universe;
+	
 	Player player;
 	int force;
 	
@@ -16,7 +18,7 @@ public class Fleet {
 	
 	Formation formation = Formation.SWARM;
 	
-	public Fleet(Player player, int force, Planet start, Planet target){
+	Fleet(Universe universe, Player player, int force, Planet start, Planet target){
 		if (force < 1) {
 			throw new IllegalArgumentException("force must be greater than 0 but was " + force);
 		}
@@ -28,6 +30,8 @@ public class Fleet {
 		if (target.equals(start)) {
 			throw new IllegalArgumentException("start and target are not allowed to be identical");
 		}
+		
+		this.universe = universe;
 		
 		this.player = player;
 		this.force = force;
@@ -75,7 +79,7 @@ public class Fleet {
 	}
 	
 	private void hit(double distance) {
-		Universe.INSTANCE.fleetArrived(this, distance);
+		universe.fleetArrived(this, distance);
 	}
 	
 	void land() {

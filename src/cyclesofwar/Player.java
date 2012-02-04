@@ -8,6 +8,8 @@ import java.util.List;
 
 public abstract class Player {
 	
+	Universe universe;
+	
 	protected static Player NonePlayer = new NonePlayer();
 
 	protected abstract void think();
@@ -35,7 +37,7 @@ public abstract class Player {
 
 	// Universe
 	protected double now() {
-		return Universe.INSTANCE.now;
+		return universe.now;
 	}
 
 	protected double getStepInterval() {
@@ -44,24 +46,24 @@ public abstract class Player {
 
 	// Players
 	protected List<Player> getOtherPlayers() {
-		return Universe.INSTANCE.OtherPlayers(this);
+		return universe.OtherPlayers(this);
 	}
 
 	// Planets
 	public List<Planet> getPlanets() {
-		return Universe.INSTANCE.PlanetsOfPlayer(this);
+		return universe.PlanetsOfPlayer(this);
 	}
 
 	protected List<Planet> getAllPlanets() {
-		return Universe.INSTANCE.AllPlanets();
+		return universe.AllPlanets();
 	}
 
 	protected List<Planet> getFreePlanets() {
-		return Universe.INSTANCE.PlanetsOfPlayer(Player.NonePlayer);
+		return universe.PlanetsOfPlayer(Player.NonePlayer);
 	}
 
 	protected List<Planet> getPlanetsOf(Player player) {
-		return Universe.INSTANCE.PlanetsOfPlayer(player);
+		return universe.PlanetsOfPlayer(player);
 	}
 
 	protected boolean isMyPlanet(Planet planet) {
@@ -118,15 +120,15 @@ public abstract class Player {
 
 	// Fleets
 	protected List<Fleet> getFleets() {
-		return Universe.INSTANCE.FleetsOfPlayer(this, this);
+		return universe.FleetsOfPlayer(this, this);
 	}
 
 	protected List<Fleet> getAllFleets() {
-		return Universe.INSTANCE.AllFleets(this);
+		return universe.AllFleets(this);
 	}
 
 	protected List<Fleet> getFleetsOf(Player player) {
-		return Universe.INSTANCE.FleetsOfPlayer(this, player);
+		return universe.FleetsOfPlayer(this, player);
 	}
 
 	protected boolean isMyFleet(Fleet fleet) {
@@ -166,17 +168,17 @@ public abstract class Player {
 	}	
 	
 	protected void sendFleet(Planet planet, int force, Planet target) {
-		Universe.INSTANCE.SendFleet(this, planet, force, target);
+		universe.SendFleet(this, planet, force, target);
 	}
 	
 	protected Fleet sendNewFleet(Planet planet, int force, Planet target) {
-		return Universe.INSTANCE.SendFleet(this, planet, force, target);
+		return universe.SendFleet(this, planet, force, target);
 	}
 
 	protected Fleet sendFleetUpTo(Planet planet, int force, Planet target) {
 		int forcesToSend = (int) Math.min(force, planet.getForces());
 		if (forcesToSend > 0) {
-			return Universe.INSTANCE.SendFleet(this, planet, forcesToSend, target);
+			return universe.SendFleet(this, planet, forcesToSend, target);
 		} else {
 			return null;
 		}
@@ -184,10 +186,10 @@ public abstract class Player {
 
 	// random
 	protected double getRandomDouble() {
-		return Universe.INSTANCE.getRandomDouble();
+		return universe.getRandomDouble();
 	}
 
 	protected int getRandomInt(int max) {
-		return Universe.INSTANCE.getRandomInt(max);
+		return universe.getRandomInt(max);
 	}
 }

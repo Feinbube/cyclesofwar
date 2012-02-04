@@ -12,8 +12,6 @@ public class Universe {
 
 	static final double speedOfLight = 0.05;
 
-	static Universe INSTANCE = new Universe();
-
 	List<Planet> planets = new ArrayList<Planet>();
 	List<Fleet> fleets = new ArrayList<Fleet>();
 
@@ -33,7 +31,7 @@ public class Universe {
 	SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<Double, Fleet>();
 	List<Fleet> newFleets = new ArrayList<Fleet>();
 
-	private Universe() {
+	Universe() {
 		reInitialize();
 	}
 
@@ -59,6 +57,7 @@ public class Universe {
 		players.clear();
 		for (Player player : combatants) {
 			players.add(player);
+			player.universe = this;
 			createStarterPlanet(player);
 		}
 
@@ -74,7 +73,7 @@ public class Universe {
 
 	private Planet suiteablePlanet(double productionRate) {
 		while (true) {
-			Planet planet = new Planet(random, size, productionRate);
+			Planet planet = new Planet(this, random, size, productionRate);
 			if (planetFits(planet))
 				return planet;
 		}
@@ -242,7 +241,7 @@ public class Universe {
 			throw new IllegalArgumentException("fleet must be send from owned planet");
 		}
 
-		Fleet newFleet = new Fleet(player, force, origin, target);
+		Fleet newFleet = new Fleet(this, player, force, origin, target);
 		newFleets.add(newFleet);
 		origin.newForces -= newFleet.getForce();
 		nothingHappenedCounter = 0.0;

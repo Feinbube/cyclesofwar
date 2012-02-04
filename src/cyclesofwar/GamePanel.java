@@ -26,6 +26,7 @@ class GamePanel extends JPanel {
 
 	Random random = new Random();
 
+	Universe universe = new Universe();
 	MainThread mainThread = new MainThread(this);
 
 	public GamePanel() {
@@ -43,14 +44,14 @@ class GamePanel extends JPanel {
 	}
 
 	private void reInitialize() {
-		Universe.INSTANCE.reInitialize();
+		universe.reInitialize();
 
 		stars.clear();
 		for (int i = 0; i < StarCount; i++) {
-			stars.add(new Star(random, Universe.INSTANCE.size));
+			stars.add(new Star(random, universe.size));
 		}
 
-		this.universeSize = Universe.INSTANCE.size;
+		this.universeSize = universe.size;
 		this.size = getSize();
 		this.borderSize = planetSize(size.width, 5.0) / 2;
 	}
@@ -63,7 +64,7 @@ class GamePanel extends JPanel {
 
 		if (!mainThread.gameStarted) {
 			drawTitleScreen(g);
-		} else if (!Universe.INSTANCE.gameOver) {
+		} else if (!universe.gameOver) {
 			drawPlanets(g);
 			drawFleets(g);
 			drawPlayers(g);
@@ -88,7 +89,7 @@ class GamePanel extends JPanel {
 	}
 
 	private void drawGameOverScreen(Graphics g) {
-		String playerName = Universe.INSTANCE.winner.getName();
+		String playerName = universe.winner.getName();
 
 		g.setColor(Color.yellow);
 
@@ -122,7 +123,7 @@ class GamePanel extends JPanel {
 	}
 
 	private void drawPlanets(Graphics g) {
-		for (Planet planet : Universe.INSTANCE.planets) {
+		for (Planet planet : universe.planets) {
 			g.setColor(planet.player.getPlayerBackColor());
 
 			int x = (int) getX(g, planet.x);
@@ -161,7 +162,7 @@ class GamePanel extends JPanel {
 	}
 
 	private void drawFleets(Graphics g) {
-		for (Fleet fleet : Universe.INSTANCE.fleets) {
+		for (Fleet fleet : universe.fleets) {
 			g.setColor(fleet.player.getPlayerBackColor());
 
 			double x = getX(g, fleet.x);
@@ -217,8 +218,8 @@ class GamePanel extends JPanel {
 	}
 
 	private void drawPlayers(Graphics g) {
-		for (int i = 0; i < Universe.INSTANCE.players.size(); i++) {
-			Player player = Universe.INSTANCE.players.get(i);
+		for (int i = 0; i < universe.players.size(); i++) {
+			Player player = universe.players.get(i);
 
 			String s = statistics(player);
 
@@ -243,16 +244,16 @@ class GamePanel extends JPanel {
 		result += player.getName();
 
 		double groundForces = 0;
-		for (Planet planet : Universe.INSTANCE.PlanetsOfPlayer(player))
+		for (Planet planet : universe.PlanetsOfPlayer(player))
 			groundForces += planet.forces;
 
-		result += " P[" + Universe.INSTANCE.PlanetsOfPlayer(player).size() + "/" + ((int) groundForces) + "]";
+		result += " P[" + universe.PlanetsOfPlayer(player).size() + "/" + ((int) groundForces) + "]";
 
 		int spaceForces = 0;
-		for (Fleet fleet : Universe.INSTANCE.FleetsOfPlayer(NonePlayer.NonePlayer, player))
+		for (Fleet fleet : universe.FleetsOfPlayer(NonePlayer.NonePlayer, player))
 			spaceForces += fleet.force;
 
-		result += " F[" + Universe.INSTANCE.FleetsOfPlayer(NonePlayer.NonePlayer, player).size() + "/" + spaceForces + "]";
+		result += " F[" + universe.FleetsOfPlayer(NonePlayer.NonePlayer, player).size() + "/" + spaceForces + "]";
 
 		return result;
 	}
