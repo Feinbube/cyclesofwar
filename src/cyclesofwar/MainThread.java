@@ -2,8 +2,6 @@ package cyclesofwar;
 
 public class MainThread implements Runnable {
 
-	public final int speedUp = 5;
-
 	GamePanel gamePanel;
 
 	boolean gameStarted = false;
@@ -30,7 +28,7 @@ public class MainThread implements Runnable {
 			gamePanel.repaint();
 
 			synchronized (renderingLock) {
-				for (int i = 0; i < speedUp; i++) {
+				for (int i = 0; i < Arena.speedUp; i++) {
 					gamePanel.universe.update(Universe.speedOfLight);
 				}
 			}
