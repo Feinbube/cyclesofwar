@@ -6,6 +6,8 @@ public class Planet {
 	static int nextid;
 	int id;
 
+	Universe universe;
+	
 	double size;
 	double x;
 	double y;
@@ -15,7 +17,7 @@ public class Planet {
 	double newForces;
 
 	double productionRatePerSecond;
-
+	
 	public int getId() {
 		return id;
 	}
@@ -25,7 +27,7 @@ public class Planet {
 	}
 
 	public double getForces() {
-		if (Universe.INSTANCE.currentPlayer.equals(player)) {
+		if (universe.currentPlayer.equals(player)) {
 			return newForces;
 		} else {
 			return forces;
@@ -44,7 +46,9 @@ public class Planet {
 		return y;
 	}
 
-	Planet(Random random, double size, double productionRatePerSecond) {
+	Planet(Universe universe, Random random, double size, double productionRatePerSecond) {
+		this.universe = universe;
+		
 		nextid++;
 		id = nextid;
 		this.size = size;

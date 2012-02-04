@@ -31,7 +31,7 @@ public class MainThread implements Runnable {
 
 			synchronized (renderingLock) {
 				for (int i = 0; i < speedUp; i++) {
-					Universe.INSTANCE.update(Universe.speedOfLight);
+					gamePanel.universe.update(Universe.speedOfLight);
 				}
 			}
 
