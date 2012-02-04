@@ -23,12 +23,19 @@ class Rendering {
 	Universe universe;
 	
 	Random random = new Random();
-
+	
 	void drawUniverse(Graphics g, Universe universe, Dimension size, boolean titleScreen) {
 		this.universe = universe;
 		
-		if (!this.size.equals(size)) {
-			reInitialize(size);
+		if (!this.size.equals(size) || this.universeSize != universe.size) {
+			stars.clear();
+			for (int i = 0; i < StarCount; i++) {
+				stars.add(new Star(random, universe.size));
+			}
+			
+			this.universeSize = universe.size;
+			this.size = size;
+			this.borderSize = planetSize(size.width, 5.0) / 2;
 		}
 
 		g.setColor(Color.black);
@@ -43,19 +50,6 @@ class Rendering {
 		}
 	}
 	
-	private void reInitialize(Dimension size) {
-		universe.reInitialize();
-
-		stars.clear();
-		for (int i = 0; i < StarCount; i++) {
-			stars.add(new Star(random, universe.size));
-		}
-
-		this.universeSize = universe.size;
-		this.size = size;
-		this.borderSize = planetSize(size.width, 5.0) / 2;
-	}
-	
 	void drawUniverse(Graphics g) {
 		if (!universe.gameOver) {
 			drawPlanets(g);
@@ -63,7 +57,20 @@ class Rendering {
 			drawPlayers(g);
 		} else {
 			drawGameOverScreen(g);
+			
 		}
+		
+		drawControlInfo(g);
+	}
+
+	private void drawControlInfo(Graphics g) {
+		g.setColor(Color.yellow);
+		g.setFont(new Font("Arial", Font.PLAIN, 12));
+
+		String s = "Press F5 to create new universe!";
+		int w = g.getFontMetrics().stringWidth(s);
+
+		g.drawString(s, size.width - w -5, size.height-5);
 	}
 
 	private void drawTitleScreen(Graphics g) {

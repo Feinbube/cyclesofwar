@@ -31,19 +31,14 @@ public class Universe {
 	SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<Double, Fleet>();
 	List<Fleet> newFleets = new ArrayList<Fleet>();
 
-	Universe() {
-		reInitialize();
-	}
-
-	void reInitialize() {
+	Universe(long seed) {
 		now = 0;
 		gameOver = true;
 
 		List<Player> combatants = Arena.Combatants();
 
 		this.size = Math.sqrt(combatants.size());
-
-		long seed = new Random().nextLong();
+		
 		random.setSeed(seed);
 
 		planets.clear();

@@ -14,6 +14,7 @@ public class MainWindow {
          });
          Container panel = new GamePanel();
          f.getContentPane().add(panel, BorderLayout.CENTER);
+         f.addKeyListener((KeyListener)panel);
          
          f.setSize(800, 480); //f.pack();
          f.setVisible(true);
