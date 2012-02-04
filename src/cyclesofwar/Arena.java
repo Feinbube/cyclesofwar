@@ -13,11 +13,14 @@ public class Arena {
 		
 		//result.add(new IdlePlayer());
 		//result.add(new RandomPlayer());
-		result.add(new Defender());
+		//result.add(new Defender());
 		//result.add(new Petra());
-		result.add(new HanTzu());
+		//result.add(new HanTzu());
 		//result.add(new FastExpand());
-//		result.add(new AttackLargestPlayer());
+		result.add(new AttackLargestPlayer());
+		result.add(new Bean());
+		
+		// result.add(new Borg());
 		
 		return result;
 	}

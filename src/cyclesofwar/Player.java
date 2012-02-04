@@ -7,8 +7,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public abstract class Player {
-
-	static Player NonePlayer = new NonePlayer();
+	
+	protected static Player NonePlayer = new NonePlayer();
 
 	protected abstract void think();
 
@@ -128,10 +128,13 @@ public abstract class Player {
 		Universe.INSTANCE.SendFleet(this, planet, force, target);
 	}
 
-	protected void sendFleetUpTo(Planet planet, int force, Planet target) {
+	protected int sendFleetUpTo(Planet planet, int force, Planet target) {
 		int forcesToSend = (int) Math.min(force, planet.getForces());
 		if (forcesToSend > 0) {
 			Universe.INSTANCE.SendFleet(this, planet, forcesToSend, target);
+			return forcesToSend;
+		} else {
+			return 0;
 		}
 	}
 

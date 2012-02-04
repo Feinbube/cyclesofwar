@@ -25,7 +25,7 @@ public class AttackLargestPlayer extends Player {
 			if (getOtherPlanetsNotUnderAttack().size() == 1) {
 				myPlanets = this.getPlanets();
 				sortByForceCount(myPlanets);
-				sendFleet(myPlanets.get(0), (int)myPlanets.get(0).getForces() / 2, getOtherPlanetsNotUnderAttack().get(0));
+				sendFleetUpTo(myPlanets.get(0), (int)myPlanets.get(0).getForces() / 2, getOtherPlanetsNotUnderAttack().get(0));
 			}
 		}
 	}

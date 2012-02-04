@@ -95,7 +95,7 @@ public class Fleet {
 	}
 	
 	public double timeToTarget() {
-		return distanceToTarget() * Universe.speedOfLight;
+		return distanceToTarget() / Universe.speedOfLight;
 	}
 	
 	public double getFlightSpeed() {
