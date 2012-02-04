@@ -9,6 +9,7 @@ import cyclesofwar.players.training.*;
 import de.loewis.*;
 
 public class Arena {
+	public static final int speedUp = 5;
 	public static final int PlanetCountPerPlayer = 10;
 	
 	public static List<Player> Combatants(){
