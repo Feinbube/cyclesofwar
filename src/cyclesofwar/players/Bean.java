@@ -15,7 +15,7 @@ public class Bean extends Player {
 
 	List<Fleet> fleetsHandled = new ArrayList<Fleet>();
 
-	int nothingHappend = 0;
+	int nothingHappened = 0;
 
 	@Override
 	public void think() {
@@ -24,10 +24,10 @@ public class Bean extends Player {
 
 		List<Fleet> enemyFleets = unhandledFleets(this.getAllEnemyFleets());
 		if (this.getAllEnemyFleets().size() == 0) {
-			nothingHappend++;
-			if (nothingHappend > 10) {
+			nothingHappened++;
+			if (nothingHappened > 10) {
 				fireOverproduction(10);
-				nothingHappend = 0;
+				nothingHappened = 0;
 			}
 		} else {
 			sortByValue(enemyFleets);
