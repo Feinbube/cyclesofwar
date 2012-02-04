@@ -3,7 +3,9 @@ package cyclesofwar;
 import java.util.ArrayList;
 import java.util.List;
 
-import cyclesofwar.players.*;
+import cyclesofwar.players.robert.*;
+import cyclesofwar.players.frank.*;
+import cyclesofwar.players.training.*;
 import de.loewis.*;
 
 public class Arena {
@@ -12,17 +14,25 @@ public class Arena {
 	public static List<Player> Combatants(){
 		ArrayList<Player> result = new ArrayList<Player>();
 		
-		//result.add(new IdlePlayer());
-		//result.add(new RandomPlayer());
-		//result.add(new Defender());
+		// Basic
+		result.add(new IdlePlayer());
+		result.add(new RandomPlayer());
+		result.add(new SharpShooter());
+		
+		// Martin
+		result.add(new Cratters());
+		
+		// Robert
+		result.add(new Defender());		
+		result.add(new FastExpand());
+		result.add(new AttackLargestPlayer());
+		// result.add(new Borg());
+		
+		// Frank
 		//result.add(new Petra());
 		//result.add(new HanTzu());
-		result.add(new Cratters());
-		//result.add(new FastExpand());
-		result.add(new AttackLargestPlayer());
+		//result.add(new Alai());
 		result.add(new Bean());
-		
-		// result.add(new Borg());
 		
 		return result;
 	}

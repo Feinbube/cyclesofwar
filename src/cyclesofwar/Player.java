@@ -39,7 +39,7 @@ public abstract class Player {
 	}
 
 	protected double getStepInterval() {
-		return Universe.INSTANCE.speedOfLight;
+		return Universe.speedOfLight;
 	}
 
 	// Players
@@ -77,8 +77,18 @@ public abstract class Player {
 
 		return result;
 	}
+	
+	protected List<Planet> getAllPlanetsButThis(Planet planet) {
+		List<Planet> result = getAllPlanets();
+		result.remove(planet);
+		return result;
+	}
+	
+	protected Planet getRandomPlanet(Planet start) {
+		return getAllPlanetsButThis(start).get(getRandomInt(getAllPlanetsButThis(start).size()));
+	}
 
-	public static void sortByForceCount(List<Planet> planets) {
+	protected static void sortByForceCount(List<Planet> planets) {
 		Collections.sort(planets, new Comparator<Planet>() {
 
 			@Override
@@ -88,7 +98,7 @@ public abstract class Player {
 		});
 	}
 
-	public static void sortByDistanceTo(List<Planet> planets, final Planet planet) {
+	protected static void sortByDistanceTo(List<Planet> planets, final Planet planet) {
 		Collections.sort(planets, new Comparator<Planet>() {
 			@Override
 			public int compare(Planet planet1, Planet planet2) {
@@ -97,7 +107,7 @@ public abstract class Player {
 		});
 	}
 
-	public static void sortByProductivity(List<Planet> planets) {
+	protected static void sortByProductivity(List<Planet> planets) {
 		Collections.sort(planets, new Comparator<Planet>() {
 			@Override
 			public int compare(Planet planet1, Planet planet2) {
@@ -107,7 +117,7 @@ public abstract class Player {
 	}
 
 	// Fleets
-	public List<Fleet> getFleets() {
+	protected List<Fleet> getFleets() {
 		return Universe.INSTANCE.FleetsOfPlayer(this, this);
 	}
 
@@ -133,17 +143,42 @@ public abstract class Player {
 		return result;
 	}
 
+	protected List<Fleet> getFleetsWithTarget(Planet target) {
+		List<Fleet> result = new ArrayList<Fleet>();
+		
+		for(Fleet fleet : this.getAllFleets()) {
+			if(fleet.getTarget().equals(target)) {
+				result.add(fleet);
+			}
+		}
+		
+		return result;
+	}
+	
+	protected static void sortByArrivalTime(List<Fleet> fleets) {
+		Collections.sort(fleets, new Comparator<Fleet>() {
+
+			@Override
+			public int compare(Fleet one, Fleet other) {
+				return Double.compare(one.timeToTarget(), other.timeToTarget());
+			}
+		});
+	}	
+	
 	protected void sendFleet(Planet planet, int force, Planet target) {
 		Universe.INSTANCE.SendFleet(this, planet, force, target);
 	}
+	
+	protected Fleet sendNewFleet(Planet planet, int force, Planet target) {
+		return Universe.INSTANCE.SendFleet(this, planet, force, target);
+	}
 
-	protected int sendFleetUpTo(Planet planet, int force, Planet target) {
+	protected Fleet sendFleetUpTo(Planet planet, int force, Planet target) {
 		int forcesToSend = (int) Math.min(force, planet.getForces());
 		if (forcesToSend > 0) {
-			Universe.INSTANCE.SendFleet(this, planet, forcesToSend, target);
-			return forcesToSend;
+			return Universe.INSTANCE.SendFleet(this, planet, forcesToSend, target);
 		} else {
-			return 0;
+			return null;
 		}
 	}
 

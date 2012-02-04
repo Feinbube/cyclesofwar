@@ -1,4 +1,4 @@
-package cyclesofwar.players;
+package cyclesofwar.players.frank;
 
 import java.awt.Color;
 import java.util.ArrayList;
