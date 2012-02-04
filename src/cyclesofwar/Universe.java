@@ -21,6 +21,7 @@ public class Universe {
 
 	Random random = new Random();
 
+	double now;
 	double size;
 
 	double nothingHappendCounter = 0;
@@ -37,6 +38,7 @@ public class Universe {
 	}
 
 	void reInitialize() {
+		now = 0;
 		gameOver = true;
 
 		List<Player> combatants = Arena.Combatants();
@@ -96,6 +98,7 @@ public class Universe {
 			return;
 		}
 
+		now += elapsedSeconds;
 		nothingHappendCounter += elapsedSeconds;
 
 		for (Planet planet : planets) {
