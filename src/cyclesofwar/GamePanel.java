@@ -19,6 +19,7 @@ class GamePanel extends JPanel {
 	double universeSize = 0.0;
 
 	final int StarCount = 1000;
+	final int MaxRenderedFleet = 20;
 	List<Star> stars = new ArrayList<Star>();
 
 	int borderSize = 20;
@@ -167,25 +168,29 @@ class GamePanel extends JPanel {
 			double y = getY(g, fleet.y);
 			int d = fleet.force;
 
+			if (d > MaxRenderedFleet) {
+				d = MaxRenderedFleet;
+			}
+
 			if (fleet.getFormation().equals(Formation.ARROW)) {
 				double xDiff = fleet.target.x - fleet.x;
 				double yDiff = fleet.target.y - fleet.y;
 
 				xDiff *= 2.0;
-				
+
 				double dist = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
 				double sinAngle = yDiff / dist;
 				double cosAngle = xDiff / dist;
 
-				double length = Math.sqrt(d)*5;
+				double length = Math.sqrt(d) * 5;
 				for (int i = 0; i < d; i++) {
 					double localx = random.nextDouble() * length;
 					double localy = random.nextDouble() * localx - localx / 2.0;
 					localx -= length / 2;
 
 					double renderx = localx * cosAngle + localy * sinAngle;
-					double rendery = - localx * sinAngle + localy * cosAngle;
+					double rendery = -localx * sinAngle + localy * cosAngle;
 
 					renderx = x - renderx;
 					rendery = y + rendery;
@@ -194,7 +199,7 @@ class GamePanel extends JPanel {
 				}
 			} else {
 				for (int i = 0; i < fleet.force; i++) {
-					double r = random.nextDouble() *  Math.sqrt(d)*5;
+					double r = random.nextDouble() * Math.sqrt(d) * 5;
 					double v = random.nextDouble() * r;
 					double localX = r * Math.cos(v);
 					double localY = r * Math.sin(v);
@@ -204,8 +209,10 @@ class GamePanel extends JPanel {
 			}
 
 			// g.fillRect(x - d / 2, y - d / 2, d, d);
-			// drawStringCentered(g, fleet.force + "", x, y,
-			// fleet.player.getPlayerForeColor());
+
+			if (d == MaxRenderedFleet) {
+				drawStringCentered(g, fleet.getForce() + "", (int) x, (int) y, fleet.player.getPlayerForeColor());
+			}
 		}
 	}
 
