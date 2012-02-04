@@ -33,6 +33,15 @@ public abstract class Player {
 		return getCreatorsName() + "'s " + this.getClass().getSimpleName();
 	}
 
+	// Universe
+	protected double now() {
+		return Universe.INSTANCE.now;
+	}
+
+	protected double getStepInterval() {
+		return Universe.INSTANCE.speedOfLight;
+	}
+
 	// Players
 	protected List<Player> getOtherPlayers() {
 		return Universe.INSTANCE.OtherPlayers(this);
