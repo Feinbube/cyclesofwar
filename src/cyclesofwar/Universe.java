@@ -233,7 +233,7 @@ public class Universe {
 		return result;
 	}
 
-	void SendFleet(Player player, Planet origin, int force, Planet target) {
+	Fleet SendFleet(Player player, Planet origin, int force, Planet target) {
 		if (force > origin.getForces()) {
 			throw new IllegalArgumentException("fleet size exceeds planetary forces");
 		}
@@ -246,6 +246,8 @@ public class Universe {
 		newFleets.add(newFleet);
 		origin.newForces -= newFleet.getForce();
 		nothingHappenedCounter = 0.0;
+		
+		return newFleet;
 	}
 
 	void fleetArrived(Fleet fleet, double distance) {

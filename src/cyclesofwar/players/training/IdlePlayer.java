@@ -1,4 +1,4 @@
-package cyclesofwar.players;
+package cyclesofwar.players.training;
 import java.awt.Color;
 
 import cyclesofwar.Player;

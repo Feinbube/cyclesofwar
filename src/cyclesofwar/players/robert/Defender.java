@@ -1,4 +1,4 @@
-package cyclesofwar.players;
+package cyclesofwar.players.robert;
 
 import java.awt.Color;
 import java.util.List;

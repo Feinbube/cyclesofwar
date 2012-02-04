@@ -18,11 +18,15 @@ public class Fleet {
 	
 	public Fleet(Player player, int force, Planet start, Planet target){
 		if (force < 1) {
-			throw new IllegalArgumentException("force must be greate 0 but was " + force);
+			throw new IllegalArgumentException("force must be greater than 0 but was " + force);
 		}
 		
 		if (target == null) {
 			throw new IllegalArgumentException("fleet must have a target");
+		}
+		
+		if (target.equals(start)) {
+			throw new IllegalArgumentException("start and target are not allowed to be identical");
 		}
 		
 		this.player = player;

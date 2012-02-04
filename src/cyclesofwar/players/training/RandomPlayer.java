@@ -1,27 +1,20 @@
-package cyclesofwar.players;
+package cyclesofwar.players.training;
 
 import java.awt.Color;
-import java.util.Random;
 
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
 public class RandomPlayer extends Player {
 
-	Random random = new Random();
-
 	@Override
 	public void think() {
 		for (Planet planet : this.getPlanets()) {
 			if (planet.getForces() > 20)
-				sendFleet(planet, (int) (planet.getForces() / 2), getRandomTarget());
+				sendFleet(planet, (int) (planet.getForces() / 2), getRandomPlanet(planet));
 		}
 	}
-
-	Planet getRandomTarget() {
-		return getAllPlanets().get(random.nextInt(getAllPlanets().size()));
-	}
-
+	
 	@Override
 	public Color getPlayerBackColor() {
 		return Color.cyan.darker().darker();
