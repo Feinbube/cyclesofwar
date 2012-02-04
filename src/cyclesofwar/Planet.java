@@ -3,6 +3,8 @@ package cyclesofwar;
 import java.util.Random;
 
 public class Planet {
+	static int nextid;
+	int id;
 
 	double size;
 	double x;
@@ -13,6 +15,10 @@ public class Planet {
 	double newForces;
 
 	double productionRatePerSecond;
+
+	public int getId() {
+		return id;
+	}
 
 	public Player getPlayer() {
 		return player;
@@ -39,6 +45,8 @@ public class Planet {
 	}
 
 	Planet(Random random, double size, double productionRatePerSecond) {
+		nextid++;
+		id = nextid;
 		this.size = size;
 		this.player = Player.NonePlayer;
 
