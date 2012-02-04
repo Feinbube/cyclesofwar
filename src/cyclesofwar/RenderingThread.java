@@ -1,6 +1,6 @@
 package cyclesofwar;
 
-public class MainThread implements Runnable {
+public class RenderingThread implements Runnable {
 
 	GamePanel gamePanel;
 
@@ -8,7 +8,7 @@ public class MainThread implements Runnable {
 
 	Object renderingLock = new Object();
 
-	public MainThread(GamePanel gamePanel) {
+	public RenderingThread(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
 	}
 
@@ -25,7 +25,9 @@ public class MainThread implements Runnable {
 		gameStarted = true;
 
 		while (true) {
-			gamePanel.repaint();
+			if (gamePanel != null) {
+				gamePanel.repaint();
+			}
 
 			synchronized (renderingLock) {
 				for (int i = 0; i < Arena.speedUp; i++) {
