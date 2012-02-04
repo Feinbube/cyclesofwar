@@ -24,7 +24,7 @@ public class Universe {
 	double now;
 	double size;
 
-	double nothingHappendCounter = 0;
+	double nothingHappenedCounter = 0;
 	boolean gameOver = true;
 	Player winner = null;
 
@@ -82,14 +82,14 @@ public class Universe {
 
 	private boolean planetFits(Planet planet) {
 		for (Planet other : planets) {
-			if (toClose(planet, other))
+			if (tooClose(planet, other))
 				return false;
 		}
 
 		return true;
 	}
 
-	private boolean toClose(Planet planet, Planet other) {
+	private boolean tooClose(Planet planet, Planet other) {
 		return planet.distanceTo(other) < (planet.productionRatePerSecond + other.productionRatePerSecond) / 2 * speedOfLight;
 	}
 
@@ -99,7 +99,7 @@ public class Universe {
 		}
 
 		now += elapsedSeconds;
-		nothingHappendCounter += elapsedSeconds;
+		nothingHappenedCounter += elapsedSeconds;
 
 		for (Planet planet : planets) {
 			planet.update(elapsedSeconds);
@@ -130,7 +130,7 @@ public class Universe {
 			currentPlayer.think();
 		}
 
-		if (nothingHappendCounter > 60) {
+		if (nothingHappenedCounter > 60) {
 			gameOver = true;
 			winner = NonePlayer.NonePlayer;
 			return;
@@ -245,7 +245,7 @@ public class Universe {
 		Fleet newFleet = new Fleet(player, force, origin, target);
 		newFleets.add(newFleet);
 		origin.newForces -= newFleet.getForce();
-		nothingHappendCounter = 0.0;
+		nothingHappenedCounter = 0.0;
 	}
 
 	void fleetArrived(Fleet fleet, double distance) {
