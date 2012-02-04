@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cyclesofwar.players.*;
+import de.loewis.*;
 
 public class Arena {
 	public static final int PlanetCountPerPlayer = 10;
@@ -16,6 +17,7 @@ public class Arena {
 		//result.add(new Defender());
 		//result.add(new Petra());
 		//result.add(new HanTzu());
+		result.add(new Cratters());
 		//result.add(new FastExpand());
 		result.add(new AttackLargestPlayer());
 		result.add(new Bean());
