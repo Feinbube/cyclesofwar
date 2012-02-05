@@ -98,8 +98,11 @@ class Rendering {
 			drawPlayers(g);
 		} else {
 			drawGameOverScreen(g);
+		}		
+	}
 
-		}
+	void drawSeed(Graphics g) {
+		drawText(g, g.getClipBounds().width-5, 5, "seed: " + universe.seed, Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
 	}
 
 	void drawControlInfo(Graphics g, String s) {

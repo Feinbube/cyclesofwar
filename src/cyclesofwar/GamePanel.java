@@ -80,6 +80,7 @@ class GamePanel extends JPanel implements KeyListener, MouseInputListener {
 				String pauseString = pause ? "continue" : "pause";
 				rendering.drawControlInfo(g, "+/- to change game speed (" + ((int) (Arena.speedUp * 10)) / 10.0 + ") ... SPACE to "
 						+ pauseString + " ... F5 to start a new combat ... F6 to replay ... TAB to switch mode");
+				rendering.drawSeed(g);
 			} else if (mode == Mode.ARENA) {
 				String pauseString = fightChronics.pause ? "continue" : "pause";
 				rendering.drawControlInfo(g, "CLICK to see battle ... SPACE to " + pauseString + " ... F5 to start a new combat ... TAB to switch mode");
