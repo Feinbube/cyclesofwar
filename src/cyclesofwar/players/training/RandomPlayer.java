@@ -27,6 +27,6 @@ public class RandomPlayer extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "Frank";
+		return "Training";
 	}
 }

@@ -20,19 +20,42 @@ public abstract class Player {
 
 	protected abstract String getCreatorsName();
 
-	double getFullForce() {
+	double getGroundForce() {
 		double result = 0.0;
 		for (Planet planet : getPlanets()) {
 			result += planet.forces;
 		}
+		return result;
+	}
+	
+	int getSpaceForce() {
+		int result = 0;
 		for (Fleet fleet : getFleets()) {
 			result += fleet.force;
 		}
 		return result;
 	}
+	
+	double getFullForce() {
+		return getGroundForce() + getSpaceForce();
+	}
 
 	String getName() {
 		return getCreatorsName() + "'s " + this.getClass().getSimpleName();
+	}
+	
+	boolean isEqualTo(Player other) {
+		return this.getName().equals(other.getName());
+	}
+	
+	boolean isInList(List<Player> players) {
+		for(Player candidate : players) {
+			if(candidate.isEqualTo(this)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	// Universe
@@ -168,10 +191,6 @@ public abstract class Player {
 	}	
 	
 	protected Fleet sendFleet(Planet planet, int force, Planet target) {
-		return universe.SendFleet(this, planet, force, target);
-	}
-	
-	protected Fleet sendNewFleet(Planet planet, int force, Planet target) {
 		return universe.SendFleet(this, planet, force, target);
 	}
 
