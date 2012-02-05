@@ -167,8 +167,8 @@ public abstract class Player {
 		});
 	}	
 	
-	protected void sendFleet(Planet planet, int force, Planet target) {
-		universe.SendFleet(this, planet, force, target);
+	protected Fleet sendFleet(Planet planet, int force, Planet target) {
+		return universe.SendFleet(this, planet, force, target);
 	}
 	
 	protected Fleet sendNewFleet(Planet planet, int force, Planet target) {
