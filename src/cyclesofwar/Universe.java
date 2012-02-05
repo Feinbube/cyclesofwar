@@ -21,9 +21,12 @@ public class Universe {
 
 	double now;
 	double size;
+	
+	long seed;
 
 	long currentRound = 0;
 	double nothingHappenedCounter = 0;
+	
 	boolean gameOver = true;
 	Player winner = null;
 
@@ -41,6 +44,7 @@ public class Universe {
 		
 		this.size = Math.sqrt(combatants.size());
 		
+		this.seed = seed;
 		random.setSeed(seed);
 
 		planets.clear();
