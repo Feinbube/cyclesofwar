@@ -12,10 +12,13 @@ public class Arena {
 	static int speedUp = 2;
 	static final int PlanetCountPerPlayer = 10;
 	
-	static final int matchesPerPairing = 20;
+	static final int matchesPerPairing = 25;
 	
 	public static List<Player> combatants(){
 		ArrayList<Player> result = new ArrayList<Player>();
+		
+		// Training
+		result.add(new IdlePlayer());
 		
 		// Martin
 		result.add(new Cratters());
@@ -24,7 +27,7 @@ public class Arena {
 		//result.add(new AttackLargestPlayer());
 		
 		// Frank
-		result.add(new Bean());
+		//result.add(new Bean());
 		
 		return result;
 	}
@@ -32,17 +35,17 @@ public class Arena {
 	public static List<Player> allPlayers(){
 		ArrayList<Player> result = new ArrayList<Player>();
 		
-		// Basic
-		//result.add(new IdlePlayer());
-		//result.add(new RandomPlayer());
-		//result.add(new SharpShooter());
+		// Training
+		result.add(new IdlePlayer());
+		result.add(new RandomPlayer());
+		result.add(new SharpShooter());
 		
 		// Martin
 		result.add(new Cratters());
 		
 		// Robert
-		//result.add(new Defender());		
-		//result.add(new FastExpand());
+		result.add(new Defender());		
+		result.add(new FastExpand());
 		result.add(new AttackLargestPlayer());
 		// result.add(new Borg());
 		

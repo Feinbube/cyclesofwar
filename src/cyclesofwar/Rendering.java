@@ -14,6 +14,14 @@ class Rendering {
 	final int StarCount = 1000;
 	final int MaxRenderedFleet = 20;
 
+	enum HAlign {
+		LEFT, CENTER, RIGHT
+	}
+
+	enum VAlign {
+		TOP, CENTER, BOTTOM
+	}
+
 	Dimension size = new Dimension(0, 0);
 	double universeSize = 0.0;
 	int borderSize = 20;
@@ -68,51 +76,23 @@ class Rendering {
 	}
 
 	void drawControlInfo(Graphics g, String s) {
-		g.setColor(Color.yellow);
-		g.setFont(new Font("Arial", Font.PLAIN, 12));
-
-		int w = g.getFontMetrics().stringWidth(s);
-
-		g.drawString(s, size.width - w - 5, size.height - 5);
+		drawText(g, size.width - 5, size.height - 5, s, Color.yellow, null, HAlign.RIGHT, VAlign.TOP, 12);
 	}
 
 	void drawTitleScreen(Graphics g) {
 		drawBackground(g);
-
-		g.setColor(Color.yellow);
-
-		g.setFont(new Font("Courier New", Font.BOLD, 48));
-
-		String s = "Cycles of War";
-		int w = g.getFontMetrics().stringWidth(s);
-		int h = g.getFontMetrics().getHeight();
-
-		int hStart = g.getClipBounds().height / 2 + h / 2;
-		g.drawString(s, g.getClipBounds().width / 2 - w / 2, hStart);
-
+		drawText(g, g.getClipBounds().width / 2, g.getClipBounds().height / 2, "Cycles of War", Color.yellow, null, HAlign.CENTER,
+				VAlign.CENTER, new Font("Courier New", Font.BOLD, 48));
 	}
 
 	private void drawGameOverScreen(Graphics g) {
 		String playerName = universe.winner.getName();
 
-		g.setColor(Color.yellow);
+		drawText(g, g.getClipBounds().width / 2, g.getClipBounds().height / 3 + 20, "GAME OVER", Color.yellow, null, HAlign.CENTER,
+				VAlign.CENTER, new Font("Courier New", Font.BOLD, 48));
 
-		g.setFont(new Font("Courier New", Font.BOLD, 48));
-
-		String s = "GAME OVER";
-		int w = g.getFontMetrics().stringWidth(s);
-		int h = g.getFontMetrics().getHeight();
-
-		int hStart = g.getClipBounds().height / 3 + h / 2;
-		g.drawString(s, g.getClipBounds().width / 2 - w / 2, hStart);
-
-		g.setFont(new Font("Courier New", Font.PLAIN, 32));
-
-		s = playerName + " has won!";
-		w = g.getFontMetrics().stringWidth(s);
-		h = g.getFontMetrics().getHeight();
-
-		g.drawString(s, g.getClipBounds().width / 2 - w / 2, hStart + h * 2);
+		drawText(g, g.getClipBounds().width / 2, g.getClipBounds().height / 3 + 100, playerName + " has won!", Color.yellow, null,
+				HAlign.CENTER, VAlign.CENTER, new Font("Courier New", Font.PLAIN, 32));
 	}
 
 	private void drawStars(Graphics g) {
@@ -135,7 +115,7 @@ class Rendering {
 			int planetSize = planetSize(g, planet.productionRatePerSecond);
 			g.fillOval(x - planetSize / 2, y - planetSize / 2, planetSize, planetSize);
 
-			drawStringCentered(g, ((int) planet.forces) + "", x, y, planet.player.getPlayerForeColor());
+			drawText(g, x, y, ((int) planet.forces) + "", planet.player.getPlayerForeColor(), null, HAlign.CENTER, VAlign.CENTER, 10);
 		}
 	}
 
@@ -153,16 +133,6 @@ class Rendering {
 
 	private double getY(Graphics g, double y) {
 		return ((g.getClipBounds().height - borderSize * 2) * y / universeSize) + borderSize;
-	}
-
-	private void drawStringCentered(Graphics g, String s, int x, int y, Color c) {
-		g.setColor(c);
-		g.setFont(new Font("Arial", Font.PLAIN, 10));
-
-		int w = g.getFontMetrics().stringWidth(s);
-		int h = g.getFontMetrics().getHeight();
-
-		g.drawString(s, x - w / 2, y + h / 2);
 	}
 
 	private void drawFleets(Graphics g) {
@@ -216,7 +186,8 @@ class Rendering {
 			// g.fillRect(x - d / 2, y - d / 2, d, d);
 
 			if (d == MaxRenderedFleet) {
-				drawStringCentered(g, fleet.getForce() + "", (int) x, (int) y, fleet.player.getPlayerForeColor());
+				drawText(g, (int) x, (int) y, fleet.getForce() + "", fleet.player.getPlayerForeColor(), null, HAlign.CENTER, VAlign.CENTER,
+						10);
 			}
 		}
 	}
@@ -225,20 +196,8 @@ class Rendering {
 		for (int i = 0; i < universe.players.size(); i++) {
 			Player player = universe.players.get(i);
 
-			String s = shortInfo(player);
-
-			int x = 5;
-			int y = i * 20;
-			g.setFont(new Font("Arial", Font.PLAIN, 12));
-
-			int w = g.getFontMetrics().stringWidth(s);
-			int h = g.getFontMetrics().getHeight();
-
-			g.setColor(player.getPlayerBackColor());
-			g.fillRect(x - 2, y + 3, w + 3, h);
-
-			g.setColor(player.getPlayerForeColor());
-			g.drawString(s, x, y + h);
+			drawText(g, 5, i * 20 + 5, shortInfo(player), player.getPlayerForeColor(), player.getPlayerBackColor(), HAlign.LEFT,
+					VAlign.CENTER, 12);
 		}
 	}
 
@@ -246,50 +205,160 @@ class Rendering {
 		String result = "";
 
 		result += player.getName();
-
-		double groundForces = 0;
-		for (Planet planet : universe.PlanetsOfPlayer(player))
-			groundForces += planet.forces;
-
-		result += " P[" + universe.PlanetsOfPlayer(player).size() + "/" + ((int) groundForces) + "]";
-
-		int spaceForces = 0;
-		for (Fleet fleet : universe.FleetsOfPlayer(NonePlayer.NonePlayer, player))
-			spaceForces += fleet.force;
-
-		result += " F[" + universe.FleetsOfPlayer(NonePlayer.NonePlayer, player).size() + "/" + spaceForces + "]";
+		result += " P[" + universe.PlanetsOfPlayer(player).size() + "/" + ((int) player.getGroundForce()) + "]";
+		result += " F[" + universe.FleetsOfPlayer(NonePlayer.NonePlayer, player).size() + "/" + player.getSpaceForce() + "]";
 
 		return result;
 	}
 
-	void drawStatistics(Graphics g, Statistics statistics, Dimension size) {
+	void drawStatistics(Graphics g, FightChronics fightChronics, Dimension size) {
 		this.size = size;
-		
+
 		drawBackground(g);
-		
-		drawString(g, 50, 30, "Games: " + statistics.gamesPlayedCount + "/" + statistics.gamesToPlayCount, Color.black, Color.white);
-		
-		List<Statistic> statisticInfos = statistics.getStatisticsSorted();
-		for(int i=0; i<statisticInfos.size(); i++) {
-			drawStatistic(g, 50, 50 + i * 20, statisticInfos.get(i));
+
+		Font f = new Font("Courier New", Font.PLAIN, 14);
+
+		int marginLeft = 50;
+		int padding = 10;
+		int marginTop = 100;
+
+		drawText(g, marginLeft, 30, fightChronics.gamesToPlayCount + " games left, " + fightChronics.gamesPlayedCount + " games played ("
+				+ Arena.matchesPerPairing + " matches per pairing)", Color.white, Color.black, HAlign.LEFT, VAlign.BOTTOM, f);
+
+		fightChronics = fightChronics.lightWeightClone();
+
+		drawLines(g, fightChronics, f, marginLeft, marginTop);
+
+		int pos = drawRank(g, fightChronics, f, marginLeft, marginTop);
+		pos = drawWins(g, fightChronics, f, pos + padding, marginTop);
+		pos = drawPerformance(g, fightChronics, f, pos + padding, marginTop);
+		pos = drawNames(g, fightChronics, f, pos + padding, marginTop);
+
+		for (int i = 0; i < fightChronics.combatants.size(); i++) {
+			pos = drawPerformanceAgainst(g, fightChronics, i, f, pos + padding, marginTop);
 		}
 	}
 
-	private void drawStatistic(Graphics g, int x, int y, Statistic statistic) {
-		String s = statistic.wins + "/" + statistic.gamesPlayed + " " + statistic.player.getName();
-		drawString(g, x, y, s, statistic.player.getPlayerBackColor(), statistic.player.getPlayerForeColor());
+	private int drawPerformanceAgainst(Graphics g, FightChronics fightChronics, int rank, Font f, int marginLeft, int marginTop) {
+		Player competitor = fightChronics.rankings.get(rank).player;
+		int maxPos = drawText(g, marginLeft, marginTop, (rank + 1) + ".", competitor.getPlayerForeColor(), competitor.getPlayerBackColor(),
+				f);
+
+		for (int i = 0; i < fightChronics.rankings.size(); i++) {
+			Player player = fightChronics.rankings.get(i).player;
+
+			String s;
+			if (!player.isEqualTo(competitor)) {
+				s = percentage(fightChronics.winsOver(player, competitor) / (double) fightChronics.fightsAgainst(player, competitor));
+			} else {
+				s = "--";
+			}
+
+			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), s, player.getPlayerForeColor(), null, f);
+
+			if (pos > maxPos) {
+				maxPos = pos;
+			}
+		}
+		return maxPos;
 	}
 
-	private void drawString(Graphics g, int x, int y, String s, Color bc, Color fc) {
-		g.setFont(new Font("Arial", Font.PLAIN, 12));
+	private String percentage(double value) {
+		return (int) (value * 100) + "%";
+	}
+
+	private void drawLines(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
+		for (int i = 0; i < fightChronics.rankings.size(); i++) {
+			Player player = fightChronics.rankings.get(i).player;
+			g.setColor(player.getPlayerBackColor());
+			g.fillRect(marginLeft - 2, marginTop + 20 * (i + 1) + 4, size.width - marginLeft * 2 + 3, g.getFontMetrics(f).getHeight());
+		}
+	}
+
+	private int drawRank(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
+		int maxPos = 0;
+		for (int i = 0; i < fightChronics.rankings.size(); i++) {
+			Player player = fightChronics.rankings.get(i).player;
+			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), (i + 1) + ".", player.getPlayerForeColor(), null, f);
+			if (pos > maxPos) {
+				maxPos = pos;
+			}
+		}
+		return maxPos;
+	}
+
+	private int drawWins(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
+		int maxPos = 0;
+		for (int i = 0; i < fightChronics.rankings.size(); i++) {
+			Player player = fightChronics.rankings.get(i).player;
+			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1),
+					fightChronics.rankings.get(i).wins + "/" + fightChronics.rankings.get(i).games, player.getPlayerForeColor(), null, f);
+			if (pos > maxPos) {
+				maxPos = pos;
+			}
+		}
+		return maxPos;
+	}
+
+	private int drawPerformance(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
+		int maxPos = 0;
+		for (int i = 0; i < fightChronics.rankings.size(); i++) {
+			Player player = fightChronics.rankings.get(i).player;
+			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), percentage(fightChronics.rankings.get(i).getRatio()),
+					player.getPlayerForeColor(), null, f);
+			if (pos > maxPos) {
+				maxPos = pos;
+			}
+		}
+		return maxPos;
+	}
+
+	private int drawNames(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
+		int maxPos = 0;
+		for (int i = 0; i < fightChronics.rankings.size(); i++) {
+			Player player = fightChronics.rankings.get(i).player;
+			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), player.getName(), player.getPlayerForeColor(), null, f);
+			if (pos > maxPos) {
+				maxPos = pos;
+			}
+		}
+		return maxPos;
+	}
+
+	private int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, Font font) {
+		return drawText(g, x, y, s, fc, bc, HAlign.LEFT, VAlign.BOTTOM, font);
+	}
+
+	private int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, int fontSize) {
+		return drawText(g, x, y, s, fc, bc, hAlgin, vAlign, new Font("Arial", Font.PLAIN, fontSize));
+	}
+
+	private int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, Font font) {
+		g.setFont(font);
 
 		int w = g.getFontMetrics().stringWidth(s);
 		int h = g.getFontMetrics().getHeight();
 
-		g.setColor(bc);
-		g.fillRect(x - 2, y + 3, w + 3, h);
+		if (hAlgin == HAlign.CENTER) {
+			x -= w / 2;
+		} else if (hAlgin == HAlign.RIGHT) {
+			x -= w;
+		}
+
+		if (vAlign == VAlign.CENTER) {
+			y -= h / 2;
+		} else if (vAlign == VAlign.TOP) {
+			y -= h;
+		}
+
+		if (bc != null) {
+			g.setColor(bc);
+			g.fillRect(x - 2, y + 4, w + 3, h);
+		}
 
 		g.setColor(fc);
 		g.drawString(s, x, y + h);
+
+		return x + w;
 	}
 }

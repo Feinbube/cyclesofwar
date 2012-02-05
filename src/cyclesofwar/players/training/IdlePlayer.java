@@ -23,7 +23,7 @@ public class IdlePlayer extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "Frank";
+		return "Training";
 	}
 
 }

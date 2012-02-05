@@ -22,6 +22,7 @@ public class Universe {
 	double now;
 	double size;
 
+	long currentRound = 0;
 	double nothingHappenedCounter = 0;
 	boolean gameOver = true;
 	Player winner = null;
@@ -32,9 +33,12 @@ public class Universe {
 	List<Fleet> newFleets = new ArrayList<Fleet>();
 
 	Universe(long seed, List<Player> combatants) {
-		now = 0;
 		gameOver = true;
 
+		now = 0;
+		currentRound = 0;
+		nothingHappenedCounter = 0;
+		
 		this.size = Math.sqrt(combatants.size());
 		
 		random.setSeed(seed);
@@ -92,6 +96,7 @@ public class Universe {
 
 		now += elapsedSeconds;
 		nothingHappenedCounter += elapsedSeconds;
+		currentRound ++;
 
 		for (Planet planet : planets) {
 			planet.update(elapsedSeconds);
@@ -122,7 +127,7 @@ public class Universe {
 			currentPlayer.think();
 		}
 
-		if (nothingHappenedCounter > 60) {
+		if (nothingHappenedCounter > 60 || currentRound > 100000) {
 			gameOver = true;
 			winner = NonePlayer.NonePlayer;
 			return;

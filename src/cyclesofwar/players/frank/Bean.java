@@ -117,7 +117,7 @@ public class Bean extends Player {
 			}
 
 			if ((int) target.forcesToConquer > 0 && planet.getForces() >= target.forcesToConquer) {
-				this.sendNewFleet(planet, target.forcesToConquer, target.planet);
+				this.sendFleet(planet, target.forcesToConquer, target.planet);
 			}
 
 			// TODO send fleets to keep as well?

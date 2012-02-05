@@ -2,12 +2,12 @@ package cyclesofwar;
 
 public class WorkerThread implements Runnable {
 
-	Statistics statistics;
+	FightChronics fightChronics;
 	boolean running = true;
 	boolean pause = false;
 
-	public WorkerThread(Statistics statistics) {
-		this.statistics = statistics;
+	public WorkerThread(FightChronics fightChronics) {
+		this.fightChronics = fightChronics;
 	}
 
 	@Override
@@ -15,7 +15,7 @@ public class WorkerThread implements Runnable {
 		running = true;
 		
 		while (running) {
-			Universe universe = statistics.getUniverse();
+			Universe universe = fightChronics.getUniverse();
 			if (universe == null) {
 				return;
 			}
@@ -32,7 +32,7 @@ public class WorkerThread implements Runnable {
 				break;
 			}
 			
-			statistics.gameOver(universe);
+			fightChronics.gameOver(universe);
 			
 			sleep(10);
 		}
