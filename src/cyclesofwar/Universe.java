@@ -31,11 +31,9 @@ public class Universe {
 	SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<Double, Fleet>();
 	List<Fleet> newFleets = new ArrayList<Fleet>();
 
-	Universe(long seed) {
+	Universe(long seed, List<Player> combatants) {
 		now = 0;
 		gameOver = true;
-
-		List<Player> combatants = Arena.Combatants();
 
 		this.size = Math.sqrt(combatants.size());
 		
