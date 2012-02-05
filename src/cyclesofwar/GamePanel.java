@@ -27,6 +27,8 @@ class GamePanel extends JPanel implements KeyListener {
 	Mode mode = Mode.STARTUP;
 	boolean showControls = false;
 
+	boolean pause = false;
+
 	public GamePanel() {
 		fightChronics = new FightChronics();
 		universe = new Universe(random.nextLong(), Arena.combatants());
@@ -42,8 +44,10 @@ class GamePanel extends JPanel implements KeyListener {
 			}
 
 			if (mode == Mode.GAME) {
-				for (int i = 0; i < Arena.speedUp; i++) {
-					universe.update(Universe.speedOfLight);
+				if (!pause) {
+					for (int i = 0; i < Arena.speedUp; i++) {
+						universe.update(Universe.speedOfLight);
+					}
 				}
 			}
 
@@ -70,11 +74,12 @@ class GamePanel extends JPanel implements KeyListener {
 			rendering.drawControlInfo(g, "F1 toggle info");
 		} else {
 			if (mode == Mode.GAME) {
-				rendering.drawControlInfo(g, "+/- to change game speed (" + Arena.speedUp
-						+ ")... F5 to create new universe ... TAB to switch mode");
+				String pauseString = pause ? "continue" : "pause";
+				rendering.drawControlInfo(g, "+/- to change game speed (" + ((int) (Arena.speedUp * 10)) / 10.0 + ") ... SPACE to " + pauseString
+						+ " F5 to start a new combat ... TAB to switch mode");
 			} else if (mode == Mode.ARENA) {
-				String pause = fightChronics.pause ? "continue" : "pause";
-				rendering.drawControlInfo(g, "SPACE to " + pause + " ... F5 to start a new combat ... TAB to switch mode");
+				String pauseString = fightChronics.pause ? "continue" : "pause";
+				rendering.drawControlInfo(g, "SPACE to " + pauseString + " ... F5 to start a new combat ... TAB to switch mode");
 			}
 		}
 	}
@@ -94,17 +99,21 @@ class GamePanel extends JPanel implements KeyListener {
 		if (arg0.getKeyCode() == KeyEvent.VK_F1) {
 			showControls = !showControls;
 		}
+		
+		if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
+			pause = !pause;
+		}
 	}
 
 	private void keyPressedInArenaMode(KeyEvent arg0) {
 		if (arg0.getKeyCode() == KeyEvent.VK_TAB) {
 			mode = Mode.GAME;
 		}
-		
+
 		if (arg0.getKeyCode() == KeyEvent.VK_F5) {
 			fightChronics.reset();
 		}
-		
+
 		if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
 			fightChronics.togglePause();
 		}
@@ -120,12 +129,18 @@ class GamePanel extends JPanel implements KeyListener {
 		}
 
 		if (arg0.getKeyCode() == KeyEvent.VK_PLUS) {
-			Arena.speedUp++;
+			if (Arena.speedUp >= 1) {
+				Arena.speedUp = (int) (Arena.speedUp + 1);
+			} else {
+				Arena.speedUp += 0.1;
+			}
 		}
 
 		if (arg0.getKeyCode() == KeyEvent.VK_MINUS) {
-			if (Arena.speedUp > 1) {
+			if (Arena.speedUp >= 2) {
 				Arena.speedUp--;
+			} else if (Arena.speedUp >= 0.2) {
+				Arena.speedUp -= 0.1;
 			}
 		}
 	}

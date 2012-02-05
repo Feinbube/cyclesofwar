@@ -9,7 +9,7 @@ import cyclesofwar.players.training.*;
 import de.loewis.*;
 
 public class Arena {
-	static int speedUp = 2;
+	static double speedUp = 2;
 	static final int PlanetCountPerPlayer = 10;
 	
 	static final int matchesPerPairing = 25;
@@ -36,16 +36,16 @@ public class Arena {
 		ArrayList<Player> result = new ArrayList<Player>();
 		
 		// Training
-		result.add(new IdlePlayer());
-		result.add(new RandomPlayer());
-		result.add(new SharpShooter());
+		//result.add(new IdlePlayer());
+		//result.add(new RandomPlayer());
+		//result.add(new SharpShooter());
 		
 		// Martin
 		result.add(new Cratters());
 		
 		// Robert
-		result.add(new Defender());		
-		result.add(new FastExpand());
+		//result.add(new Defender());		
+		//result.add(new FastExpand());
 		result.add(new AttackLargestPlayer());
 		// result.add(new Borg());
 		
