@@ -60,12 +60,14 @@ class GamePanel extends JPanel implements KeyListener, MouseInputListener {
 
 	protected void paintComponent(Graphics g) {
 		synchronized (renderingLock) {
+			rendering.setSize(getSize());
+
 			if (mode == Mode.STARTUP) {
 				rendering.drawTitleScreen(g);
 			} else if (mode == Mode.GAME) {
-				rendering.drawUniverse(g, universe, getSize());
+				rendering.drawUniverse(g, universe);
 			} else {
-				rendering.drawStatistics(g, fightChronics, getSize());
+				rendering.drawStatistics(g, fightChronics);
 			}
 
 			drawControls(g);
@@ -83,7 +85,8 @@ class GamePanel extends JPanel implements KeyListener, MouseInputListener {
 				rendering.drawSeed(g);
 			} else if (mode == Mode.ARENA) {
 				String pauseString = fightChronics.pause ? "continue" : "pause";
-				rendering.drawControlInfo(g, "CLICK to see battle ... SPACE to " + pauseString + " ... F5 to start a new combat ... TAB to switch mode");
+				rendering.drawControlInfo(g, "CLICK on player to toogle priority ... CLICK on stats to see battle ... SPACE to "
+						+ pauseString + " ... F5 to start a new combat ... TAB to switch mode");
 			}
 		}
 	}
@@ -148,16 +151,21 @@ class GamePanel extends JPanel implements KeyListener, MouseInputListener {
 			}
 		}
 	}
-	
+
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		if (mode == Mode.ARENA) {
-			List<FightRecord> winRecords = rendering.getFightRecords(arg0.getX()-10,arg0.getY()-32);
+			List<FightRecord> winRecords = rendering.getFightRecords(arg0.getX() - 10, arg0.getY() - 32);
 			if (winRecords != null && winRecords.size() > 0) {
 				FightRecord winRecord = winRecords.get(random.nextInt(winRecords.size()));
 				universe = new Universe(winRecord.universeSeed, winRecord.players);
 
 				mode = Mode.GAME;
+			} else {
+				Player player = rendering.getPlayer(arg0.getX() - 10, arg0.getY() - 32, fightChronics);
+				if (player != null) {
+					fightChronics.switchPriority(player);
+				}
 			}
 		}
 	}

@@ -84,6 +84,8 @@ class FightChronics {
 	List<Ranking> rankings = new ArrayList<Ranking>();
 
 	List<WorkerThread> workerThreads = new ArrayList<WorkerThread>();
+	
+	List<Player> prioritized = new ArrayList<Player>();
 
 	FightChronics() {
 		reset();
@@ -94,7 +96,7 @@ class FightChronics {
 			this.combatants.add(player);
 		}
 
-		this.gamesPlayed = fightChronics.gamesPlayed;
+		this.gamesPlayedCount = fightChronics.gamesPlayedCount;
 		this.gamesToPlayCount = fightChronics.gamesToPlayCount;
 
 		synchronized (fightChronics.fightRecords) {
@@ -104,10 +106,14 @@ class FightChronics {
 		}
 
 		for (Player player : Arena.playersForArenaMode()) {
-			rankings.add(new Ranking(player, fightRecordsWonBy(player).size(), participatedOnly(fightRecords, player).size()));
+			this.rankings.add(new Ranking(player, fightRecordsWonBy(player).size(), participatedOnly(fightRecords, player).size()));
 		}
 
 		sortRankings();
+		
+		for(Player player : fightChronics.prioritized) {
+			this.prioritized.add(player);
+		}
 	}
 
 	private void sortRankings() {
@@ -183,8 +189,24 @@ class FightChronics {
 			if (gamesToPlay.size() == 0) {
 				return null;
 			}
-			result = gamesToPlay.get(random.nextInt(gamesToPlay.size()));
-			gamesToPlay.remove(result);
+			
+			List<Universe> prioritizedGames = new ArrayList<Universe>();
+			for(Universe universe : gamesToPlay) {
+				for(Player player : prioritized) {
+					if(player.isInList(universe.players)) {
+						prioritizedGames.add(universe);
+						break;
+					}
+				}
+			}
+			
+			if(prioritizedGames.size() > 0) {
+				result = prioritizedGames.get(random.nextInt(prioritizedGames.size()));
+				gamesToPlay.remove(result);
+			} else {
+				result = gamesToPlay.get(random.nextInt(gamesToPlay.size()));
+				gamesToPlay.remove(result);
+			}
 		}
 		return result;
 	}
@@ -244,5 +266,20 @@ class FightChronics {
 		}
 
 		return result;
+	}
+
+	public void switchPriority(Player player) {
+		for (Player prioritizedPlayer : prioritized) {
+			if (player.isEqualTo(prioritizedPlayer)) {
+				prioritized.remove(prioritizedPlayer);
+				return;
+			}
+		}
+
+		prioritized.add(player);
+	}
+
+	public boolean hasPriority(Player player) {
+		return player.isInList(prioritized);
 	}
 }
