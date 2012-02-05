@@ -21,12 +21,12 @@ public class Universe {
 
 	double now;
 	double size;
-	
+
 	long seed;
 
 	long currentRound = 0;
 	double nothingHappenedCounter = 0;
-	
+
 	boolean gameOver = true;
 	Player winner = null;
 
@@ -41,9 +41,9 @@ public class Universe {
 		now = 0;
 		currentRound = 0;
 		nothingHappenedCounter = 0;
-		
+
 		this.size = Math.sqrt(combatants.size());
-		
+
 		this.seed = seed;
 		random.setSeed(seed);
 
@@ -56,10 +56,12 @@ public class Universe {
 		fleetsAtDestination.clear();
 
 		players.clear();
-		for (Player player : combatants) {
-			players.add(player);
-			player.universe = this;
-			createStarterPlanet(player);
+		for (Player player : Arena.registeredPlayers()) {
+			if (player.isInList(combatants)) {
+				players.add(player);
+				player.universe = this;
+				createStarterPlanet(player);
+			}
 		}
 
 		gameOver = false;
@@ -100,7 +102,7 @@ public class Universe {
 
 		now += elapsedSeconds;
 		nothingHappenedCounter += elapsedSeconds;
-		currentRound ++;
+		currentRound++;
 
 		for (Planet planet : planets) {
 			planet.update(elapsedSeconds);
@@ -247,7 +249,7 @@ public class Universe {
 		newFleets.add(newFleet);
 		origin.newForces -= newFleet.getForce();
 		nothingHappenedCounter = 0.0;
-		
+
 		return newFleet;
 	}
 

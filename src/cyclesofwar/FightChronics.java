@@ -90,7 +90,7 @@ class FightChronics {
 	}
 
 	FightChronics(FightChronics fightChronics) {
-		for (Player player : Arena.allPlayers()) {
+		for (Player player : Arena.playersForArenaMode()) {
 			this.combatants.add(player);
 		}
 
@@ -103,7 +103,7 @@ class FightChronics {
 			}
 		}
 
-		for (Player player : Arena.allPlayers()) {
+		for (Player player : Arena.playersForArenaMode()) {
 			rankings.add(new Ranking(player, fightRecordsWonBy(player).size(), participatedOnly(fightRecords, player).size()));
 		}
 
@@ -131,7 +131,7 @@ class FightChronics {
 		stopExecution();
 		workerThreads.clear();
 
-		for (Player player : Arena.allPlayers()) {
+		for (Player player : Arena.playersForArenaMode()) {
 			this.combatants.add(player);
 		}
 
@@ -155,7 +155,7 @@ class FightChronics {
 	}
 
 	private void setupGames() {
-		int count = Arena.allPlayers().size();
+		int count = Arena.playersForArenaMode().size();
 		for (int match = 0; match < Arena.matchesPerPairing; match++) {
 			for (int i = 0; i < count - 1; i++) {
 				for (int j = i + 1; j < count; j++) {
@@ -168,7 +168,7 @@ class FightChronics {
 	}
 
 	private List<Player> getCombatants(int i, int j) {
-		List<Player> combatants = Arena.allPlayers();
+		List<Player> combatants = Arena.playersForArenaMode();
 
 		List<Player> result = new ArrayList<Player>();
 		result.add(combatants.get(i));
