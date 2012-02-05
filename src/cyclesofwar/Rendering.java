@@ -263,6 +263,8 @@ class Rendering {
 	}
 
 	void drawStatistics(Graphics g, Statistics statistics, Dimension size) {
+		this.size = size;
+		
 		drawBackground(g);
 		
 		drawString(g, 50, 30, "Games: " + statistics.gamesPlayedCount + "/" + statistics.gamesToPlayCount, Color.black, Color.white);

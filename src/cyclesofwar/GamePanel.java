@@ -71,10 +71,10 @@ class GamePanel extends JPanel implements KeyListener {
 		} else {
 			if (mode == Mode.GAME) {
 				rendering.drawControlInfo(g, "+/- to change game speed (" + Arena.speedUp
-						+ ")... F5 to create new universe ... F10 to switch mode");
+						+ ")... F5 to create new universe ... TAB to switch mode");
 			} else if (mode == Mode.ARENA) {
 				String pause = statistics.pause ? "continue" : "pause";
-				rendering.drawControlInfo(g, "Space to " + pause + " ... F5 to start a new combat ... F10 to switch mode");
+				rendering.drawControlInfo(g, "SPACE to " + pause + " ... F5 to start a new combat ... TAB to switch mode");
 			}
 		}
 	}
@@ -97,7 +97,7 @@ class GamePanel extends JPanel implements KeyListener {
 	}
 
 	private void keyPressedInArenaMode(KeyEvent arg0) {
-		if (arg0.getKeyCode() == KeyEvent.VK_F10) {
+		if (arg0.getKeyCode() == KeyEvent.VK_TAB) {
 			mode = Mode.GAME;
 		}
 		
@@ -115,7 +115,7 @@ class GamePanel extends JPanel implements KeyListener {
 			universe = new Universe(random.nextLong(), Arena.combatants());
 		}
 
-		if (arg0.getKeyCode() == KeyEvent.VK_F10) {
+		if (arg0.getKeyCode() == KeyEvent.VK_TAB) {
 			mode = Mode.ARENA;
 		}
 
