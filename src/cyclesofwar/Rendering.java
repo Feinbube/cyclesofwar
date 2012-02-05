@@ -18,7 +18,7 @@ class Rendering {
 		int w;
 		int h;
 		List<FightRecord> winRecords;
-		
+
 		WinRecordsTag(int x, int y, int w, int h, List<FightRecord> winRecords) {
 			super();
 			this.x = x;
@@ -48,7 +48,7 @@ class Rendering {
 		TOP, CENTER, BOTTOM
 	}
 
-	Dimension size = new Dimension(0, 0);
+	Dimension size = new Dimension(800, 480);
 	double universeSize = 0.0;
 	int borderSize = 20;
 
@@ -66,11 +66,18 @@ class Rendering {
 		}
 	}
 
-	void drawUniverse(Graphics g, Universe universe, Dimension size) {
+	public void setSize(Dimension size) {
+		if (!this.size.equals(size)) {
+			this.size = size;
+			this.borderSize = planetSize(size.width, 5.0) / 2;
+		}
+	}
+
+	void drawUniverse(Graphics g, Universe universe) {
 		this.universe = universe;
 
-		if (!this.size.equals(size) || this.universeSize != universe.size) {
-			resize(universe, size);
+		if (this.universeSize != universe.size) {
+			this.universeSize = universe.size;
 		}
 
 		drawUniverse(g);
@@ -78,15 +85,9 @@ class Rendering {
 
 	private void drawBackground(Graphics g) {
 		g.setColor(Color.black);
-		g.fillRect(0, 0, g.getClipBounds().width, g.getClipBounds().height);
+		g.fillRect(0, 0, size.width, size.height);
 
 		drawStars(g);
-	}
-
-	private void resize(Universe universe, Dimension size) {
-		this.universeSize = universe.size;
-		this.size = size;
-		this.borderSize = planetSize(size.width, 5.0) / 2;
 	}
 
 	void drawUniverse(Graphics g) {
@@ -98,11 +99,11 @@ class Rendering {
 			drawPlayers(g);
 		} else {
 			drawGameOverScreen(g);
-		}		
+		}
 	}
 
 	void drawSeed(Graphics g) {
-		drawText(g, g.getClipBounds().width-5, 5, "seed: " + universe.seed, Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
+		drawText(g, size.width - 5, 5, "seed: " + universe.seed, Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
 	}
 
 	void drawControlInfo(Graphics g, String s) {
@@ -111,18 +112,18 @@ class Rendering {
 
 	void drawTitleScreen(Graphics g) {
 		drawBackground(g);
-		drawText(g, g.getClipBounds().width / 2, g.getClipBounds().height / 2, "Cycles of War", Color.yellow, null, HAlign.CENTER,
-				VAlign.CENTER, new Font("Courier New", Font.BOLD, 48));
+		drawText(g, size.width / 2, size.height / 2, "Cycles of War", Color.yellow, null, HAlign.CENTER, VAlign.CENTER, new Font(
+				"Courier New", Font.BOLD, 48));
 	}
 
 	private void drawGameOverScreen(Graphics g) {
 		String playerName = universe.winner.getName();
 
-		drawText(g, g.getClipBounds().width / 2, g.getClipBounds().height / 3 + 20, "GAME OVER", Color.yellow, null, HAlign.CENTER,
-				VAlign.CENTER, new Font("Courier New", Font.BOLD, 48));
+		drawText(g, size.width / 2, size.height / 3 + 20, "GAME OVER", Color.yellow, null, HAlign.CENTER, VAlign.CENTER, new Font(
+				"Courier New", Font.BOLD, 48));
 
-		drawText(g, g.getClipBounds().width / 2, g.getClipBounds().height / 3 + 100, playerName + " has won!", Color.yellow, null,
-				HAlign.CENTER, VAlign.CENTER, new Font("Courier New", Font.PLAIN, 32));
+		drawText(g, size.width / 2, size.height / 3 + 100, playerName + " has won!", Color.yellow, null, HAlign.CENTER, VAlign.CENTER,
+				new Font("Courier New", Font.PLAIN, 32));
 	}
 
 	private void drawStars(Graphics g) {
@@ -130,8 +131,8 @@ class Rendering {
 			g.setColor(star.c);
 
 			int starSize = (int) (star.d * 4 + 1);
-			int x = (int) (g.getClipBounds().width * star.x);
-			int y = (int) (g.getClipBounds().height * star.y);
+			int x = (int) (size.width * star.x);
+			int y = (int) (size.height * star.y);
 			g.fillOval(x - starSize / 2, y - starSize / 2, starSize, starSize);
 		}
 	}
@@ -150,7 +151,7 @@ class Rendering {
 	}
 
 	private int planetSize(Graphics g, double productionRatePerSecond) {
-		return planetSize(g.getClipBounds().width, productionRatePerSecond);
+		return planetSize(size.width, productionRatePerSecond);
 	}
 
 	private int planetSize(int size, double productionRatePerSecond) {
@@ -158,11 +159,11 @@ class Rendering {
 	}
 
 	private double getX(Graphics g, double x) {
-		return ((g.getClipBounds().width - borderSize * 2) * x / universeSize) + borderSize;
+		return ((size.width - borderSize * 2) * x / universeSize) + borderSize;
 	}
 
 	private double getY(Graphics g, double y) {
-		return ((g.getClipBounds().height - borderSize * 2) * y / universeSize) + borderSize;
+		return ((size.height - borderSize * 2) * y / universeSize) + borderSize;
 	}
 
 	private void drawFleets(Graphics g) {
@@ -241,9 +242,7 @@ class Rendering {
 		return result;
 	}
 
-	void drawStatistics(Graphics g, FightChronics fightChronics, Dimension size) {
-		this.size = size;
-
+	void drawStatistics(Graphics g, FightChronics fightChronics) {
 		drawBackground(g);
 
 		Font f = new Font("Courier New", Font.PLAIN, 14);
@@ -252,10 +251,10 @@ class Rendering {
 		int padding = 10;
 		int marginTop = 100;
 
+		fightChronics = fightChronics.lightWeightClone();
+
 		drawText(g, marginLeft, 30, fightChronics.gamesToPlayCount + " games left, " + fightChronics.gamesPlayedCount + " games played ("
 				+ Arena.matchesPerPairing + " matches per pairing)", Color.white, Color.black, HAlign.LEFT, VAlign.BOTTOM, f);
-
-		fightChronics = fightChronics.lightWeightClone();
 
 		drawLines(g, fightChronics, f, marginLeft, marginTop);
 
@@ -267,6 +266,17 @@ class Rendering {
 		tags.clear();
 		for (int i = 0; i < fightChronics.combatants.size(); i++) {
 			pos = drawPerformanceAgainst(g, fightChronics, i, f, pos + padding, marginTop);
+		}
+
+		for (int i = 0; i < fightChronics.rankings.size(); i++) {
+			Player player = fightChronics.rankings.get(i).player;
+			if (fightChronics.hasPriority(player)) {
+				g.setColor(Color.green);
+				g.drawRect(marginLeft - 2, marginTop + 20 * (i + 1) + 4, size.width - marginLeft * 2 + 3, g.getFontMetrics(f).getHeight());
+				g.setColor(Color.black);
+				g.drawRect(marginLeft - 1, marginTop + 20 * (i + 1) + 5, size.width - marginLeft * 2 + 3 - 2, g.getFontMetrics(f)
+						.getHeight() - 2);
+			}
 		}
 	}
 
@@ -333,7 +343,7 @@ class Rendering {
 
 			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), s, player.getPlayerForeColor(), null, f);
 			if (winRecords != null) {
-				remember(marginLeft-2, marginTop + 20 * (i + 1)+4, pos - marginLeft+3, g.getFontMetrics(f).getHeight(), winRecords);
+				remember(marginLeft - 2, marginTop + 20 * (i + 1) + 4, pos - marginLeft + 3, g.getFontMetrics(f).getHeight(), winRecords);
 			}
 
 			if (pos > maxPos) {
@@ -398,13 +408,26 @@ class Rendering {
 		return x + w;
 	}
 
-	public List<FightRecord> getFightRecords(int x, int y) {
-		for(WinRecordsTag winRecordTag : this.tags){
-			if(winRecordTag.intersects(x, y)) {						
+	List<FightRecord> getFightRecords(int x, int y) {
+		for (WinRecordsTag winRecordTag : this.tags) {
+			if (winRecordTag.intersects(x, y)) {
 				return winRecordTag.winRecords;
 			}
 		}
-		
+
 		return null;
+	}
+
+	public Player getPlayer(int x, int y, FightChronics fightChronics) {
+		if (x < 50 || x > size.width - 50) {
+			return null;
+		}
+
+		int index = (y - 100) / 20 - 1;
+		if (index >= 0 && index < fightChronics.lightWeightClone().rankings.size()) {
+			return fightChronics.lightWeightClone().rankings.get(index).player;
+		} else {
+			return null;
+		}
 	}
 }
