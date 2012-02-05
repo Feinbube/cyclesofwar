@@ -60,7 +60,11 @@ class Ranking {
 	}
 
 	double getRatio() {
-		return wins / (double) games;
+		if (games == 0) {
+			return 0;
+		} else {
+			return wins / (double) games;
+		}
 	}
 }
 
@@ -84,7 +88,7 @@ class FightChronics {
 	List<Ranking> rankings = new ArrayList<Ranking>();
 
 	List<WorkerThread> workerThreads = new ArrayList<WorkerThread>();
-	
+
 	List<Player> prioritized = new ArrayList<Player>();
 
 	FightChronics() {
@@ -110,8 +114,8 @@ class FightChronics {
 		}
 
 		sortRankings();
-		
-		for(Player player : fightChronics.prioritized) {
+
+		for (Player player : fightChronics.prioritized) {
 			this.prioritized.add(player);
 		}
 	}
@@ -162,10 +166,12 @@ class FightChronics {
 
 	private void setupGames() {
 		int count = Arena.playersForArenaMode().size();
-		for (int match = 0; match < Arena.matchesPerPairing; match++) {
+		for (int match = 0; match < Arena.matchesPerPairing/2; match++) {
 			for (int i = 0; i < count - 1; i++) {
 				for (int j = i + 1; j < count; j++) {
-					gamesToPlay.add(new Universe(random.nextLong(), getCombatants(i, j)));
+					long seed = random.nextLong();
+					gamesToPlay.add(new Universe(seed, getCombatants(i, j)));
+					gamesToPlay.add(new Universe(seed, getCombatants(j, i)));
 				}
 			}
 		}
@@ -189,18 +195,18 @@ class FightChronics {
 			if (gamesToPlay.size() == 0) {
 				return null;
 			}
-			
+
 			List<Universe> prioritizedGames = new ArrayList<Universe>();
-			for(Universe universe : gamesToPlay) {
-				for(Player player : prioritized) {
-					if(player.isInList(universe.players)) {
+			for (Universe universe : gamesToPlay) {
+				for (Player player : prioritized) {
+					if (player.isInList(universe.players)) {
 						prioritizedGames.add(universe);
 						break;
 					}
 				}
 			}
-			
-			if(prioritizedGames.size() > 0) {
+
+			if (prioritizedGames.size() > 0) {
 				result = prioritizedGames.get(random.nextInt(prioritizedGames.size()));
 				gamesToPlay.remove(result);
 			} else {
