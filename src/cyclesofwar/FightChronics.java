@@ -9,6 +9,7 @@ import java.util.Random;
 class FightRecord {
 	List<Player> players;
 	Player winner;
+	long universeSeed;
 
 	FightRecord(FightRecord fightRecord) {
 		players = new ArrayList<Player>();
@@ -17,6 +18,7 @@ class FightRecord {
 		}
 
 		this.winner = fightRecord.winner;
+		this.universeSeed = fightRecord.universeSeed;
 	}
 
 	FightRecord(Universe universe) {
@@ -26,6 +28,7 @@ class FightRecord {
 		}
 
 		this.winner = universe.winner;
+		this.universeSeed = universe.seed;
 	}
 
 	static List<FightRecord> clone(List<FightRecord> fightRecords) {
@@ -101,7 +104,7 @@ class FightChronics {
 		}
 
 		for (Player player : Arena.allPlayers()) {
-			rankings.add(new Ranking(player, fightRecordsWonBy(player).size(), fightRecordsPlayerParticipated(player).size()));
+			rankings.add(new Ranking(player, fightRecordsWonBy(player).size(), participatedOnly(fightRecords, player).size()));
 		}
 
 		sortRankings();
@@ -211,37 +214,19 @@ class FightChronics {
 		return new FightChronics(this);
 	}
 
-	int winsOver(Player player, Player competitor) {
-		List<FightRecord> won = fightRecordsWonBy(player);
-
-		int result = 0;
-		for (FightRecord fightRecord : won) {
-			if (fightRecord.containsPlayer(competitor)) {
-				result++;
-			}
-		}
-
-		return result;
+	List<FightRecord> winsOver(Player player, Player competitor) {
+		return participatedOnly(fightRecordsWonBy(player), competitor);
 	}
 
-	public double fightsAgainst(Player player, Player competitor) {
-		List<FightRecord> fights = fightRecordsPlayerParticipated(player);
-
-		int result = 0;
-		for (FightRecord fightRecord : fights) {
-			if (fightRecord.containsPlayer(competitor)) {
-				result++;
-			}
-		}
-
-		return result;
+	List<FightRecord> fightsAgainst(Player player, Player competitor) {
+		return participatedOnly(participatedOnly(fightRecords, player), competitor);
 	}
 
-	List<FightRecord> fightRecordsPlayerParticipated(Player player) {
+	private List<FightRecord> participatedOnly(List<FightRecord> fights, Player competitor) {
 		List<FightRecord> result = new ArrayList<FightRecord>();
 
-		for (FightRecord fightRecord : this.fightRecords) {
-			if (fightRecord.containsPlayer(player)) {
+		for (FightRecord fightRecord : fights) {
+			if (fightRecord.containsPlayer(competitor)) {
 				result.add(fightRecord);
 			}
 		}

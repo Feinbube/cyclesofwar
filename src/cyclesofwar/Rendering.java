@@ -11,8 +11,34 @@ import java.util.Random;
 import cyclesofwar.Fleet.Formation;
 
 class Rendering {
+	class WinRecordsTag {
+
+		int x;
+		int y;
+		int w;
+		int h;
+		List<FightRecord> winRecords;
+		
+		WinRecordsTag(int x, int y, int w, int h, List<FightRecord> winRecords) {
+			super();
+			this.x = x;
+			this.y = y;
+			this.w = w;
+			this.h = h;
+			this.winRecords = winRecords;
+		}
+
+		public boolean intersects(int x, int y) {
+			return x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.h;
+		}
+	}
+
 	final int StarCount = 1000;
 	final int MaxRenderedFleet = 20;
+
+	interface DrawContentProvider {
+		String getString(FightChronics fightChronics, int i);
+	}
 
 	enum HAlign {
 		LEFT, CENTER, RIGHT
@@ -31,6 +57,7 @@ class Rendering {
 	Universe universe;
 
 	Random random = new Random();
+	List<WinRecordsTag> tags = new ArrayList<WinRecordsTag>();
 
 	Rendering() {
 		stars.clear();
@@ -234,33 +261,10 @@ class Rendering {
 		pos = drawPerformance(g, fightChronics, f, pos + padding, marginTop);
 		pos = drawNames(g, fightChronics, f, pos + padding, marginTop);
 
+		tags.clear();
 		for (int i = 0; i < fightChronics.combatants.size(); i++) {
 			pos = drawPerformanceAgainst(g, fightChronics, i, f, pos + padding, marginTop);
 		}
-	}
-
-	private int drawPerformanceAgainst(Graphics g, FightChronics fightChronics, int rank, Font f, int marginLeft, int marginTop) {
-		Player competitor = fightChronics.rankings.get(rank).player;
-		int maxPos = drawText(g, marginLeft, marginTop, (rank + 1) + ".", competitor.getPlayerForeColor(), competitor.getPlayerBackColor(),
-				f);
-
-		for (int i = 0; i < fightChronics.rankings.size(); i++) {
-			Player player = fightChronics.rankings.get(i).player;
-
-			String s;
-			if (!player.isEqualTo(competitor)) {
-				s = percentage(fightChronics.winsOver(player, competitor) / (double) fightChronics.fightsAgainst(player, competitor));
-			} else {
-				s = "--";
-			}
-
-			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), s, player.getPlayerForeColor(), null, f);
-
-			if (pos > maxPos) {
-				maxPos = pos;
-			}
-		}
-		return maxPos;
 	}
 
 	private String percentage(double value) {
@@ -276,36 +280,59 @@ class Rendering {
 	}
 
 	private int drawRank(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
-		int maxPos = 0;
-		for (int i = 0; i < fightChronics.rankings.size(); i++) {
-			Player player = fightChronics.rankings.get(i).player;
-			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), (i + 1) + ".", player.getPlayerForeColor(), null, f);
-			if (pos > maxPos) {
-				maxPos = pos;
+		return drawContent(g, fightChronics, f, marginLeft, marginTop, new DrawContentProvider() {
+			public String getString(FightChronics fightChronics, int i) {
+				return (i + 1) + ".";
 			}
-		}
-		return maxPos;
+		});
 	}
 
 	private int drawWins(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
-		int maxPos = 0;
-		for (int i = 0; i < fightChronics.rankings.size(); i++) {
-			Player player = fightChronics.rankings.get(i).player;
-			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1),
-					fightChronics.rankings.get(i).wins + "/" + fightChronics.rankings.get(i).games, player.getPlayerForeColor(), null, f);
-			if (pos > maxPos) {
-				maxPos = pos;
+		return drawContent(g, fightChronics, f, marginLeft, marginTop, new DrawContentProvider() {
+			public String getString(FightChronics fightChronics, int i) {
+				return fightChronics.rankings.get(i).wins + "/" + fightChronics.rankings.get(i).games;
 			}
-		}
-		return maxPos;
+		});
 	}
 
 	private int drawPerformance(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
-		int maxPos = 0;
+		return drawContent(g, fightChronics, f, marginLeft, marginTop, new DrawContentProvider() {
+			public String getString(FightChronics fightChronics, int i) {
+				return percentage(fightChronics.rankings.get(i).getRatio());
+			}
+		});
+	}
+
+	private int drawNames(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
+		return drawContent(g, fightChronics, f, marginLeft, marginTop, new DrawContentProvider() {
+			public String getString(FightChronics fightChronics, int i) {
+				return fightChronics.rankings.get(i).player.getName();
+			}
+		});
+	}
+
+	private int drawPerformanceAgainst(Graphics g, FightChronics fightChronics, int rank, Font f, int marginLeft, int marginTop) {
+		Player competitor = fightChronics.rankings.get(rank).player;
+		int maxPos = drawText(g, marginLeft, marginTop, (rank + 1) + ".", competitor.getPlayerForeColor(), competitor.getPlayerBackColor(),
+				f);
+
 		for (int i = 0; i < fightChronics.rankings.size(); i++) {
 			Player player = fightChronics.rankings.get(i).player;
-			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), percentage(fightChronics.rankings.get(i).getRatio()),
-					player.getPlayerForeColor(), null, f);
+
+			String s;
+			List<FightRecord> winRecords = null;
+			if (!player.isEqualTo(competitor)) {
+				winRecords = fightChronics.winsOver(player, competitor);
+				s = percentage(winRecords.size() / (double) fightChronics.fightsAgainst(player, competitor).size());
+			} else {
+				s = "--";
+			}
+
+			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), s, player.getPlayerForeColor(), null, f);
+			if (winRecords != null) {
+				remember(marginLeft-2, marginTop + 20 * (i + 1)+4, pos - marginLeft+3, g.getFontMetrics(f).getHeight(), winRecords);
+			}
+
 			if (pos > maxPos) {
 				maxPos = pos;
 			}
@@ -313,11 +340,17 @@ class Rendering {
 		return maxPos;
 	}
 
-	private int drawNames(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
+	private void remember(int x, int y, int w, int h, List<FightRecord> winRecords) {
+		tags.add(new WinRecordsTag(x, y, w, h, winRecords));
+	}
+
+	private int drawContent(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop,
+			DrawContentProvider drawContentProvider) {
 		int maxPos = 0;
 		for (int i = 0; i < fightChronics.rankings.size(); i++) {
 			Player player = fightChronics.rankings.get(i).player;
-			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), player.getName(), player.getPlayerForeColor(), null, f);
+			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), drawContentProvider.getString(fightChronics, i),
+					player.getPlayerForeColor(), null, f);
 			if (pos > maxPos) {
 				maxPos = pos;
 			}
@@ -360,5 +393,15 @@ class Rendering {
 		g.drawString(s, x, y + h);
 
 		return x + w;
+	}
+
+	public List<FightRecord> getFightRecords(int x, int y) {
+		for(WinRecordsTag winRecordTag : this.tags){
+			if(winRecordTag.intersects(x, y)) {						
+				return winRecordTag.winRecords;
+			}
+		}
+		
+		return null;
 	}
 }
