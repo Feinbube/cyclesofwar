@@ -15,7 +15,9 @@ public class MainWindow {
          Container panel = new GamePanel();
          f.getContentPane().add(panel, BorderLayout.CENTER);
          f.addKeyListener((KeyListener)panel);
-         
+         f.setFocusTraversalKeysEnabled(false);
+         panel.setFocusTraversalKeysEnabled(false);
+                  
          f.setSize(800, 480); //f.pack();
          f.setVisible(true);
     }
