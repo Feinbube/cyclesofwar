@@ -3,11 +3,14 @@ package cyclesofwar;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.JPanel;
+import javax.swing.event.MouseInputListener;
 
-class GamePanel extends JPanel implements KeyListener {
+class GamePanel extends JPanel implements KeyListener, MouseInputListener {
 
 	enum Mode {
 		STARTUP, GAME, ARENA
@@ -75,17 +78,13 @@ class GamePanel extends JPanel implements KeyListener {
 		} else {
 			if (mode == Mode.GAME) {
 				String pauseString = pause ? "continue" : "pause";
-				rendering.drawControlInfo(g, "+/- to change game speed (" + ((int) (Arena.speedUp * 10)) / 10.0 + ") ... SPACE to " + pauseString
-						+ " F5 to start a new combat ... F6 to replay ... TAB to switch mode");
+				rendering.drawControlInfo(g, "+/- to change game speed (" + ((int) (Arena.speedUp * 10)) / 10.0 + ") ... SPACE to "
+						+ pauseString + " F5 to start a new combat ... F6 to replay ... TAB to switch mode");
 			} else if (mode == Mode.ARENA) {
 				String pauseString = fightChronics.pause ? "continue" : "pause";
-				rendering.drawControlInfo(g, "SPACE to " + pauseString + " ... F5 to start a new combat ... TAB to switch mode");
+				rendering.drawControlInfo(g, "click to see battle ... SPACE to " + pauseString + " ... F5 to start a new combat ... TAB to switch mode");
 			}
 		}
-	}
-
-	@Override
-	public void keyPressed(KeyEvent arg0) {
 	}
 
 	@Override
@@ -123,15 +122,15 @@ class GamePanel extends JPanel implements KeyListener {
 		if (arg0.getKeyCode() == KeyEvent.VK_F5) {
 			universe = new Universe(random.nextLong(), Arena.combatants());
 		}
-		
+
 		if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
 			pause = !pause;
 		}
-		
+
 		if (arg0.getKeyCode() == KeyEvent.VK_F6) {
 			universe = new Universe(universe.seed, Arena.combatants());
 		}
-		
+
 		if (arg0.getKeyCode() == KeyEvent.VK_PLUS) {
 			if (Arena.speedUp >= 1) {
 				Arena.speedUp = (int) (Arena.speedUp + 1);
@@ -148,8 +147,61 @@ class GamePanel extends JPanel implements KeyListener {
 			}
 		}
 	}
+	
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		if (mode == Mode.ARENA) {
+			List<FightRecord> winRecords = rendering.getFightRecords(arg0.getX()-10,arg0.getY()-32);
+			if (winRecords != null && winRecords.size() > 0) {
+				FightRecord winRecord = winRecords.get(random.nextInt(winRecords.size()));
+				universe = new Universe(winRecord.universeSeed, winRecord.players);
+
+				mode = Mode.GAME;
+			}
+		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+	}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
 	}
 }

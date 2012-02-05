@@ -17,12 +17,12 @@ public class RandomPlayer extends Player {
 	
 	@Override
 	public Color getPlayerBackColor() {
-		return Color.cyan.darker().darker();
+		return Color.gray;
 	}
 
 	@Override
 	public Color getPlayerForeColor() {
-		return Color.cyan;
+		return Color.white;
 	}
 
 	@Override
