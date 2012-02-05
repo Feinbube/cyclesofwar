@@ -13,12 +13,7 @@ public class RenderingThread implements Runnable {
 	@Override
 	public void run() {
 
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		sleep(1000);
 
 		gameStarted = true;
 
@@ -27,13 +22,21 @@ public class RenderingThread implements Runnable {
 				gamePanel.update();
 			}
 
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(Arena.speedUp < 1){
+				sleep((int)(1.0/Arena.speedUp * 20));
+			} else {
+				sleep(20);
 			}
 		}
 
+	}
+
+	private void sleep(int sleepTime) {
+		try {
+			Thread.sleep(sleepTime);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
