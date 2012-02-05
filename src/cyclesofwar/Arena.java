@@ -9,23 +9,40 @@ import cyclesofwar.players.training.*;
 import de.loewis.*;
 
 public class Arena {
-	public static final int speedUp = 5;
-	public static final int PlanetCountPerPlayer = 10;
+	static int speedUp = 2;
+	static final int PlanetCountPerPlayer = 10;
 	
-	public static List<Player> Combatants(){
+	static final int matchesPerPairing = 20;
+	
+	public static List<Player> combatants(){
 		ArrayList<Player> result = new ArrayList<Player>();
-		
-		// Basic
-		result.add(new IdlePlayer());
-		result.add(new RandomPlayer());
-		result.add(new SharpShooter());
 		
 		// Martin
 		result.add(new Cratters());
 		
 		// Robert
-		result.add(new Defender());		
-		result.add(new FastExpand());
+		//result.add(new AttackLargestPlayer());
+		
+		// Frank
+		result.add(new Bean());
+		
+		return result;
+	}
+	
+	public static List<Player> allPlayers(){
+		ArrayList<Player> result = new ArrayList<Player>();
+		
+		// Basic
+		//result.add(new IdlePlayer());
+		//result.add(new RandomPlayer());
+		//result.add(new SharpShooter());
+		
+		// Martin
+		result.add(new Cratters());
+		
+		// Robert
+		//result.add(new Defender());		
+		//result.add(new FastExpand());
 		result.add(new AttackLargestPlayer());
 		// result.add(new Borg());
 		

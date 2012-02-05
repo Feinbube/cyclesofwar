@@ -4,18 +4,16 @@ import java.util.Random;
 
 class Star {
 	
-	double size;
 	double x;
 	double y;
 	Color c;
 	double d;
 	
-	Star(Random random, double size) {
+	Star(Random random) {
 		super();
 		
-		this.size = size;
-		x = random.nextDouble() * size;
-		y = random.nextDouble() * size; 
+		x = random.nextDouble();
+		y = random.nextDouble(); 
 		c = Color.getHSBColor(0, 0, (float)random.nextDouble());
 		d = random.nextDouble();
 	}

@@ -75,7 +75,12 @@ public class Alai extends Player {
 
 	private int attackForce(Planet target, Planet planet) {
 		int force = getFleetsToSend(planet, target);
-		return sendFleetUpTo(planet, force, target).getForce();
+		Fleet fleet = sendFleetUpTo(planet, force, target);
+		if(fleet == null) {
+			return 0;
+		} else {
+			return fleet.getForce();
+		}
 	}
 
 	private int getGroundForceOf(Player player) {

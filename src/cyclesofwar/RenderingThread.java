@@ -6,8 +6,6 @@ public class RenderingThread implements Runnable {
 
 	boolean gameStarted = false;
 
-	Object renderingLock = new Object();
-
 	public RenderingThread(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
 	}
@@ -26,17 +24,11 @@ public class RenderingThread implements Runnable {
 
 		while (true) {
 			if (gamePanel != null) {
-				gamePanel.repaint();
-			}
-
-			synchronized (renderingLock) {
-				for (int i = 0; i < Arena.speedUp; i++) {
-					gamePanel.universe.update(Universe.speedOfLight);
-				}
+				gamePanel.update();
 			}
 
 			try {
-				Thread.sleep(10);
+				Thread.sleep(20);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

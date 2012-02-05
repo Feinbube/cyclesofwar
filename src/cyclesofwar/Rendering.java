@@ -13,67 +13,72 @@ import cyclesofwar.Fleet.Formation;
 class Rendering {
 	final int StarCount = 1000;
 	final int MaxRenderedFleet = 20;
-	
+
 	Dimension size = new Dimension(0, 0);
 	double universeSize = 0.0;
 	int borderSize = 20;
-	
+
 	List<Star> stars = new ArrayList<Star>();
-	
+
 	Universe universe;
-	
+
 	Random random = new Random();
-	
-	void drawUniverse(Graphics g, Universe universe, Dimension size, boolean titleScreen) {
+
+	Rendering() {
+		stars.clear();
+		for (int i = 0; i < StarCount; i++) {
+			stars.add(new Star(random));
+		}
+	}
+
+	void drawUniverse(Graphics g, Universe universe, Dimension size) {
 		this.universe = universe;
-		
+
 		if (!this.size.equals(size) || this.universeSize != universe.size) {
-			stars.clear();
-			for (int i = 0; i < StarCount; i++) {
-				stars.add(new Star(random, universe.size));
-			}
-			
-			this.universeSize = universe.size;
-			this.size = size;
-			this.borderSize = planetSize(size.width, 5.0) / 2;
+			resize(universe, size);
 		}
 
+		drawUniverse(g);
+	}
+
+	private void drawBackground(Graphics g) {
 		g.setColor(Color.black);
 		g.fillRect(0, 0, g.getClipBounds().width, g.getClipBounds().height);
 
 		drawStars(g);
-
-		if (titleScreen) {
-			drawTitleScreen(g);
-		} else {
-			drawUniverse(g);
-		}
 	}
-	
+
+	private void resize(Universe universe, Dimension size) {
+		this.universeSize = universe.size;
+		this.size = size;
+		this.borderSize = planetSize(size.width, 5.0) / 2;
+	}
+
 	void drawUniverse(Graphics g) {
+		drawBackground(g);
+
 		if (!universe.gameOver) {
 			drawPlanets(g);
 			drawFleets(g);
 			drawPlayers(g);
 		} else {
 			drawGameOverScreen(g);
-			
+
 		}
-		
-		drawControlInfo(g);
 	}
 
-	private void drawControlInfo(Graphics g) {
+	void drawControlInfo(Graphics g, String s) {
 		g.setColor(Color.yellow);
 		g.setFont(new Font("Arial", Font.PLAIN, 12));
 
-		String s = "Press F5 to create new universe!";
 		int w = g.getFontMetrics().stringWidth(s);
 
-		g.drawString(s, size.width - w -5, size.height-5);
+		g.drawString(s, size.width - w - 5, size.height - 5);
 	}
 
-	private void drawTitleScreen(Graphics g) {
+	void drawTitleScreen(Graphics g) {
+		drawBackground(g);
+
 		g.setColor(Color.yellow);
 
 		g.setFont(new Font("Courier New", Font.BOLD, 48));
@@ -115,8 +120,8 @@ class Rendering {
 			g.setColor(star.c);
 
 			int starSize = (int) (star.d * 4 + 1);
-			int x = (int) (g.getClipBounds().width * star.x / universeSize);
-			int y = (int) (g.getClipBounds().height * star.y / universeSize);
+			int x = (int) (g.getClipBounds().width * star.x);
+			int y = (int) (g.getClipBounds().height * star.y);
 			g.fillOval(x - starSize / 2, y - starSize / 2, starSize, starSize);
 		}
 	}
@@ -220,7 +225,7 @@ class Rendering {
 		for (int i = 0; i < universe.players.size(); i++) {
 			Player player = universe.players.get(i);
 
-			String s = statistics(player);
+			String s = shortInfo(player);
 
 			int x = 5;
 			int y = i * 20;
@@ -237,7 +242,7 @@ class Rendering {
 		}
 	}
 
-	private String statistics(Player player) {
+	private String shortInfo(Player player) {
 		String result = "";
 
 		result += player.getName();
@@ -255,5 +260,34 @@ class Rendering {
 		result += " F[" + universe.FleetsOfPlayer(NonePlayer.NonePlayer, player).size() + "/" + spaceForces + "]";
 
 		return result;
+	}
+
+	void drawStatistics(Graphics g, Statistics statistics, Dimension size) {
+		drawBackground(g);
+		
+		drawString(g, 50, 30, "Games: " + statistics.gamesPlayedCount + "/" + statistics.gamesToPlayCount, Color.black, Color.white);
+		
+		List<Statistic> statisticInfos = statistics.getStatisticsSorted();
+		for(int i=0; i<statisticInfos.size(); i++) {
+			drawStatistic(g, 50, 50 + i * 20, statisticInfos.get(i));
+		}
+	}
+
+	private void drawStatistic(Graphics g, int x, int y, Statistic statistic) {
+		String s = statistic.wins + "/" + statistic.gamesPlayed + " " + statistic.player.getName();
+		drawString(g, x, y, s, statistic.player.getPlayerBackColor(), statistic.player.getPlayerForeColor());
+	}
+
+	private void drawString(Graphics g, int x, int y, String s, Color bc, Color fc) {
+		g.setFont(new Font("Arial", Font.PLAIN, 12));
+
+		int w = g.getFontMetrics().stringWidth(s);
+		int h = g.getFontMetrics().getHeight();
+
+		g.setColor(bc);
+		g.fillRect(x - 2, y + 3, w + 3, h);
+
+		g.setColor(fc);
+		g.drawString(s, x, y + h);
 	}
 }
