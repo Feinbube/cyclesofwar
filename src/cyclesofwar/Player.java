@@ -10,7 +10,7 @@ public abstract class Player {
 	
 	Universe universe;
 	
-	protected static Player NonePlayer = new NonePlayer();
+	public static Player NonePlayer = new NonePlayer();
 
 	protected abstract void think();
 
@@ -73,7 +73,7 @@ public abstract class Player {
 	}
 
 	// Planets
-	public List<Planet> getPlanets() {
+	protected List<Planet> getPlanets() {
 		return universe.PlanetsOfPlayer(this);
 	}
 
@@ -93,7 +93,7 @@ public abstract class Player {
 		return planet.getPlayer().equals(this);
 	}
 
-	protected List<Planet> getAllPlanetButMine() {
+	protected List<Planet> getAllPlanetsButMine() {
 		List<Planet> result = new ArrayList<Planet>();
 
 		for (Planet planet : getAllPlanets())

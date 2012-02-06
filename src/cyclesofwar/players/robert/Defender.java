@@ -19,7 +19,7 @@ public class Defender extends Player {
 		Planet capital = myPlanets.get(0);
 		myPlanets.remove(capital);
 
-		List<Planet> other = getAllPlanetButMine();
+		List<Planet> other = getAllPlanetsButMine();
 		sortByForceCount(other);
 		if (other.size() > 0) {
 			Planet target = other.get(other.size() - 1);

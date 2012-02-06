@@ -13,7 +13,7 @@ public class FastExpand extends Player {
 	@Override
 	protected void think() {
 		for (Planet  planet : getPlanets()) {
-			List<Planet> targets = getAllPlanetButMine();
+			List<Planet> targets = getAllPlanetsButMine();
 			sortByForceCount(targets);
 			Collections.reverse(targets);
 			

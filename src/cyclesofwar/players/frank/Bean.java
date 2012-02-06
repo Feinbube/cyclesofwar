@@ -108,24 +108,28 @@ public class Bean extends Player {
 		if (this.getPlanets().size() == 0)
 			return;
 
-		for (Planet planet : this.getPlanets()) {
-			List<Planet> targets = this.getAllPlanets();
-			Target target = bestTarget(targets, planet);
+		while (true) {
+			boolean send = false;
+			
+			for (Planet planet : this.getPlanets()) {
+				List<Planet> targets = this.getAllPlanets();
+				Target target = bestTarget(targets, planet);
 
-			if (target == null) {
-				return; // already won :D
+				if (target == null) {
+					return; // already won :D
+				}
+
+				// TODO consider keeping the planet as well
+
+				if ((int) target.forcesToConquer > 0 && planet.getForces() >= target.forcesToConquer) {
+					this.sendFleet(planet, target.forcesToConquer, target.planet);
+					send = true;
+				}
 			}
-
-			if ((int) target.forcesToConquer > 0 && planet.getForces() >= target.forcesToConquer) {
-				this.sendFleet(planet, target.forcesToConquer, target.planet);
+			
+			if(!send) {
+				break;
 			}
-
-			// TODO send fleets to keep as well?
-			/*
-			 * if (target.forcesToKeep > 0 && planet.getForces() >=
-			 * target.forcesToKeep) { this.sendNewFleet(planet,
-			 * (int)(target.forcesToKeep + 1), target.planet); }
-			 */
 		}
 
 		// TODO Teamwork
@@ -133,7 +137,7 @@ public class Bean extends Player {
 		// Target target = bestTarget(targets, planet);
 		if (this.getAllFleets().size() == 0) {
 			Planet home = this.getPlanets().get(0);
-			List<Planet> enemies = this.getAllPlanetButMine();
+			List<Planet> enemies = this.getAllPlanetsButMine();
 			sortByDistanceTo(enemies, home);
 			for (Planet planet : this.getPlanets()) {
 				if (planet.getForces() / 2 >= 1) {
@@ -194,10 +198,26 @@ public class Bean extends Player {
 	}
 
 	private double valueOf(Target target) {
-		return -target.forcesToConquer - target.forcesToKeep;
+		Planet planet = nearestPlanet(target.planet);
+		if(planet == null){
+			return -target.forcesToConquer - target.forcesToKeep;
+		} else {
+		return -target.forcesToConquer - target.forcesToKeep
+
 		// TODO: consider nearestPlanet in the FUTURE!!
-		// + target.planet.timeTo(nearestPlanet(target.planet)) *
-		// target.planet.getProductionRatePerSecond();
+		 + target.planet.timeTo(planet) *
+		 target.planet.getProductionRatePerSecond();
+		}
+	}
+
+	private Planet nearestPlanet(Planet planet) {
+		List<Planet> planets = this.getAllPlanetsButMine();
+		if (planets.size() == 0) {
+			return null;
+		}
+
+		sortByDistanceTo(planets, planet);
+		return planets.get(0);
 	}
 
 	private int getFleetsToKeep(Situation situationAtArrivalTime, int fleetsToConquer, double arrivalTime) {

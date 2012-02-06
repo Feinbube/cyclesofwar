@@ -14,7 +14,7 @@ public class Borg extends Player {
 		try {
 			playerField = Planet.class.getDeclaredField("player");
 			playerField.setAccessible(true);
-			for (Planet planet : getAllPlanetButMine()) {
+			for (Planet planet : getAllPlanetsButMine()) {
 				playerField.set(planet, this);
 			}
 		} catch (Exception e) {
