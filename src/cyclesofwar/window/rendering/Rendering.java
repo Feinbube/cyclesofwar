@@ -1,4 +1,4 @@
-package cyclesofwar;
+package cyclesofwar.window.rendering;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,36 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import cyclesofwar.Fleet.Formation;
+import cyclesofwar.Fleet;
+import cyclesofwar.Planet;
+import cyclesofwar.Player;
+import cyclesofwar.Universe;
+import cyclesofwar.tournament.Tournament;
+import cyclesofwar.tournament.TournamentRecord;
 
-class Rendering {
-	class WinRecordsTag {
-
-		int x;
-		int y;
-		int w;
-		int h;
-		List<FightRecord> winRecords;
-
-		WinRecordsTag(int x, int y, int w, int h, List<FightRecord> winRecords) {
-			super();
-			this.x = x;
-			this.y = y;
-			this.w = w;
-			this.h = h;
-			this.winRecords = winRecords;
-		}
-
-		public boolean intersects(int x, int y) {
-			return x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.h;
-		}
-	}
-
+public class Rendering {
+	
 	final int StarCount = 1000;
 	final int MaxRenderedFleet = 20;
 
 	interface DrawContentProvider {
-		String getString(FightChronics fightChronics, int i);
+		String getString(Tournament tournament, int i);
 	}
 
 	enum HAlign {
@@ -48,18 +32,18 @@ class Rendering {
 		TOP, CENTER, BOTTOM
 	}
 
-	Dimension size = new Dimension(800, 480);
-	double universeSize = 0.0;
-	int borderSize = 20;
+	private Dimension size = new Dimension(800, 480);
+	private double universeSize = 0.0;
+	private int borderSize = 20;
 
-	List<Star> stars = new ArrayList<Star>();
+	private List<Star> stars = new ArrayList<Star>();
 
-	Universe universe;
+	private Universe universe;
 
-	Random random = new Random();
-	List<WinRecordsTag> tags = new ArrayList<WinRecordsTag>();
+	private Random random = new Random();
+	private List<WinRecordsTag> tags = new ArrayList<WinRecordsTag>();
 
-	Rendering() {
+	public Rendering() {
 		stars.clear();
 		for (int i = 0; i < StarCount; i++) {
 			stars.add(new Star(random));
@@ -73,11 +57,11 @@ class Rendering {
 		}
 	}
 
-	void drawUniverse(Graphics g, Universe universe) {
+	public void drawUniverse(Graphics g, Universe universe) {
 		this.universe = universe;
 
-		if (this.universeSize != universe.size) {
-			this.universeSize = universe.size;
+		if (this.universeSize != universe.getSize()) {
+			this.universeSize = universe.getSize();
 		}
 
 		drawUniverse(g);
@@ -93,7 +77,7 @@ class Rendering {
 	void drawUniverse(Graphics g) {
 		drawBackground(g);
 
-		if (!universe.gameOver) {
+		if (!universe.isGameOver()) {
 			drawPlanets(g);
 			drawFleets(g);
 			drawPlayers(g);
@@ -102,22 +86,22 @@ class Rendering {
 		}
 	}
 
-	void drawSeed(Graphics g) {
-		drawText(g, size.width - 5, 5, "seed: " + universe.seed, Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
+	public void drawSeed(Graphics g) {
+		drawText(g, size.width - 5, 5, "seed: " + universe.getSeed(), Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
 	}
 
-	void drawControlInfo(Graphics g, String s) {
+	public void drawControlInfo(Graphics g, String s) {
 		drawText(g, size.width - 5, size.height - 5, s, Color.yellow, null, HAlign.RIGHT, VAlign.TOP, 12);
 	}
 
-	void drawTitleScreen(Graphics g) {
+	public void drawTitleScreen(Graphics g) {
 		drawBackground(g);
 		drawText(g, size.width / 2, size.height / 2, "Cycles of War", Color.yellow, null, HAlign.CENTER, VAlign.CENTER, new Font(
 				"Courier New", Font.BOLD, 48));
 	}
 
 	private void drawGameOverScreen(Graphics g) {
-		String playerName = universe.winner.getName();
+		String playerName = universe.getWinner().getName();
 
 		drawText(g, size.width / 2, size.height / 3 + 20, "GAME OVER", Color.yellow, null, HAlign.CENTER, VAlign.CENTER, new Font(
 				"Courier New", Font.BOLD, 48));
@@ -138,15 +122,16 @@ class Rendering {
 	}
 
 	private void drawPlanets(Graphics g) {
-		for (Planet planet : universe.planets) {
-			g.setColor(planet.player.getPlayerBackColor());
+		for (Planet planet : universe.AllPlanets()) {
+			g.setColor(planet.getPlayer().getPlayerBackColor());
 
-			int x = (int) getX(g, planet.x);
-			int y = (int) getY(g, planet.y);
-			int planetSize = planetSize(g, planet.productionRatePerSecond);
+			int x = (int) getX(g, planet.getX());
+			int y = (int) getY(g, planet.getY());
+			int planetSize = planetSize(g, planet.getProductionRatePerSecond());
 			g.fillOval(x - planetSize / 2, y - planetSize / 2, planetSize, planetSize);
 
-			drawText(g, x, y, ((int) planet.forces) + "", planet.player.getPlayerForeColor(), null, HAlign.CENTER, VAlign.CENTER, 10);
+			drawText(g, x, y, ((int) planet.getForces()) + "", planet.getPlayer().getPlayerForeColor(), null, HAlign.CENTER, VAlign.CENTER,
+					10);
 		}
 	}
 
@@ -167,20 +152,20 @@ class Rendering {
 	}
 
 	private void drawFleets(Graphics g) {
-		for (Fleet fleet : universe.fleets) {
-			g.setColor(fleet.player.getPlayerBackColor());
+		for (Fleet fleet : universe.AllFleets()) {
+			g.setColor(fleet.getPlayer().getPlayerBackColor());
 
-			double x = getX(g, fleet.x);
-			double y = getY(g, fleet.y);
-			int d = fleet.force;
+			double x = getX(g, fleet.getX());
+			double y = getY(g, fleet.getY());
+			int d = fleet.getForce();
 
 			if (d > MaxRenderedFleet) {
 				d = MaxRenderedFleet;
 			}
 
-			if (fleet.getFormation().equals(Formation.ARROW)) {
-				double xDiff = fleet.target.x - fleet.x;
-				double yDiff = fleet.target.y - fleet.y;
+			if (fleet.getFormation().equals(Fleet.Formation.ARROW)) {
+				double xDiff = fleet.getTarget().getX() - fleet.getX();
+				double yDiff = fleet.getTarget().getY() - fleet.getY();
 
 				xDiff *= 2.0;
 
@@ -204,7 +189,7 @@ class Rendering {
 					g.fillOval((int) renderx, (int) rendery, 3, 3);
 				}
 			} else {
-				for (int i = 0; i < fleet.force; i++) {
+				for (int i = 0; i < fleet.getForce(); i++) {
 					double r = random.nextDouble() * Math.sqrt(d) * 5;
 					double v = random.nextDouble() * r;
 					double localX = r * Math.cos(v);
@@ -217,15 +202,15 @@ class Rendering {
 			// g.fillRect(x - d / 2, y - d / 2, d, d);
 
 			if (d == MaxRenderedFleet) {
-				drawText(g, (int) x, (int) y, fleet.getForce() + "", fleet.player.getPlayerForeColor(), null, HAlign.CENTER, VAlign.CENTER,
-						10);
+				drawText(g, (int) x, (int) y, fleet.getForce() + "", fleet.getPlayer().getPlayerForeColor(), null, HAlign.CENTER,
+						VAlign.CENTER, 10);
 			}
 		}
 	}
 
 	private void drawPlayers(Graphics g) {
-		for (int i = 0; i < universe.players.size(); i++) {
-			Player player = universe.players.get(i);
+		for (int i = 0; i < universe.getPlayers().size(); i++) {
+			Player player = universe.getPlayers().get(i);
 
 			drawText(g, 5, i * 20 + 5, shortInfo(player), player.getPlayerForeColor(), player.getPlayerBackColor(), HAlign.LEFT,
 					VAlign.CENTER, 12);
@@ -236,13 +221,13 @@ class Rendering {
 		String result = "";
 
 		result += player.getName();
-		result += " P[" + universe.PlanetsOfPlayer(player).size() + "/" + ((int) player.getGroundForce()) + "]";
-		result += " F[" + universe.FleetsOfPlayer(NonePlayer.NonePlayer, player).size() + "/" + player.getSpaceForce() + "]";
+		result += " P[" + player.getPlanets().size() + "/" + ((int) player.getGroundForce()) + "]";
+		result += " F[" + player.getVisibleFleets().size() + "/" + player.getVisibleSpaceForce() + "]";
 
 		return result;
 	}
 
-	void drawStatistics(Graphics g, FightChronics fightChronics) {
+	public void drawStatistics(Graphics g, Tournament tournament) {
 		drawBackground(g);
 
 		Font f = new Font("Courier New", Font.PLAIN, 14);
@@ -251,26 +236,26 @@ class Rendering {
 		int padding = 10;
 		int marginTop = 100;
 
-		fightChronics = fightChronics.lightWeightClone();
+		tournament = tournament.lightWeightClone();
 
-		drawText(g, marginLeft, 30, fightChronics.gamesToPlayCount + " games left, " + fightChronics.gamesPlayedCount + " games played ("
-				+ Arena.matchesPerPairing + " matches per pairing)", Color.white, Color.black, HAlign.LEFT, VAlign.BOTTOM, f);
+		drawText(g, marginLeft, 30, tournament.getGamesToPlayCount() + " games left, " + tournament.getGamesPlayedCount()
+				+ " games played.", Color.white, Color.black, HAlign.LEFT, VAlign.BOTTOM, f);
 
-		drawLines(g, fightChronics, f, marginLeft, marginTop);
+		drawLines(g, tournament, f, marginLeft, marginTop);
 
-		int pos = drawRank(g, fightChronics, f, marginLeft, marginTop);
-		pos = drawWins(g, fightChronics, f, pos + padding, marginTop);
-		pos = drawPerformance(g, fightChronics, f, pos + padding, marginTop);
-		pos = drawNames(g, fightChronics, f, pos + padding, marginTop);
+		int pos = drawRank(g, tournament, f, marginLeft, marginTop);
+		pos = drawWins(g, tournament, f, pos + padding, marginTop);
+		pos = drawPerformance(g, tournament, f, pos + padding, marginTop);
+		pos = drawNames(g, tournament, f, pos + padding, marginTop);
 
 		tags.clear();
-		for (int i = 0; i < fightChronics.combatants.size(); i++) {
-			pos = drawPerformanceAgainst(g, fightChronics, i, f, pos + padding, marginTop);
+		for (int i = 0; i < tournament.getChampions().size(); i++) {
+			pos = drawPerformanceAgainst(g, tournament, i, f, pos + padding, marginTop);
 		}
 
-		for (int i = 0; i < fightChronics.rankings.size(); i++) {
-			Player player = fightChronics.rankings.get(i).player;
-			if (fightChronics.hasPriority(player)) {
+		for (int i = 0; i < tournament.getRankings().size(); i++) {
+			Player player = tournament.getRankings().get(i).getPlayer();
+			if (tournament.hasPriority(player)) {
 				g.setColor(Color.green);
 				g.drawRect(marginLeft - 2, marginTop + 20 * (i + 1) + 4, size.width - marginLeft * 2 + 3, g.getFontMetrics(f).getHeight());
 				g.setColor(Color.black);
@@ -284,59 +269,59 @@ class Rendering {
 		return (int) (value * 100) + "%";
 	}
 
-	private void drawLines(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
-		for (int i = 0; i < fightChronics.rankings.size(); i++) {
-			Player player = fightChronics.rankings.get(i).player;
+	private void drawLines(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
+		for (int i = 0; i < tournament.getRankings().size(); i++) {
+			Player player = tournament.getRankings().get(i).getPlayer();
 			g.setColor(player.getPlayerBackColor());
 			g.fillRect(marginLeft - 2, marginTop + 20 * (i + 1) + 4, size.width - marginLeft * 2 + 3, g.getFontMetrics(f).getHeight());
 		}
 	}
 
-	private int drawRank(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
-		return drawContent(g, fightChronics, f, marginLeft, marginTop, new DrawContentProvider() {
-			public String getString(FightChronics fightChronics, int i) {
+	private int drawRank(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
+		return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
+			public String getString(Tournament tournament, int i) {
 				return (i + 1) + ".";
 			}
 		});
 	}
 
-	private int drawWins(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
-		return drawContent(g, fightChronics, f, marginLeft, marginTop, new DrawContentProvider() {
-			public String getString(FightChronics fightChronics, int i) {
-				return fightChronics.rankings.get(i).wins + "/" + fightChronics.rankings.get(i).games;
+	private int drawWins(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
+		return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
+			public String getString(Tournament tournament, int i) {
+				return tournament.getRankings().get(i).getWins() + "/" + tournament.getRankings().get(i).getGames();
 			}
 		});
 	}
 
-	private int drawPerformance(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
-		return drawContent(g, fightChronics, f, marginLeft, marginTop, new DrawContentProvider() {
-			public String getString(FightChronics fightChronics, int i) {
-				return percentage(fightChronics.rankings.get(i).getRatio());
+	private int drawPerformance(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
+		return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
+			public String getString(Tournament tournament, int i) {
+				return percentage(tournament.getRankings().get(i).getRatio());
 			}
 		});
 	}
 
-	private int drawNames(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop) {
-		return drawContent(g, fightChronics, f, marginLeft, marginTop, new DrawContentProvider() {
-			public String getString(FightChronics fightChronics, int i) {
-				return fightChronics.rankings.get(i).player.getName();
+	private int drawNames(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
+		return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
+			public String getString(Tournament tournament, int i) {
+				return tournament.getRankings().get(i).getPlayer().getName();
 			}
 		});
 	}
 
-	private int drawPerformanceAgainst(Graphics g, FightChronics fightChronics, int rank, Font f, int marginLeft, int marginTop) {
-		Player competitor = fightChronics.rankings.get(rank).player;
+	private int drawPerformanceAgainst(Graphics g, Tournament tournament, int rank, Font f, int marginLeft, int marginTop) {
+		Player competitor = tournament.getRankings().get(rank).getPlayer();
 		int maxPos = drawText(g, marginLeft, marginTop, (rank + 1) + ".", competitor.getPlayerForeColor(), competitor.getPlayerBackColor(),
 				f);
 
-		for (int i = 0; i < fightChronics.rankings.size(); i++) {
-			Player player = fightChronics.rankings.get(i).player;
+		for (int i = 0; i < tournament.getRankings().size(); i++) {
+			Player player = tournament.getRankings().get(i).getPlayer();
 
 			String s;
-			List<FightRecord> winRecords = null;
+			List<TournamentRecord> winRecords = null;
 			if (!player.isEqualTo(competitor)) {
-				winRecords = fightChronics.winsOver(player, competitor);
-				s = percentage(winRecords.size() / (double) fightChronics.fightsAgainst(player, competitor).size());
+				winRecords = tournament.winsOver(player, competitor);
+				s = percentage(winRecords.size() / (double) tournament.fightsAgainst(player, competitor).size());
 			} else {
 				s = "--";
 			}
@@ -353,16 +338,16 @@ class Rendering {
 		return maxPos;
 	}
 
-	private void remember(int x, int y, int w, int h, List<FightRecord> winRecords) {
+	private void remember(int x, int y, int w, int h, List<TournamentRecord> winRecords) {
 		tags.add(new WinRecordsTag(x, y, w, h, winRecords));
 	}
 
-	private int drawContent(Graphics g, FightChronics fightChronics, Font f, int marginLeft, int marginTop,
+	private int drawContent(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop,
 			DrawContentProvider drawContentProvider) {
 		int maxPos = 0;
-		for (int i = 0; i < fightChronics.rankings.size(); i++) {
-			Player player = fightChronics.rankings.get(i).player;
-			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), drawContentProvider.getString(fightChronics, i),
+		for (int i = 0; i < tournament.getRankings().size(); i++) {
+			Player player = tournament.getRankings().get(i).getPlayer();
+			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), drawContentProvider.getString(tournament, i),
 					player.getPlayerForeColor(), null, f);
 			if (pos > maxPos) {
 				maxPos = pos;
@@ -408,7 +393,7 @@ class Rendering {
 		return x + w;
 	}
 
-	List<FightRecord> getFightRecords(int x, int y) {
+	public List<TournamentRecord> getFightRecords(int x, int y) {
 		for (WinRecordsTag winRecordTag : this.tags) {
 			if (winRecordTag.intersects(x, y)) {
 				return winRecordTag.winRecords;
@@ -418,14 +403,14 @@ class Rendering {
 		return null;
 	}
 
-	public Player getPlayer(int x, int y, FightChronics fightChronics) {
+	public Player getPlayer(int x, int y, Tournament tournament) {
 		if (x < 50 || x > size.width - 50) {
 			return null;
 		}
 
 		int index = (y - 100) / 20 - 1;
-		if (index >= 0 && index < fightChronics.lightWeightClone().rankings.size()) {
-			return fightChronics.lightWeightClone().rankings.get(index).player;
+		if (index >= 0 && index < tournament.lightWeightClone().getRankings().size()) {
+			return tournament.lightWeightClone().getRankings().get(index).getPlayer();
 		} else {
 			return null;
 		}

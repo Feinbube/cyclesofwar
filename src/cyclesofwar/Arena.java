@@ -5,22 +5,21 @@ import java.util.List;
 
 import cyclesofwar.players.robert.*;
 import cyclesofwar.players.frank.*;
-import cyclesofwar.players.theo.HelloWorld;
+import cyclesofwar.players.theo.*;
 import cyclesofwar.players.training.*;
 import de.loewis.*;
 
 public class Arena {
-	static double speedUp = 2;
-	static final int PlanetCountPerPlayer = 10;
 	
-	static final int matchesPerPairing = 50; // should be a multiple of 2
+	public static final int matchesInArena = 50;
+	public static final int matchesInTournament = 3;
 	
 	public static List<Player> playersForGameMode(){
 		ArrayList<Player> result = new ArrayList<Player>();
 
 		result.add(new HelloWorld());
-		result.add(new CrazyTom());
 		result.add(new Cratters());
+		result.add(new CrazyTom());
 		
 		return result;
 	}
@@ -29,8 +28,19 @@ public class Arena {
 		ArrayList<Player> result = new ArrayList<Player>();
 
 		result.add(new HelloWorld());
-		result.add(new CrazyTom());
 		result.add(new Cratters());
+		result.add(new CrazyTom());
+		
+		return result;
+	}
+	
+	public static List<Player> champions(){
+		ArrayList<Player> result = new ArrayList<Player>();
+
+		result.add(new HelloWorld()); // Theo
+		result.add(new CrazyTom()); // Frank
+		result.add(new Cratters()); // Martin
+		result.add(new AttackLargestPlayer()); // Robert
 		
 		return result;
 	}

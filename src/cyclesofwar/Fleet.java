@@ -1,12 +1,13 @@
 package cyclesofwar;
 
+
 public class Fleet {
 
 	public enum Formation {
 		SWARM, ARROW 
 	}
 	
-	Universe universe;
+	private Universe universe;
 	
 	Player player;
 	int force;

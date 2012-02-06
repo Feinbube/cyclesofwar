@@ -15,7 +15,7 @@ public class CrazyTom extends Player {
 	@Override
 	public void think() {
 		for (Planet planet : getPlanets()) {
-			if (planet.getForces() < 10) {
+			if (planet.getForces() < 1) {
 				continue;
 			}
 			List<Prediction> predictions = getAllPredictions(lastFleetArrivalTime());

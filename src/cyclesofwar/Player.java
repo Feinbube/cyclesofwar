@@ -6,49 +6,40 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+
+
 public abstract class Player {
 	
-	Universe universe;
+	private Universe universe;
 	
 	public static Player NonePlayer = new NonePlayer();
-
+	
 	protected abstract void think();
-
-	protected abstract Color getPlayerBackColor();
-
-	protected abstract Color getPlayerForeColor();
-
-	protected abstract String getCreatorsName();
-
-	double getGroundForce() {
-		double result = 0.0;
-		for (Planet planet : getPlanets()) {
-			result += planet.forces;
-		}
-		return result;
-	}
 	
-	int getSpaceForce() {
-		int result = 0;
-		for (Fleet fleet : getFleets()) {
-			result += fleet.force;
-		}
-		return result;
-	}
+	public abstract Color getPlayerBackColor();
+	public abstract Color getPlayerForeColor();
 	
-	double getFullForce() {
-		return getGroundForce() + getSpaceForce();
-	}
-
-	String getName() {
+	public abstract String getCreatorsName();
+	
+	public String getName() {
 		return getCreatorsName() + "'s " + this.getClass().getSimpleName();
 	}
 	
-	boolean isEqualTo(Player other) {
+	public Player freshOne(){
+		for(Player other : Arena.registeredPlayers()){
+			if(other.isEqualTo(this)) {
+				return other;
+			}
+		}
+		
+		return null;
+	}
+
+	public boolean isEqualTo(Player other) {
 		return this.getName().equals(other.getName());
 	}
 	
-	boolean isInList(List<Player> players) {
+	public boolean isInList(List<Player> players) {
 		for(Player candidate : players) {
 			if(candidate.isEqualTo(this)) {
 				return true;
@@ -57,10 +48,30 @@ public abstract class Player {
 		
 		return false;
 	}
+	
+	public double getGroundForce() {
+		double result = 0.0;
+		for (Planet planet : universe.PlanetsOfPlayer(this)) {
+			result += planet.getForces();
+		}
+		return result;
+	}
+	
+	public int getVisibleSpaceForce() {
+		int result = 0;
+		for (Fleet fleet : universe.FleetsOfPlayer(NonePlayer, this)) {
+			result += fleet.force;
+		}
+		return result;
+	}
+	
+	public double getVisibleFullForce() {
+		return getGroundForce() + getVisibleSpaceForce();
+	}
 
 	// Universe
 	protected double now() {
-		return universe.now;
+		return universe.getNow();
 	}
 
 	protected double getStepInterval() {
@@ -71,9 +82,13 @@ public abstract class Player {
 	protected List<Player> getOtherPlayers() {
 		return universe.OtherPlayers(this);
 	}
+	
+	protected boolean isNonePlayer(Player player) {
+		return player.equals(Player.NonePlayer);
+	}
 
 	// Planets
-	protected List<Planet> getPlanets() {
+	public List<Planet> getPlanets() {
 		return universe.PlanetsOfPlayer(this);
 	}
 
@@ -145,6 +160,10 @@ public abstract class Player {
 	protected List<Fleet> getFleets() {
 		return universe.FleetsOfPlayer(this, this);
 	}
+	
+	public List<Fleet> getVisibleFleets() {
+		return universe.FleetsOfPlayer(NonePlayer, this);
+	}
 
 	protected List<Fleet> getAllFleets() {
 		return universe.AllFleets(this);
@@ -210,5 +229,9 @@ public abstract class Player {
 
 	protected int getRandomInt(int max) {
 		return universe.getRandomInt(max);
+	}
+
+	void setUniverse(Universe universe) {
+		this.universe = universe;
 	}
 }

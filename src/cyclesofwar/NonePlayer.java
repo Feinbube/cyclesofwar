@@ -1,8 +1,6 @@
 package cyclesofwar;
 import java.awt.Color;
 
-
-
 public class NonePlayer extends Player {
 
 	@Override
@@ -26,7 +24,7 @@ public class NonePlayer extends Player {
 	}
 	
 	@Override
-	String getName(){
+	public String getName(){
 		return "Nobody";
 	}
 
