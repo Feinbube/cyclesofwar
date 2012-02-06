@@ -13,31 +13,133 @@ import cyclesofwar.Fleet.Formation;
 
 public class Alai extends Player {
 
-	List<Fleet> fleetsHandled = new ArrayList<Fleet>();
+	static class Target {
+		int forcesToConquer;
+		int forcesToKeep;
+		Planet planet;
 
-	int nothingHappend = 0;
+		public Target(int forcesToConquer, int forcesToKeep, Planet planet) {
+			super();
+			this.forcesToConquer = forcesToConquer;
+			this.forcesToKeep = forcesToKeep;
+			this.planet = planet;
+		}
+
+		public static List<Target> removePlanetsThatAreFine(List<Target> targets, Player player) {
+			List<Target> result = new ArrayList<Target>();
+			for (Target target : targets) {
+				if (target.forcesToConquer > 0 || target.forcesToKeep > 0) {
+					result.add(target);
+				}
+			}
+
+			return result;
+
+		}
+	}
+
+	static class Situation {
+		Player owner;
+		Planet planet;
+		double forces;
+		double lastFleetArrivedAt;
+
+		public Situation(Planet planet) {
+			super();
+			this.owner = planet.getPlayer();
+			this.planet = planet;
+			this.forces = planet.getForces();
+			this.lastFleetArrivedAt = 0.0;
+		}
+
+		static void sortByForceCount(List<Situation> situations) {
+			Collections.sort(situations, new Comparator<Situation>() {
+
+				@Override
+				public int compare(Situation one, Situation other) {
+					return Double.compare(one.forces, other.forces);
+				}
+			});
+		}
+
+		static List<Situation> enemyPlanetsOnly(Player player, List<Situation> targets) {
+			List<Situation> result = new ArrayList<Situation>();
+			for (Situation target : targets) {
+				if (!target.owner.equals(player)) {
+					result.add(target);
+				}
+			}
+
+			return result;
+		}
+
+		void update(Fleet fleet) {
+			update(fleet.getPlayer(), fleet.getForce(), fleet.timeToTarget());
+		}
+
+		void update(Player player, int force, double timeToTarget) {
+			double late = timeToTarget - lastFleetArrivedAt;
+			this.forces += producedForces(late);
+
+			if (this.owner.equals(player)) {
+				this.forces += force;
+			} else {
+				this.forces -= force;
+				if (this.forces < 0) {
+					this.owner = player;
+					this.forces *= -1;
+				}
+			}
+
+			lastFleetArrivedAt = timeToTarget;
+		}
+
+		double producedForces(double duration) {
+			if (this.owner.equals(NonePlayer)) {
+				return 0;
+			} else {
+				return duration * this.planet.getProductionRatePerSecond();
+			}
+		}
+	}
 
 	@Override
 	public void think() {
 		if (this.getPlanets().size() == 0)
 			return;
 
-		List<Fleet> enemyFleets = unhandledFleets(this.getAllEnemyFleets());
-		if (this.getAllEnemyFleets().size() == 0) {
-			nothingHappend++;
-			if (nothingHappend > 10) {
-				fireOverproduction(10);
-				nothingHappend = 0;
+		for (Planet planet : this.getPlanets()) {
+			List<Planet> targets = this.getAllPlanets();
+			Target target = bestTarget(targets, planet);
+
+			if (target == null) {
+				return; // already won :D
 			}
-		} else {
-			sortByValue(enemyFleets);
-			for (Fleet fleet : enemyFleets) {
-				handleEnemyFleet(fleet);
+
+			if ((int) target.forcesToConquer > 0 && planet.getForces() >= target.forcesToConquer) {
+				this.sendFleet(planet, target.forcesToConquer, target.planet);
 			}
+
+			// TODO send fleets to keep as well?
+			/*
+			 * if (target.forcesToKeep > 0 && planet.getForces() >=
+			 * target.forcesToKeep) { this.sendNewFleet(planet,
+			 * (int)(target.forcesToKeep + 1), target.planet); }
+			 */
 		}
 
-		if (getGroundForceOf(this) > allForces() * 2) {
-			showDown();
+		// TODO Teamwork
+		// List<Planet> targets = this.getAllPlanets();
+		// Target target = bestTarget(targets, planet);
+		if (this.getAllFleets().size() == 0) {
+			Planet home = this.getPlanets().get(0);
+			List<Planet> enemies = this.getAllPlanetsButMine();
+			sortByDistanceTo(enemies, home);
+			for (Planet planet : this.getPlanets()) {
+				if (planet.getForces() / 2 >= 1) {
+					this.sendFleet(planet, (int) (planet.getForces() / 2), enemies.get(0));
+				}
+			}
 		}
 
 		for (Fleet fleet : this.getFleets()) {
@@ -45,216 +147,36 @@ public class Alai extends Player {
 		}
 	}
 
-	private int allForces() {
-		int result = 0;
-		List<Player> enemies = this.getOtherPlayers();
-		for (Player enemy : enemies) {
-			result += getForceOf(enemy);
-		}
-		return result;
-	}
+	private Target bestTarget(List<Planet> targetPlanets, Planet orgin) {
+		List<Target> targets = new ArrayList<Target>();
+		for (Planet targetPlanet : targetPlanets) {
+			Situation situationAtArrivalTime = situationAtArrivalTime(targetPlanet, orgin.timeTo(targetPlanet));
 
-	private void showDown() {
-		List<Planet> enemyPlanets = this.getAllPlanetButMine();
-		sortByForceCount(enemyPlanets);
+			int fleetsToConquer = (int) situationAtArrivalTime.forces + 1;
+			if (situationAtArrivalTime.owner.equals(this)) {
+				fleetsToConquer = -fleetsToConquer;
+			}
 
-		for (Planet target : enemyPlanets) {
-			double currentForces = target.getForces();
+			int fleetsToKeep = getFleetsToKeep(situationAtArrivalTime, fleetsToConquer, orgin.timeTo(targetPlanet));
 
-			List<Planet> myPlanets = this.getPlanets();
-			sortByDistanceTo(myPlanets, target);
-
-			for (Planet planet : myPlanets) {
-				currentForces -= attackForce(target, planet);
-				if (currentForces < 0) {
-					break;
-				}
+			if (!targetAlreadyHandled(targetPlanet, orgin.timeTo(targetPlanet))) {
+				targets.add(new Target(fleetsToConquer, fleetsToKeep, targetPlanet));
 			}
 		}
-	}
 
-	private int attackForce(Planet target, Planet planet) {
-		int force = getFleetsToSend(planet, target);
-		Fleet fleet = sendFleetUpTo(planet, force, target);
-		if(fleet == null) {
-			return 0;
+		targets = Target.removePlanetsThatAreFine(targets, this);
+		sortByValue(targets);
+
+		if (targets.size() == 0) {
+			return null;
 		} else {
-			return fleet.getForce();
+			return targets.get(0);
 		}
 	}
 
-	private int getGroundForceOf(Player player) {
-		int force = 0;
-		for (Planet planet : getPlanetsOf(player)) {
-			force += (int) planet.getForces();
-		}
-		return force;
-	}
-
-	private int getSpaceForceOf(Player player) {
-		int force = 0;
-		for (Fleet fleet : getFleetsOf(player)) {
-			force += (int) fleet.getForce();
-		}
-		return force;
-	}
-
-	private int getForceOf(Player player) {
-		return getGroundForceOf(player) + getSpaceForceOf(player);
-	}
-
-	private void fireOverproduction(int rounds) {
-		List<Planet> planets = this.getAllPlanetButMine();
-		removePlanetsOnTrack(planets);
-		sortByForceCount(planets);
-		if (planets.size() == 0) {
-			return;
-		}
-		for (Planet planet : getPlanets()) {
-			this.sendFleetUpTo(planet, (int) (planet.getProductionRatePerSecond() * rounds), planets.get(planets.size() - 1));
-		}
-	}
-
-	private void removePlanetsOnTrack(List<Planet> planets) {
+	private boolean targetAlreadyHandled(Planet target, double arrivalTime) {
 		for (Fleet fleet : this.getFleets()) {
-			if (planets.contains(fleet.getTarget())) {
-				planets.remove(fleet.getTarget());
-			}
-		}
-	}
-
-	private void sortByValue(List<Fleet> enemyFleets) {
-		Collections.sort(enemyFleets, new Comparator<Fleet>() {
-			@Override
-			public int compare(Fleet fleet1, Fleet fleet2) {
-				return (int) (troopsOnTargetAfterEncounter(fleet1) - troopsOnTargetAfterEncounter(fleet2));
-			}
-		});
-	}
-
-	private List<Fleet> unhandledFleets(List<Fleet> enemyFleets) {
-		List<Fleet> fleetsHandledSlim = new ArrayList<Fleet>();
-
-		for (Fleet fleet : fleetsHandled)
-			if (enemyFleets.contains(fleet))
-				fleetsHandledSlim.add(fleet);
-
-		fleetsHandled = fleetsHandledSlim;
-
-		List<Fleet> result = new ArrayList<Fleet>();
-
-		for (Fleet fleet : enemyFleets)
-			if (!fleetsHandledSlim.contains(fleet))
-				result.add(fleet);
-
-		return result;
-	}
-
-	/* private void handleEnemyFleetNew(Fleet enemyFleet) {
-		List<Planet> planets = this.getPlanets();
-		Planet target = enemyFleet.getTarget();
-		sortByDistanceTo(planets, target);
-
-		for (Planet planet : planets) {
-			if (planet.timeTo(enemyFleet.getTarget()) > enemyFleet.timeToTarget()) {
-				int forcesToSend = getFleetsToSend(planet, enemyFleet);
-				if (planet.getForces() > forcesToSend) {
-					this.sendFleetUpTo(planet, forcesToSend, enemyFleet.getTarget());
-					fleetsHandled.add(enemyFleet);
-					return;
-				}
-			}
-		}
-		
-		double currentForces = troopsOnTargetAfterEncounter(enemyFleet)+1;
-		if (currentForces < 0) {
-			fleetsHandled.add(enemyFleet);
-			return;
-		}
-
-		boolean beatable = false;
-		for (Planet planet : planets) {
-			if (planet.timeTo(target) > enemyFleet.timeToTarget()) {
-				double penalty = penaltyForBeingLate(planet, enemyFleet)+2;
-				if(penalty+1 > planet.getForces()) {
-					continue;
-				}
-				int forceSent = Math.min((int)planet.getForces(), (int)(penalty + currentForces));
-				currentForces -= forceSent - penalty;
-				if (currentForces < 1) {
-					beatable = true;
-					break;
-				}
-			}
-		}
-		
-		if(!beatable){
-			return;
-		}
-		
-		for (Planet planet : planets) {
-			if (planet.timeTo(target) > enemyFleet.timeToTarget()) {
-				double penalty = penaltyForBeingLate(planet, enemyFleet);
-				if(penalty+1 > planet.getForces()) {
-					continue;
-				}
-				int forceSent = sendFleetUpTo(planet, (int)(penalty + currentForces), target);
-				currentForces -= forceSent - penalty;
-				if (currentForces < 1) {
-					fleetsHandled.add(enemyFleet);
-					return;
-				}
-			}
-		}
-	}
-	*/
-
-	private void handleEnemyFleet(Fleet enemyFleet) {
-
-		List<Planet> planets = this.getPlanets();
-		sortByDistanceTo(planets, enemyFleet.getTarget());
-
-		// TODO TEAMWORK!
-		for (Planet planet : planets) {
-			if (planet.timeTo(enemyFleet.getTarget()) > enemyFleet.timeToTarget()) {
-				int forcesToSend = getFleetsToSend(planet, enemyFleet);
-				if (planet.getForces() > forcesToSend) {
-					this.sendFleetUpTo(planet, forcesToSend, enemyFleet.getTarget());
-					fleetsHandled.add(enemyFleet);
-					return;
-				}
-			}
-		}
-	}
-
-	private double troopsOnTargetAfterEncounter(Fleet enemyFleet) {
-		Planet target = enemyFleet.getTarget();
-		int time = (int) enemyFleet.timeToTarget()+1;
-
-		double troopsOnPlanet = target.getForces();
-		if (isTargetOfMyFleets(target)) {
-			troopsOnPlanet = 0;
-		}
-		if (!target.getPlayer().equals(NonePlayer)) {
-			troopsOnPlanet += time * target.getProductionRatePerSecond();
-		}
-
-		if (target.getPlayer().equals(enemyFleet.getPlayer())) {
-			troopsOnPlanet += enemyFleet.getForce();
-		} else {
-			troopsOnPlanet -= enemyFleet.getForce();
-		}
-
-		if (target.getPlayer().equals(this)) {
-			return -troopsOnPlanet;
-		} else {
-			return Math.abs(troopsOnPlanet);
-		}
-	}
-
-	private boolean isTargetOfMyFleets(Planet target) {
-		for (Fleet fleet : this.getFleets()) {
-			if (fleet.getTarget().equals(target)) {
+			if (fleet.getTarget().equals(target) && fleet.timeToTarget() > arrivalTime) {
 				return true;
 			}
 		}
@@ -262,29 +184,60 @@ public class Alai extends Player {
 		return false;
 	}
 
-	private int getFleetsToSend(Planet planet, Fleet enemyFleet) {
-		double troopsOnPlanet = troopsOnTargetAfterEncounter(enemyFleet);
-
-		double late = (int) planet.timeTo(enemyFleet.getTarget()) + 1 - (int) (enemyFleet.timeToTarget());
-		troopsOnPlanet += late * enemyFleet.getTarget().getProductionRatePerSecond();
-
-		return (int) (troopsOnPlanet);
+	private void sortByValue(List<Target> targets) {
+		Collections.sort(targets, new Comparator<Target>() {
+			@Override
+			public int compare(Target one, Target other) {
+				return Double.compare(valueOf(other), valueOf(one));
+			}
+		});
 	}
 
-	private int getFleetsToSend(Planet planet, Planet target) {
-		double troopsOnPlanet = target.getForces();
+	private double valueOf(Target target) {
+		return -target.forcesToConquer - target.forcesToKeep;
+		// TODO: consider nearestPlanet in the FUTURE!!
+		// + target.planet.timeTo(nearestPlanet(target.planet)) *
+		// target.planet.getProductionRatePerSecond();
+	}
 
-		double time = (int) planet.timeTo(target) + 1;
-		if (!target.getPlayer().equals(NonePlayer)) {
-			troopsOnPlanet += time * target.getProductionRatePerSecond();
+	private int getFleetsToKeep(Situation situationAtArrivalTime, int fleetsToConquer, double arrivalTime) {
+		situationAtArrivalTime.update(this, fleetsToConquer, arrivalTime);
+
+		List<Fleet> fleets = getFleetsWithTarget(situationAtArrivalTime.planet);
+		sortByArrivalTime(fleets);
+
+		for (Fleet fleet : fleets) {
+			if (fleet.timeToTarget() < arrivalTime) {
+				continue;
+			}
+			situationAtArrivalTime.update(fleet);
 		}
-		return (int) (troopsOnPlanet);
+
+		if (situationAtArrivalTime.owner.equals(this)) {
+			return -(int) situationAtArrivalTime.forces;
+		} else {
+			return (int) situationAtArrivalTime.forces; // MAYBE THE BEST WAY:
+														// always return 0;
+		}
 	}
-	
-	/* private double penaltyForBeingLate(Planet planet, Fleet enemyFleet) {
-		int late = (int)planet.timeTo(enemyFleet.getTarget()) + 1 - (int)enemyFleet.timeToTarget();
-		return late * enemyFleet.getTarget().getProductionRatePerSecond();
-	} */
+
+	Situation situationAtArrivalTime(Planet planet, double arrivalTime) {
+		Situation situation = new Situation(planet);
+
+		List<Fleet> fleets = getFleetsWithTarget(planet);
+		sortByArrivalTime(fleets);
+
+		for (Fleet fleet : fleets) {
+			if (fleet.timeToTarget() > arrivalTime) {
+				break;
+			}
+			situation.update(fleet);
+		}
+
+		situation.update(this, 0, arrivalTime);
+
+		return situation;
+	}
 
 	@Override
 	public Color getPlayerBackColor() {
@@ -300,5 +253,4 @@ public class Alai extends Player {
 	public String getCreatorsName() {
 		return "Frank";
 	}
-
 }

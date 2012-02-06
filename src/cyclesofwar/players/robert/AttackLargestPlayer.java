@@ -40,7 +40,7 @@ public class AttackLargestPlayer extends Player {
 	}
 	
 	public List<Planet> getOtherPlanetsNotUnderAttack() {
-		List<Planet> result = getAllPlanetButMine();
+		List<Planet> result = getAllPlanetsButMine();
 		sortByForceCount(result);
 		for (Fleet fleet : this.getFleets()) {
 			result.remove(fleet.getTarget());

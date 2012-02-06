@@ -11,9 +11,9 @@ import cyclesofwar.Player;
 
 public class Petra extends Player {
 	
-	double attackFirst = 0.8;
-	double attackSecond = 0.6;
-	double attackThird = 0.4;
+	double attackFirst = 0.3;
+	double attackSecond = 0.3;
+	double attackThird = 0.3;
 	
 	@Override
 	public void think() {
@@ -62,7 +62,7 @@ public class Petra extends Player {
 	}
 
 	private List<Planet> getTargets(final Planet planet) {
-		List<Planet> targets = this.getAllPlanetButMine();
+		List<Planet> targets = this.getAllPlanetsButMine();
 		List<Planet> result = new ArrayList<Planet>();
 
 		while (targets.size() > 0) {
