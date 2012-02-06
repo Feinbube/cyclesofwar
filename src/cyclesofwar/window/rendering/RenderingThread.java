@@ -1,10 +1,11 @@
-package cyclesofwar;
+package cyclesofwar.window.rendering;
+
+import cyclesofwar.window.GamePanel;
 
 public class RenderingThread implements Runnable {
 
-	GamePanel gamePanel;
-
-	boolean gameStarted = false;
+	private GamePanel gamePanel;
+	private boolean gameStarted = false;
 
 	public RenderingThread(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
@@ -22,8 +23,8 @@ public class RenderingThread implements Runnable {
 				gamePanel.update();
 			}
 
-			if(Arena.speedUp < 1){
-				sleep((int)(1.0/Arena.speedUp * 20));
+			if (gamePanel.getSpeedUp() < 1) {
+				sleep((int) (1.0 / gamePanel.getSpeedUp() * 20));
 			} else {
 				sleep(20);
 			}
@@ -35,8 +36,11 @@ public class RenderingThread implements Runnable {
 		try {
 			Thread.sleep(sleepTime);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isGameStarted() {
+		return gameStarted;
 	}
 }

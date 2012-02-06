@@ -2,12 +2,12 @@
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <stringAttribute key="bad_container_name" value="\CyclesOfWar."/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/CyclesOfWar/src/cyclesofwar/MainWindow.java"/>
+<listEntry value="/CyclesOfWar/src/cyclesofwar/window/MainWindow.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="cyclesofwar.MainWindow"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="cyclesofwar.window.MainWindow"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="CyclesOfWar"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djava.security.manager -Djava.security.policy=cow.policy"/>
 </launchConfiguration>

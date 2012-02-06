@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cyclesofwar.Fleet;
-import cyclesofwar.Fleet.Formation;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
+import cyclesofwar.Fleet.Formation;
 
 public class Petra extends Player {
 	

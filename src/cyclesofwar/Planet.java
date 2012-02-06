@@ -6,7 +6,7 @@ public class Planet {
 	static int nextid;
 	int id;
 
-	Universe universe;
+	private Universe universe;
 	
 	double size;
 	double x;
@@ -27,7 +27,7 @@ public class Planet {
 	}
 
 	public double getForces() {
-		if (universe.currentPlayer.equals(player)) {
+		if (universe.getCurrentPlayer().equals(player)) {
 			return newForces;
 		} else {
 			return forces;

@@ -25,17 +25,17 @@ public class FastExpand extends Player {
 	}
 
 	@Override
-	protected Color getPlayerBackColor() {
+	public Color getPlayerBackColor() {
 		return Color.red;
 	}
 
 	@Override
-	protected Color getPlayerForeColor() {
+	public Color getPlayerForeColor() {
 		return Color.orange;
 	}
 
 	@Override
-	protected String getCreatorsName() {
+	public String getCreatorsName() {
 		return "Robert";
 	}
 
