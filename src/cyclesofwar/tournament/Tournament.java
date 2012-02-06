@@ -29,7 +29,7 @@ public abstract class Tournament {
 
 		setupGames(matches);
 		gamesToPlayCount = gamesToPlay.size();
-		
+
 		setupThreads(threads);
 	}
 
@@ -58,10 +58,10 @@ public abstract class Tournament {
 	public abstract Tournament lightWeightClone();
 
 	public void runToCompletion() {
-		if(isPaused()) {
+		if (isPaused()) {
 			togglePause();
 		}
-		
+
 		start();
 
 		for (WorkerThread thread : workerThreads) {
@@ -160,16 +160,22 @@ public abstract class Tournament {
 			workerThread.running = false;
 		}
 	}
-	
+
 	public boolean isPaused() {
 		return pause;
 	}
-	
+
 	public void togglePause() {
 		pause = !pause;
 
 		for (WorkerThread workerThread : workerThreads) {
 			workerThread.pause = pause;
+
+			if (!pause) {
+				synchronized (workerThread) {
+					workerThread.notifyAll();
+				}
+			}
 		}
 	}
 

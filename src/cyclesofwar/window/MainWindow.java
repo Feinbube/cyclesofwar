@@ -31,13 +31,20 @@ public class MainWindow {
 		List<Player> champions = Arena.champions();
 
 		int place = 0;
-		while (champions.size() > 0) {
-			Tournament tournament = new LastManStandingTournament(threadcount, champions, Arena.matchesInTournament);
+		Tournament tournament = null;
+		while (champions.size() > 1) {
+			tournament = new LastManStandingTournament(threadcount, champions, Arena.matchesInTournament);
 			tournament.runToCompletion();
 			Player winner = tournament.rankedPlayers().get(0);
-			System.out.println(++place + "," + winner.getName() + "," + tournament.wonBy(winner) + "," + tournament.participatedIn(winner));
+			printWinner(++place, tournament, winner);
 			champions.remove(winner);
 		}
+		printWinner(++place, tournament, champions.get(0));
+	}
+
+	private static void printWinner(int place, Tournament tournament, Player winner) {
+		System.out.println(place + "," + winner.getName() + "," + tournament.wonBy(winner).size() + ","
+				+ tournament.participatedIn(winner).size());
 	}
 
 	private static void startGUI(int threads) {

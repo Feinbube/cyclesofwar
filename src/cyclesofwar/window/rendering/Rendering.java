@@ -74,7 +74,7 @@ public class Rendering {
 		drawStars(g);
 	}
 
-	void drawUniverse(Graphics g) {
+	private void drawUniverse(Graphics g) {
 		drawBackground(g);
 
 		if (!universe.isGameOver()) {
@@ -164,42 +164,10 @@ public class Rendering {
 			}
 
 			if (fleet.getFormation().equals(Fleet.Formation.ARROW)) {
-				double xDiff = fleet.getTarget().getX() - fleet.getX();
-				double yDiff = fleet.getTarget().getY() - fleet.getY();
-
-				xDiff *= 2.0;
-
-				double dist = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-
-				double sinAngle = yDiff / dist;
-				double cosAngle = xDiff / dist;
-
-				double length = Math.sqrt(d) * 5;
-				for (int i = 0; i < d; i++) {
-					double localx = random.nextDouble() * length;
-					double localy = random.nextDouble() * localx - localx / 2.0;
-					localx -= length / 2;
-
-					double renderx = localx * cosAngle + localy * sinAngle;
-					double rendery = -localx * sinAngle + localy * cosAngle;
-
-					renderx = x - renderx;
-					rendery = y + rendery;
-
-					g.fillOval((int) renderx, (int) rendery, 3, 3);
-				}
+				drawArrowFormation(g, fleet, x, y, d);
 			} else {
-				for (int i = 0; i < fleet.getForce(); i++) {
-					double r = random.nextDouble() * Math.sqrt(d) * 5;
-					double v = random.nextDouble() * r;
-					double localX = r * Math.cos(v);
-					double localY = r * Math.sin(v);
-
-					g.fillOval((int) (x + localX / 2), (int) (y + localY / 2), 3, 3);
-				}
+				drawSwarmFormation(g, fleet, x, y, d);
 			}
-
-			// g.fillRect(x - d / 2, y - d / 2, d, d);
 
 			if (d == MaxRenderedFleet) {
 				drawText(g, (int) x, (int) y, fleet.getForce() + "", fleet.getPlayer().getPlayerForeColor(), null, HAlign.CENTER,
@@ -208,6 +176,44 @@ public class Rendering {
 		}
 	}
 
+	private void drawArrowFormation(Graphics g, Fleet fleet, double x, double y, int d) {
+		double xDiff = fleet.getTarget().getX() - fleet.getX();
+		double yDiff = fleet.getTarget().getY() - fleet.getY();
+
+		xDiff *= 2.0;
+
+		double dist = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+		double sinAngle = yDiff / dist;
+		double cosAngle = xDiff / dist;
+
+		double length = Math.sqrt(d) * 5;
+		for (int i = 0; i < d; i++) {
+			double localx = random.nextDouble() * length;
+			double localy = random.nextDouble() * localx - localx / 2.0;
+			localx -= length / 2;
+
+			double renderx = localx * cosAngle + localy * sinAngle;
+			double rendery = -localx * sinAngle + localy * cosAngle;
+
+			renderx = x - renderx;
+			rendery = y + rendery;
+
+			g.fillOval((int) renderx, (int) rendery, 3, 3);
+		}
+	}
+
+	private void drawSwarmFormation(Graphics g, Fleet fleet, double x, double y, int d) {
+		for (int i = 0; i < fleet.getForce(); i++) {
+			double r = random.nextDouble() * Math.sqrt(d) * 5;
+			double v = random.nextDouble() * r;
+			double localX = r * Math.cos(v);
+			double localY = r * Math.sin(v);
+
+			g.fillOval((int) (x + localX / 2), (int) (y + localY / 2), 3, 3);
+		}
+	}
+	
 	private void drawPlayers(Graphics g) {
 		for (int i = 0; i < universe.getPlayers().size(); i++) {
 			Player player = universe.getPlayers().get(i);
