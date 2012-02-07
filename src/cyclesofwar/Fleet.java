@@ -9,15 +9,15 @@ public class Fleet {
 	
 	private Universe universe;
 	
-	Player player;
-	int force;
+	private Player player;
+	private int force;
 	
-	Planet target;
+	private Planet target;
 	
-	double x;
-	double y;
+	private double x;
+	private double y;
 	
-	Formation formation = Formation.SWARM;
+	private Formation formation = Formation.SWARM;
 	
 	Fleet(Universe universe, Player player, int force, Planet start, Planet target){
 		if (force < 1) {
@@ -39,8 +39,8 @@ public class Fleet {
 		
 		this.target = target;
 		
-		x = start.x;
-		y = start.y;
+		x = start.getX();
+		y = start.getY();
 	}
 	
 	public Player getPlayer() {
@@ -64,8 +64,8 @@ public class Fleet {
 	}
 	
 	void update(double elapsedSeconds) {
-		double xDiff = x - target.x;
-		double yDiff = y - target.y;
+		double xDiff = x - target.getX();
+		double yDiff = y - target.getY();
 		
 		double sqrt = Math.sqrt(xDiff*xDiff + yDiff*yDiff);
 		
@@ -82,23 +82,15 @@ public class Fleet {
 	private void hit(double distance) {
 		universe.fleetArrived(this, distance);
 	}
-	
 	void land() {
-		if(target.player.equals(player))
-			target.forces += force;
-		else
-			target.forces -= force;
-		
-		if(target.forces < 0)
-		{
-			target.forces = -target.forces;
-			target.player = player;
-		}
+		this.target.land(this);
 	}
 	
+	// for players
+	
 	public double distanceToTarget() {
-		double xDiff = target.x - this.x;
-		double yDiff = target.y - this.y;
+		double xDiff = target.getX() - this.x;
+		double yDiff = target.getY() - this.y;
 		
 		return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 	}

@@ -122,7 +122,7 @@ public class Rendering {
 	}
 
 	private void drawPlanets(Graphics g) {
-		for (Planet planet : universe.AllPlanets()) {
+		for (Planet planet : universe.getAllPlanets()) {
 			g.setColor(planet.getPlayer().getPlayerBackColor());
 
 			int x = (int) getX(g, planet.getX());
@@ -152,7 +152,7 @@ public class Rendering {
 	}
 
 	private void drawFleets(Graphics g) {
-		for (Fleet fleet : universe.AllFleets()) {
+		for (Fleet fleet : universe.getAllFleets()) {
 			g.setColor(fleet.getPlayer().getPlayerBackColor());
 
 			double x = getX(g, fleet.getX());
@@ -228,7 +228,7 @@ public class Rendering {
 
 		result += player.getName();
 		result += " P[" + player.getPlanets().size() + "/" + ((int) player.getGroundForce()) + "]";
-		result += " F[" + player.getVisibleFleets().size() + "/" + player.getVisibleSpaceForce() + "]";
+		result += " F[" + player.getFleets().size() + "/" + player.getSpaceForce() + "]";
 
 		return result;
 	}

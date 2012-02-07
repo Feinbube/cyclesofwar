@@ -200,7 +200,7 @@ public abstract class Tournament {
 		List<Universe> prioritizedGames = new ArrayList<Universe>();
 		for (Universe universe : gamesToPlay) {
 			for (Player player : prioritized) {
-				if (universe.inhabitesPlayer(player)) {
+				if (universe.inhabitedByPlayer(player)) {
 					prioritizedGames.add(universe);
 					break;
 				}

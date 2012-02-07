@@ -1,29 +1,33 @@
 package cyclesofwar;
 
+import java.util.List;
 import java.util.Random;
 
 public class Planet {
-	static int nextid;
-	int id;
+	private static int nextid;
+	private int id;
 
 	private Universe universe;
-	
-	double size;
-	double x;
-	double y;
 
-	Player player;
-	double forces;
-	double newForces;
+	private double x;
+	private double y;
 
-	double productionRatePerSecond;
-	
+	private Player player;
+	private double forces;
+	private double newForces;
+
+	private double productionRatePerSecond;
+
 	public int getId() {
 		return id;
 	}
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	void setPlayer(Player player) {
+		this.player = player;
 	}
 
 	public double getForces() {
@@ -46,12 +50,19 @@ public class Planet {
 		return y;
 	}
 
+	double getNewForces() {
+		return newForces;
+	}
+
+	void setNewForces(double newForces) {
+		this.newForces = newForces;
+	}
+
 	Planet(Universe universe, Random random, double size, double productionRatePerSecond) {
 		this.universe = universe;
-		
+
 		nextid++;
 		id = nextid;
-		this.size = size;
 		this.player = Player.NonePlayer;
 
 		if (productionRatePerSecond <= 0) {
@@ -70,6 +81,42 @@ public class Planet {
 			forces += productionRatePerSecond * elapsedSeconds;
 	}
 
+	void prepare() {
+		newForces = forces;
+	}
+
+	void commit() {
+		forces = newForces;
+	}
+
+	void land(Fleet fleet) {
+		if (player.equals(fleet.getPlayer())) {
+			forces += fleet.getForce();
+		} else {
+			forces -= fleet.getForce();
+		}
+
+		if (forces < 0) {
+			forces = -forces;
+			this.player = fleet.getPlayer();
+		}
+	}
+
+	boolean fits(List<Planet> others) {
+		for (Planet other : others) {
+			if (tooCloseTo(other))
+				return false;
+		}
+
+		return true;
+	}
+
+	private boolean tooCloseTo(Planet other) {
+		return distanceTo(other) < (other.productionRatePerSecond + this.productionRatePerSecond) / 2 * Universe.speedOfLight;
+	}
+
+	// for players
+
 	public double distanceTo(Planet other) {
 		double xDiff = other.x - this.x;
 		double yDiff = other.y - this.y;
@@ -79,9 +126,5 @@ public class Planet {
 
 	public double timeTo(Planet other) {
 		return distanceTo(other) / Universe.speedOfLight;
-	}
-	
-	void commit() {
-		forces = newForces;
 	}
 }
