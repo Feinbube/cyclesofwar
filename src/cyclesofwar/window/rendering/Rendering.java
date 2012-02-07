@@ -16,7 +16,7 @@ import cyclesofwar.tournament.Tournament;
 import cyclesofwar.tournament.TournamentRecord;
 
 public class Rendering {
-	
+
 	final int StarCount = 1000;
 	final int MaxRenderedFleet = 20;
 
@@ -92,6 +92,11 @@ public class Rendering {
 
 	public void drawControlInfo(Graphics g, String s) {
 		drawText(g, size.width - 5, size.height - 5, s, Color.yellow, null, HAlign.RIGHT, VAlign.TOP, 12);
+	}
+
+	public void drawInfo(Graphics g, String s) {
+		drawText(g, size.width / 2, size.height / 2, s, Color.yellow, null, HAlign.CENTER, VAlign.CENTER, new Font("Courier New",
+				Font.BOLD, 32));
 	}
 
 	public void drawTitleScreen(Graphics g) {
@@ -213,7 +218,7 @@ public class Rendering {
 			g.fillOval((int) (x + localX / 2), (int) (y + localY / 2), 3, 3);
 		}
 	}
-	
+
 	private void drawPlayers(Graphics g) {
 		for (int i = 0; i < universe.getPlayers().size(); i++) {
 			Player player = universe.getPlayers().get(i);
@@ -233,19 +238,19 @@ public class Rendering {
 		return result;
 	}
 
-	public void drawStatistics(Graphics g, Tournament tournament) {
+	public void drawStatistics(Graphics g, Tournament tournament, String s) {
 		drawBackground(g);
-
+		
 		Font f = new Font("Courier New", Font.PLAIN, 14);
 
 		int marginLeft = 50;
 		int padding = 10;
-		int marginTop = 100;
+		int marginTop = 120;
+		
+		drawText(g, marginLeft, marginLeft, s, Color.yellow, null, HAlign.LEFT, VAlign.CENTER, new Font("Courier New",
+				Font.BOLD, 32));
 
 		tournament = tournament.lightWeightClone();
-
-		drawText(g, marginLeft, 30, tournament.getGamesToPlayCount() + " games left, " + tournament.getGamesPlayedCount()
-				+ " games played.", Color.white, Color.black, HAlign.LEFT, VAlign.BOTTOM, f);
 
 		drawLines(g, tournament, f, marginLeft, marginTop);
 
@@ -269,6 +274,9 @@ public class Rendering {
 						.getHeight() - 2);
 			}
 		}
+		
+		drawText(g, size.width - marginLeft, marginTop + 20 * (tournament.getRankings().size()+1), tournament.getGamesToPlayCount() + " games left, " + tournament.getGamesPlayedCount()
+				+ " games played.", Color.white, Color.black, HAlign.RIGHT, VAlign.BOTTOM, f);
 	}
 
 	private String percentage(double value) {

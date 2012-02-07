@@ -6,7 +6,7 @@ public class HanTzu extends Jeesh{
 
 	@Override
 	protected void thinkYourself() {
-		
+
 	}
 
 }

@@ -11,34 +11,13 @@ import de.loewis.*;
 
 public class Arena {
 	
-	public static final int matchesInArena = 50;
-	public static final int matchesInTournament = 3;
-	
-	public static List<Player> playersForGameMode(){
-		ArrayList<Player> result = new ArrayList<Player>();
-
-		result.add(new HelloWorld());
-		result.add(new Cratters());
-		result.add(new CrazyTom());
-		
-		return result;
-	}
-	
-	public static List<Player> playersForArenaMode(){
-		ArrayList<Player> result = new ArrayList<Player>();
-
-		result.add(new HelloWorld());
-		result.add(new Cratters());
-		result.add(new CrazyTom());
-		
-		return result;
-	}
+	public static final int matchesInTournament = 10;
 	
 	public static List<Player> champions(){
 		ArrayList<Player> result = new ArrayList<Player>();
 
 		result.add(new HelloWorld()); // Theo
-		result.add(new CrazyTom()); // Frank
+		result.add(new Bean()); // Frank
 		result.add(new Cratters()); // Martin
 		result.add(new AttackLargestPlayer()); // Robert
 		
