@@ -21,7 +21,7 @@ public class PlayerSelectionGameMode extends GameMode {
 
 	@Override
 	protected void paintGame(Graphics g) {
-		// TODO Auto-generated method stub
+		rendering.drawPlayers(g, getSelectedPlayers(), getAllPlayers());
 
 	}
 
@@ -33,8 +33,6 @@ public class PlayerSelectionGameMode extends GameMode {
 
 	@Override
 	protected void keyPressedGame(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -45,14 +43,9 @@ public class PlayerSelectionGameMode extends GameMode {
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-		
+	public void pause() {	
 	}
-
 }

@@ -17,7 +17,7 @@ public class TitleScreenGameMode extends GameMode {
 	@Override
 	protected void updateGame() {
 		if(count++ > 50){
-			switchTo(GameModes.PLAYERSELECTION);
+			switchTo(GameModes.LIVE);
 		}
 	}
 
