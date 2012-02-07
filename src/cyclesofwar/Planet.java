@@ -71,14 +71,16 @@ public class Planet {
 
 		this.productionRatePerSecond = productionRatePerSecond;
 		forces = productionRatePerSecond * 10;
+		newForces = forces;
 
 		x = random.nextDouble() * size;
 		y = random.nextDouble() * size;
 	}
 
 	void update(double elapsedSeconds) {
-		if (!player.equals(Player.NonePlayer))
+		if (!player.equals(Player.NonePlayer)) {
 			forces += productionRatePerSecond * elapsedSeconds;
+		}
 	}
 
 	void prepare() {

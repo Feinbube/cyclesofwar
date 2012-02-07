@@ -54,7 +54,8 @@ public class MainWindow {
 				System.exit(0);
 			}
 		});
-		Container panel = new GamePanel(threads, Arena.playersForGameMode(), Arena.playersForArenaMode(), Arena.matchesInArena);
+		// TODO: remember last session
+		Container panel = new GamePanel(threads, Arena.champions(), Arena.registeredPlayers(), Arena.matchesInTournament);
 		f.getContentPane().add(panel, BorderLayout.CENTER);
 
 		f.addKeyListener((KeyListener) panel);
@@ -63,6 +64,7 @@ public class MainWindow {
 
 		f.addMouseListener((MouseListener) panel);
 
+		// TODO: remember last session
 		f.setSize(800, 480); // f.pack();
 		f.setVisible(true);
 	}
