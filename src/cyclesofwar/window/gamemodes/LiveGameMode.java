@@ -52,8 +52,8 @@ public class LiveGameMode extends GameMode {
 			rendering.drawControlInfo(g, "F1 toggle info");
 		} else {
 			String pauseString = pause ? "continue" : "pause";
-			rendering.drawControlInfo(g, "+/- to change game speed (" + ((int) (speedUp * 10)) / 10.0 + ") ... SPACE to " + pauseString
-					+ " ... F5 to start a new combat ... F6 to replay ... F7 to switch planets ... TAB to switch mode");
+			rendering.drawControlInfo(g, "[Key Mapping] ESC: Menue ... +/-: game speed (" + ((int) (speedUp * 10)) / 10.0 + ") ... SPACE: " + pauseString
+					+ " ... F5: new combat ... F6: replay ... F7: switch planets ... TAB: switch mode");
 			rendering.drawSeed(g);
 		}
 		
@@ -66,6 +66,10 @@ public class LiveGameMode extends GameMode {
 	protected void keyPressedGame(KeyEvent arg0) {
 		if (arg0.getKeyCode() == KeyEvent.VK_TAB) {
 			this.switchTo(GameModes.ARENA);
+		}
+		
+		if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			this.switchTo(GameModes.PLAYERSELECTION);
 		}
 
 		if (arg0.getKeyCode() == KeyEvent.VK_F5) {
@@ -88,7 +92,7 @@ public class LiveGameMode extends GameMode {
 			if (speedUp >= 1) {
 				speedUp += 1;
 			} else {
-				speedUp /= 2.0;
+				speedUp *= 2.0;
 			}
 		}
 
@@ -96,7 +100,7 @@ public class LiveGameMode extends GameMode {
 			if (speedUp >= 2) {
 				speedUp -= 1;
 			} else if (speedUp >= 0.2) {
-				speedUp *= 2.0;
+				speedUp /= 2.0;
 			}
 		}
 	}

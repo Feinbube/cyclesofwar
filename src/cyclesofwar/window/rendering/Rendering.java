@@ -238,6 +238,11 @@ public class Rendering {
 		return result;
 	}
 
+	public void drawPlayers(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	public void drawStatistics(Graphics g, Tournament tournament, String s) {
 		drawBackground(g);
 		

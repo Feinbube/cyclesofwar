@@ -1,7 +1,6 @@
 package cyclesofwar.window;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.event.*;
 
 import javax.swing.JFrame;
@@ -9,15 +8,17 @@ import javax.swing.JFrame;
 import cyclesofwar.Arena;
 
 public class MainWindow {
+
 	public static void main(String[] args) {
 		JFrame f = new JFrame("Cycles of War");
-		f.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				System.exit(0);
-			}
-		});
-		// TODO: remember last session
-		Container panel = new GamePanel(Runtime.getRuntime().availableProcessors(), Arena.champions(), Arena.registeredPlayers(), Arena.matchesInTournament);
+
+		ConfigManager configManager = new ConfigManager();
+		f.addWindowListener(configManager);
+
+		GamePanel panel = new GamePanel(Runtime.getRuntime().availableProcessors(), configManager.getSelectedPlayers(),
+				Arena.registeredPlayers(), Arena.matchesInTournament);
+		configManager.setGamePanel(panel);
+
 		f.getContentPane().add(panel, BorderLayout.CENTER);
 
 		f.addKeyListener((KeyListener) panel);
@@ -26,8 +27,7 @@ public class MainWindow {
 
 		f.addMouseListener((MouseListener) panel);
 
-		// TODO: remember last session
-		f.setSize(800, 480); // f.pack();
+		f.setBounds(configManager.getX(), configManager.getY(), configManager.getWidth(), configManager.getHeight());
 		f.setVisible(true);
 	}
 }

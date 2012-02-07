@@ -51,12 +51,15 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 		playerSelection = new PlayerSelectionGameMode(this);
 
 		gameMode = titleScreen;
+		liveGame.resume();
 
 		timer = new Timer(20, this);
 		timer.start();
 	}
 
 	public void switchTo(GameModes gameMode) {
+		this.gameMode.pause();
+		
 		if (gameMode == GameModes.LIVE) {
 			this.gameMode = liveGame;
 		} else if (gameMode == GameModes.ARENA) {
@@ -72,8 +75,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 		return selectedPlayers;
 	}
 
-	public List<Player> getsAllPlayers() {
-		return selectedPlayers;
+	public List<Player> getAllPlayers() {
+		return this.allPlayers;
 	}
 
 	public void update() {

@@ -65,6 +65,10 @@ public abstract class GameMode {
 		gamePanel.switchTo(gameMode);
 	}
 
+	protected List<Player> getAllPlayers() {
+		return gamePanel.getAllPlayers();
+	}
+	
 	protected List<Player> getSelectedPlayers() {
 		return gamePanel.getSelectedPlayers();
 	}

@@ -42,8 +42,8 @@ public class ArenaGameMode extends GameMode {
 			rendering.drawControlInfo(g, "F1 toggle info");
 		} else {
 			String pauseString = tournament.isPaused() ? "continue" : "pause";
-			rendering.drawControlInfo(g, "CLICK on player to toogle priority ... CLICK on stats to see battle ... SPACE to " + pauseString
-					+ " ... F5 to start a new combat ... TAB to switch mode");
+			rendering.drawControlInfo(g, "[Key Mapping]: ESC Menue ... CLICK player: toogle priority ... CLICK stats: see battle ... SPACE: " + pauseString
+					+ " ... F5: new combat ... TAB: switch mode");
 		}
 	}
 
@@ -51,6 +51,10 @@ public class ArenaGameMode extends GameMode {
 	protected void keyPressedGame(KeyEvent arg0) {
 		if (arg0.getKeyCode() == KeyEvent.VK_TAB) {
 			this.switchTo(GameModes.TOURNAMENT);
+		}
+		
+		if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			this.switchTo(GameModes.PLAYERSELECTION);
 		}
 
 		if (arg0.getKeyCode() == KeyEvent.VK_F5) {

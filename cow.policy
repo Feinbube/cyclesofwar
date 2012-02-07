@@ -1,3 +1,6 @@
 grant {
+	permission java.io.FilePermission "cow.config", "read,write";
 };
+
+
 
