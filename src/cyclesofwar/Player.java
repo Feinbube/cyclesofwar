@@ -6,139 +6,155 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-
-
 public abstract class Player {
+
+	public static Player NonePlayer = new NonePlayer();
 	
 	private Universe universe;
 	
-	public static Player NonePlayer = new NonePlayer();
-	
+	void setUniverse(Universe universe) {
+		this.universe = universe;
+	}
+
 	protected abstract void think();
-	
+
 	public abstract Color getPlayerBackColor();
+
 	public abstract Color getPlayerForeColor();
-	
+
 	public abstract String getCreatorsName();
-	
+
 	public String getName() {
 		return getCreatorsName() + "'s " + this.getClass().getSimpleName();
 	}
-	
-	public Player freshOne(){
-		for(Player other : Arena.registeredPlayers()){
-			if(other.isEqualTo(this)) {
+
+	public Player freshOne() {
+		for (Player other : Arena.registeredPlayers()) {
+			if (other.isEqualTo(this)) {
 				return other;
 			}
 		}
-		
+
 		return null;
 	}
 
 	public boolean isEqualTo(Player other) {
 		return this.getName().equals(other.getName());
 	}
-	
+
 	public boolean isInList(List<Player> players) {
-		for(Player candidate : players) {
-			if(candidate.isEqualTo(this)) {
+		for (Player candidate : players) {
+			if (candidate.isEqualTo(this)) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public double getGroundForce() {
 		double result = 0.0;
-		for (Planet planet : universe.PlanetsOfPlayer(this)) {
+		for (Planet planet : this.getPlanets()) {
 			result += planet.getForces();
 		}
 		return result;
 	}
-	
-	public int getVisibleSpaceForce() {
+
+	public int getSpaceForce() {
 		int result = 0;
-		for (Fleet fleet : universe.FleetsOfPlayer(NonePlayer, this)) {
-			result += fleet.force;
+		for (Fleet fleet : this.getFleets()) {
+			result += fleet.getForce();
 		}
 		return result;
 	}
-	
-	public double getVisibleFullForce() {
-		return getGroundForce() + getVisibleSpaceForce();
+
+	public double getFullForce() {
+		return getGroundForce() + getSpaceForce();
 	}
 
 	// Universe
-	protected double now() {
+	public double now() {
 		return universe.getNow();
 	}
 
-	protected double getStepInterval() {
+	public double getStepInterval() {
 		return Universe.speedOfLight;
 	}
 
 	// Players
-	protected List<Player> getOtherPlayers() {
-		return universe.OtherPlayers(this);
+	public List<Player> getOtherPlayers() {
+		return universe.getOtherPlayers(this);
 	}
-	
-	protected boolean isNonePlayer(Player player) {
+
+	public boolean isNonePlayer(Player player) {
 		return player.equals(Player.NonePlayer);
 	}
 
 	// Planets
 	public List<Planet> getPlanets() {
-		return universe.PlanetsOfPlayer(this);
+		return universe.getPlanetsOf(this);
 	}
 
-	protected List<Planet> getAllPlanets() {
-		return universe.AllPlanets();
+	public List<Planet> getAllPlanets() {
+		return universe.getAllPlanets();
 	}
 
-	protected List<Planet> getFreePlanets() {
-		return universe.PlanetsOfPlayer(Player.NonePlayer);
+	public List<Planet> getFreePlanets() {
+		return universe.getPlanetsOf(Player.NonePlayer);
 	}
 
-	protected List<Planet> getPlanetsOf(Player player) {
-		return universe.PlanetsOfPlayer(player);
+	public List<Planet> getPlanetsOf(Player player) {
+		return universe.getPlanetsOf(player);
 	}
 
-	protected boolean isMyPlanet(Planet planet) {
+	public boolean isMyPlanet(Planet planet) {
 		return planet.getPlayer().equals(this);
 	}
 
-	protected List<Planet> getAllPlanetsButMine() {
+	public List<Planet> getAllPlanetsButMine() {
 		List<Planet> result = new ArrayList<Planet>();
-
 		for (Planet planet : getAllPlanets())
 			if (!isMyPlanet(planet))
 				result.add(planet);
-
 		return result;
 	}
-	
-	protected List<Planet> getAllPlanetsButThis(Planet planet) {
+
+	public List<Planet> getAllPlanetsButThis(Planet planet) {
 		List<Planet> result = getAllPlanets();
 		result.remove(planet);
 		return result;
 	}
-	
-	protected Planet getRandomPlanet(Planet start) {
+
+	public Planet getRandomPlanet(Planet start) {
 		return getAllPlanetsButThis(start).get(getRandomInt(getAllPlanetsButThis(start).size()));
 	}
 
-	protected static void sortByForceCount(List<Planet> planets) {
+	public static void sortByForceCount(List<Planet> planets) {
 		Collections.sort(planets, new Comparator<Planet>() {
-
 			@Override
 			public int compare(Planet planet1, Planet planet2) {
-				return (int) (planet2.getForces() - planet1.getForces());
+				return Double.compare(planet2.getForces(), planet1.getForces());
 			}
 		});
 	}
+	
+	public Planet getNearestPlanet(Planet planet) {
+		List<Planet> planets = this.getAllPlanetsButThis(planet);
+		sortByDistanceTo(planets, planet);
+		return planets.get(0);
+	}
+	
+	public Planet getNearestFreeOrEnemyPlanet(Planet planet) {
+		List<Planet> planets = this.getAllPlanetsButMine();
+		if (planets.size() == 0) {
+			return null;
+		}
 
-	protected static void sortByDistanceTo(List<Planet> planets, final Planet planet) {
+		sortByDistanceTo(planets, planet);
+		return planets.get(0);
+	}
+
+	public static void sortByDistanceTo(List<Planet> planets, final Planet planet) {
 		Collections.sort(planets, new Comparator<Planet>() {
 			@Override
 			public int compare(Planet planet1, Planet planet2) {
@@ -147,73 +163,64 @@ public abstract class Player {
 		});
 	}
 
-	protected static void sortByProductivity(List<Planet> planets) {
+	public static void sortByProductivity(List<Planet> planets) {
 		Collections.sort(planets, new Comparator<Planet>() {
 			@Override
 			public int compare(Planet planet1, Planet planet2) {
-				return (int) (planet2.getProductionRatePerSecond() - planet1.getProductionRatePerSecond());
+				return Double.compare(planet2.getProductionRatePerSecond(), planet1.getProductionRatePerSecond());
 			}
 		});
 	}
 
 	// Fleets
-	protected List<Fleet> getFleets() {
-		return universe.FleetsOfPlayer(this, this);
-	}
-	
-	public List<Fleet> getVisibleFleets() {
-		return universe.FleetsOfPlayer(NonePlayer, this);
+	public List<Fleet> getFleets() {
+		return universe.getFleetsOf(this);
 	}
 
-	protected List<Fleet> getAllFleets() {
-		return universe.AllFleets(this);
+	public List<Fleet> getAllFleets() {
+		return universe.getAllFleets();
 	}
 
-	protected List<Fleet> getFleetsOf(Player player) {
-		return universe.FleetsOfPlayer(this, player);
+	public List<Fleet> getFleetsOf(Player player) {
+		return universe.getFleetsOf(player);
 	}
 
-	protected boolean isMyFleet(Fleet fleet) {
+	public boolean isMyFleet(Fleet fleet) {
 		return fleet.getPlayer().equals(this);
 	}
 
-	protected List<Fleet> getAllEnemyFleets() {
+	public List<Fleet> getAllEnemyFleets() {
 		List<Fleet> result = new ArrayList<Fleet>();
-
-		for (Fleet fleet : getAllFleets())
+		for (Fleet fleet : getFleets())
 			if (!isMyFleet(fleet))
 				result.add(fleet);
-
 		return result;
 	}
 
-	protected List<Fleet> getFleetsWithTarget(Planet target) {
+	public List<Fleet> getFleetsWithTarget(Planet target) {
 		List<Fleet> result = new ArrayList<Fleet>();
-		
-		for(Fleet fleet : this.getAllFleets()) {
-			if(fleet.getTarget().equals(target)) {
+		for (Fleet fleet : this.getFleets()) {
+			if (fleet.getTarget().equals(target)) {
 				result.add(fleet);
 			}
 		}
-		
 		return result;
 	}
-	
-	protected static void sortByArrivalTime(List<Fleet> fleets) {
-		Collections.sort(fleets, new Comparator<Fleet>() {
 
+	public static void sortByArrivalTime(List<Fleet> fleets) {
+		Collections.sort(fleets, new Comparator<Fleet>() {
 			@Override
 			public int compare(Fleet one, Fleet other) {
 				return Double.compare(one.timeToTarget(), other.timeToTarget());
 			}
 		});
-	}	
-	
-	protected Fleet sendFleet(Planet planet, int force, Planet target) {
+	}
+
+	public Fleet sendFleet(Planet planet, int force, Planet target) {
 		return universe.SendFleet(this, planet, force, target);
 	}
 
-	protected Fleet sendFleetUpTo(Planet planet, int force, Planet target) {
+	public Fleet sendFleetUpTo(Planet planet, int force, Planet target) {
 		int forcesToSend = (int) Math.min(force, planet.getForces());
 		if (forcesToSend > 0) {
 			return universe.SendFleet(this, planet, forcesToSend, target);
@@ -223,15 +230,11 @@ public abstract class Player {
 	}
 
 	// random
-	protected double getRandomDouble() {
+	public double getRandomDouble() {
 		return universe.getRandomDouble();
 	}
 
-	protected int getRandomInt(int max) {
+	public int getRandomInt(int max) {
 		return universe.getRandomInt(max);
-	}
-
-	void setUniverse(Universe universe) {
-		this.universe = universe;
 	}
 }

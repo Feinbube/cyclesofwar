@@ -15,7 +15,6 @@ public class Universe {
 
 	private List<Planet> planets = new ArrayList<Planet>();
 	private List<Fleet> fleets = new ArrayList<Fleet>();
-
 	private List<Player> players = new ArrayList<Player>();
 
 	private Random random = new Random();
@@ -66,10 +65,10 @@ public class Universe {
 
 		gameOver = false;
 	}
-
+	
 	private Planet createStarterPlanet(Player player) {
 		Planet planet = suiteablePlanet(5);
-		planet.player = player;
+		planet.setPlayer(player);
 		planets.add(planet);
 		return planet;
 	}
@@ -77,22 +76,9 @@ public class Universe {
 	private Planet suiteablePlanet(double productionRate) {
 		while (true) {
 			Planet planet = new Planet(this, random, getSize(), productionRate);
-			if (planetFits(planet))
+			if (planet.fits(planets))
 				return planet;
 		}
-	}
-
-	private boolean planetFits(Planet planet) {
-		for (Planet other : planets) {
-			if (tooClose(planet, other))
-				return false;
-		}
-
-		return true;
-	}
-
-	private boolean tooClose(Planet planet, Planet other) {
-		return planet.distanceTo(other) < (planet.productionRatePerSecond + other.productionRatePerSecond) / 2 * speedOfLight;
 	}
 
 	public void update(double elapsedSeconds) {
@@ -119,7 +105,7 @@ public class Universe {
 		fleetsAtDestination.clear();
 
 		for (Planet planet : planets) {
-			planet.newForces = planet.forces;
+			planet.prepare();
 		}
 
 		if (justOnePlayerLeft()) {
@@ -150,7 +136,7 @@ public class Universe {
 		}
 	}
 
-	boolean justOnePlayerLeft() {
+	private boolean justOnePlayerLeft() {
 		int playersAlive = 0;
 		for (Player player : players) {
 			if (player.getFleets().size() > 0 || player.getPlanets().size() > 0) {
@@ -161,85 +147,59 @@ public class Universe {
 		return playersAlive <= 1;
 	}
 
-	Player bestPlayer() {
+	private Player bestPlayer() {
 		Collections.sort(players, new Comparator<Player>() {
 
 			@Override
 			public int compare(Player player1, Player player2) {
-				return (int) (player2.getVisibleFullForce() - player1.getVisibleFullForce());
+				return (int) (player2.getFullForce() - player1.getFullForce());
 			}
 		});
 
 		return players.get(0);
 	}
 
-	List<Player> OtherPlayers(Player player) {
-		ArrayList<Player> result = new ArrayList<Player>();
-		for (Player other : players) {
-			if (!other.equals(player)) {
-				result.add(other);
-			}
-		}
-
+	// for Player
+	List<Player> getOtherPlayers(Player player) {
+		List<Player> result = new ArrayList<Player>(players);
+		result.remove(player);
 		return result;
 	}
 
-	public List<Planet> AllPlanets() {
-		ArrayList<Planet> result = new ArrayList<Planet>();
-		for (Planet planet : planets) {
-			result.add(planet);
-		}
-
-		return result;
+	public List<Planet> getAllPlanets() {
+		return new ArrayList<Planet>(planets);
 	}
 
-	public List<Planet> PlanetsOfPlayer(Player player) {
+	List<Planet> getPlanetsOf(Player player) {
 		List<Planet> result = new ArrayList<Planet>();
 		for (Planet planet : planets) {
-			if (planet.player.equals(player)) {
+			if (planet.getPlayer().equals(player)) {
 				result.add(planet);
 			}
 		}
+		return result;
+	}
+
+	public List<Fleet> getAllFleets() {
+		return new ArrayList<Fleet>(fleets);
+	}
+
+	List<Fleet> getFleetsOf(Player player) {
+		List<Fleet> result = filterFleetsOf(fleets, player);
+		if (currentPlayer.equals(player)) {
+			result.addAll(filterFleetsOf(newFleets, player));
+		}
 
 		return result;
 	}
 
-	public List<Fleet> AllFleets() {
+	private List<Fleet> filterFleetsOf(List<Fleet> fleets, Player player) {
 		List<Fleet> result = new ArrayList<Fleet>();
 		for (Fleet fleet : fleets) {
-			result.add(fleet);
-		}
-
-		return result;
-	}
-	
-	List<Fleet> AllFleets(Player player) {
-		List<Fleet> result = AllFleets();
-
-		for (Fleet fleet : newFleets) {
-			if (fleet.player.equals(player)) {
+			if (fleet.getPlayer().equals(player)) {
 				result.add(fleet);
 			}
 		}
-
-		return result;
-	}
-
-	List<Fleet> FleetsOfPlayer(Player asker, Player player) {
-		ArrayList<Fleet> result = new ArrayList<Fleet>();
-		for (Fleet fleet : fleets) {
-			if (fleet.player.equals(player)) {
-				result.add(fleet);
-			}
-		}
-		if (asker.equals(player)) {
-			for (Fleet fleet : newFleets) {
-				if (fleet.player.equals(asker)) {
-					result.add(fleet);
-				}
-			}
-		}
-
 		return result;
 	}
 
@@ -254,14 +214,10 @@ public class Universe {
 
 		Fleet newFleet = new Fleet(this, player, force, origin, target);
 		newFleets.add(newFleet);
-		origin.newForces -= newFleet.getForce();
+		origin.setNewForces(origin.getNewForces() - newFleet.getForce());
 		nothingHappenedCounter = 0.0;
 
 		return newFleet;
-	}
-
-	void fleetArrived(Fleet fleet, double distance) {
-		fleetsAtDestination.put(distance, fleet);
 	}
 
 	public double getRandomDouble() {
@@ -270,6 +226,10 @@ public class Universe {
 
 	public int getRandomInt(int max) {
 		return random.nextInt(max);
+	}
+	
+	void fleetArrived(Fleet fleet, double distance) {
+		fleetsAtDestination.put(distance, fleet);
 	}
 
 	public Player getWinner() {
@@ -296,7 +256,7 @@ public class Universe {
 		return now;
 	}
 
-	public boolean inhabitesPlayer(Player player) {
+	public boolean inhabitedByPlayer(Player player) {
 		return player.isInList(players);
 	}
 

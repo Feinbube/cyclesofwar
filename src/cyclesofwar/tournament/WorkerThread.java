@@ -26,7 +26,7 @@ public class WorkerThread implements Runnable {
 			}
 
 			while (!universe.isGameOver() && running) {
-				while (pause) {
+				if (pause) {
 					sleep();
 				}
 
