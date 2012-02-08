@@ -38,10 +38,8 @@ public class Rendering {
 
 	private List<Star> stars = new ArrayList<Star>();
 
-	private Universe universe;
-
 	private Random random = new Random();
-	private List<WinRecordsTag> tags = new ArrayList<WinRecordsTag>();
+	private List<Tag> tags = new ArrayList<Tag>();
 
 	public Rendering() {
 		stars.clear();
@@ -58,13 +56,19 @@ public class Rendering {
 	}
 
 	public void drawUniverse(Graphics g, Universe universe) {
-		this.universe = universe;
-
 		if (this.universeSize != universe.getSize()) {
 			this.universeSize = universe.getSize();
 		}
 
-		drawUniverse(g);
+		drawBackground(g);
+
+		if (!universe.isGameOver()) {
+			drawPlanets(g, universe.getAllPlanets());
+			drawFleets(g, universe.getAllFleets());
+			drawPlayers(g, universe.getPlayers());
+		} else {
+			drawGameOverScreen(g, universe.getWinner().getName());
+		}
 	}
 
 	private void drawBackground(Graphics g) {
@@ -74,20 +78,8 @@ public class Rendering {
 		drawStars(g);
 	}
 
-	private void drawUniverse(Graphics g) {
-		drawBackground(g);
-
-		if (!universe.isGameOver()) {
-			drawPlanets(g);
-			drawFleets(g);
-			drawPlayers(g);
-		} else {
-			drawGameOverScreen(g);
-		}
-	}
-
-	public void drawSeed(Graphics g) {
-		drawText(g, size.width - 5, 5, "seed: " + universe.getSeed(), Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
+	public void drawSeed(Graphics g, long seed) {
+		drawText(g, size.width - 5, 5, "seed: " + seed, Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
 	}
 
 	public void drawControlInfo(Graphics g, String s) {
@@ -105,13 +97,11 @@ public class Rendering {
 				"Courier New", Font.BOLD, 48));
 	}
 
-	private void drawGameOverScreen(Graphics g) {
-		String playerName = universe.getWinner().getName();
-
+	private void drawGameOverScreen(Graphics g, String winnerName) {
 		drawText(g, size.width / 2, size.height / 3 + 20, "GAME OVER", Color.yellow, null, HAlign.CENTER, VAlign.CENTER, new Font(
 				"Courier New", Font.BOLD, 48));
 
-		drawText(g, size.width / 2, size.height / 3 + 100, playerName + " has won!", Color.yellow, null, HAlign.CENTER, VAlign.CENTER,
+		drawText(g, size.width / 2, size.height / 3 + 100, winnerName + " has won!", Color.yellow, null, HAlign.CENTER, VAlign.CENTER,
 				new Font("Courier New", Font.PLAIN, 32));
 	}
 
@@ -126,8 +116,8 @@ public class Rendering {
 		}
 	}
 
-	private void drawPlanets(Graphics g) {
-		for (Planet planet : universe.getAllPlanets()) {
+	private void drawPlanets(Graphics g, List<Planet> planets) {
+		for (Planet planet : planets) {
 			g.setColor(planet.getPlayer().getPlayerBackColor());
 
 			int x = (int) getX(g, planet.getX());
@@ -156,8 +146,8 @@ public class Rendering {
 		return ((size.height - borderSize * 2) * y / universeSize) + borderSize;
 	}
 
-	private void drawFleets(Graphics g) {
-		for (Fleet fleet : universe.getAllFleets()) {
+	private void drawFleets(Graphics g, List<Fleet> fleets) {
+		for (Fleet fleet : fleets) {
 			g.setColor(fleet.getPlayer().getPlayerBackColor());
 
 			double x = getX(g, fleet.getX());
@@ -219,9 +209,9 @@ public class Rendering {
 		}
 	}
 
-	private void drawPlayers(Graphics g) {
-		for (int i = 0; i < universe.getPlayers().size(); i++) {
-			Player player = universe.getPlayers().get(i);
+	private void drawPlayers(Graphics g, List<Player> players) {
+		for (int i = 0; i < players.size(); i++) {
+			Player player = players.get(i);
 
 			drawText(g, 5, i * 20 + 5, shortInfo(player), player.getPlayerForeColor(), player.getPlayerBackColor(), HAlign.LEFT,
 					VAlign.CENTER, 12);
@@ -238,22 +228,86 @@ public class Rendering {
 		return result;
 	}
 
-	public void drawPlayers(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers) {
-		// TODO Auto-generated method stub
+	public void drawPlayerSelection(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers) {
+		drawBackground(g);
+
+		int marginLeft = 60;		
+		int marginTop = 60;
 		
+		tags.clear();
+
+		Font f = new Font("Courier New", Font.BOLD, 24);
+		drawText(g, marginLeft, marginTop - 12 - 10, "chose wisely:", Color.yellow, null, f);
+
+		drawPlayers(g, selectedPlayers, allPlayers, marginLeft, marginTop);
+
+		drawButton(g, "Live Mode", 15 + marginLeft, size.height - marginTop, HAlign.LEFT);
+		drawButton(g, "Tournament Mode", 0, size.height - marginTop, HAlign.CENTER);
+		drawButton(g, "Arena Mode", 15 + marginLeft, size.height - marginTop, HAlign.RIGHT);
 	}
-	
+
+	private void drawPlayers(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers, int marginLeft, int marginTop) {
+		Font f = new Font("Courier New", Font.PLAIN, 16);
+
+		int h = g.getFontMetrics(f).getHeight();
+		int posX = marginLeft;
+		int posY = marginTop + 24;
+		for (Player player : allPlayers) {
+			int w = g.getFontMetrics(f).stringWidth(player.getName());
+			if (posX + w > size.width - marginLeft) {
+				posX = marginLeft;
+				posY += 24;
+			}
+			drawText(g, posX, posY, player.getName(), player.getPlayerForeColor(), player.getPlayerBackColor(), f);
+			remember(posX, posY, w, h, player);
+			if (player.isInList(selectedPlayers)) {
+				drawBorder(g, posX, posY, w, h);
+			}
+			posX += w + 12;
+		}
+	}
+
+	private void drawButton(Graphics g, String caption, int x, int y, HAlign hAlign) {
+		Font f = new Font("Courier New", Font.BOLD, 22);
+
+		int w = g.getFontMetrics(f).stringWidth(caption);
+		int h = g.getFontMetrics(f).getHeight();
+
+		if (hAlign == HAlign.RIGHT) {
+			x = size.width - w - x;
+		} else {
+			if (hAlign == HAlign.CENTER) {
+				x = (size.width - w) / 2;
+			}
+		}
+
+		drawText(g, x, y - h, caption, Color.black, Color.white, f);
+		remember(x, y-h, w, h, caption);
+		for (int i = 1; i < 20; i++) {
+			g.setColor(Color.getHSBColor(0, 0, 40.0f / (i + 20)));
+			g.drawRect(x - i - 2, y - i + 4 - h, w + 2 * i + 2, h + 2 * i - 1);
+		}
+	}
+
+	private void drawBorder(Graphics g, int posX, int posY, int w, int h) {
+		g.setColor(Color.white);
+		g.drawRect(posX - 3 - 1, posY - 3 + 7, w + 6, h + 6 - 6);
+		g.setColor(Color.green);
+		g.drawRect(posX - 2 - 1, posY - 2 + 7, w + 4, h + 4 - 6);
+		g.setColor(Color.black);
+		g.drawRect(posX - 1 - 1, posY - 1 + 7, w + 2, h + 2 - 6);
+	}
+
 	public void drawStatistics(Graphics g, Tournament tournament, String s) {
 		drawBackground(g);
-		
+
 		Font f = new Font("Courier New", Font.PLAIN, 14);
 
 		int marginLeft = 50;
 		int padding = 10;
 		int marginTop = 120;
-		
-		drawText(g, marginLeft, marginLeft, s, Color.yellow, null, HAlign.LEFT, VAlign.CENTER, new Font("Courier New",
-				Font.BOLD, 32));
+
+		drawText(g, marginLeft, marginLeft, s, Color.yellow, null, HAlign.LEFT, VAlign.CENTER, new Font("Courier New", Font.BOLD, 32));
 
 		tournament = tournament.lightWeightClone();
 
@@ -272,16 +326,13 @@ public class Rendering {
 		for (int i = 0; i < tournament.getRankings().size(); i++) {
 			Player player = tournament.getRankings().get(i).getPlayer();
 			if (tournament.hasPriority(player)) {
-				g.setColor(Color.green);
-				g.drawRect(marginLeft - 2, marginTop + 20 * (i + 1) + 4, size.width - marginLeft * 2 + 3, g.getFontMetrics(f).getHeight());
-				g.setColor(Color.black);
-				g.drawRect(marginLeft - 1, marginTop + 20 * (i + 1) + 5, size.width - marginLeft * 2 + 3 - 2, g.getFontMetrics(f)
-						.getHeight() - 2);
+				drawBorder(g, marginLeft, marginTop + 20 * (i + 1), size.width - marginLeft * 2, g.getFontMetrics(f).getHeight());
 			}
 		}
-		
-		drawText(g, size.width - marginLeft, marginTop + 20 * (tournament.getRankings().size()+1), tournament.getGamesToPlayCount() + " games left, " + tournament.getGamesPlayedCount()
-				+ " games played.", Color.white, Color.black, HAlign.RIGHT, VAlign.BOTTOM, f);
+
+		drawText(g, size.width - marginLeft, marginTop + 20 * (tournament.getRankings().size() + 1), tournament.getGamesToPlayCount()
+				+ " games left, " + tournament.getGamesPlayedCount() + " games played.", Color.white, Color.black, HAlign.RIGHT,
+				VAlign.BOTTOM, f);
 	}
 
 	private String percentage(double value) {
@@ -357,8 +408,8 @@ public class Rendering {
 		return maxPos;
 	}
 
-	private void remember(int x, int y, int w, int h, List<TournamentRecord> winRecords) {
-		tags.add(new WinRecordsTag(x, y, w, h, winRecords));
+	private void remember(int x, int y, int w, int h, Object tag) {
+		tags.add(new Tag(x, y, w, h, tag));
 	}
 
 	private int drawContent(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop,
@@ -380,7 +431,7 @@ public class Rendering {
 	}
 
 	private int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, int fontSize) {
-		return drawText(g, x, y, s, fc, bc, hAlgin, vAlign, new Font("Arial", Font.PLAIN, fontSize));
+		return drawText(g, x, y, s, fc, bc, hAlgin, vAlign, new Font("Courier New", Font.PLAIN, fontSize));
 	}
 
 	private int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, Font font) {
@@ -412,22 +463,48 @@ public class Rendering {
 		return x + w;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<TournamentRecord> getFightRecords(int x, int y) {
-		for (WinRecordsTag winRecordTag : this.tags) {
+		for (Tag winRecordTag : this.tags) {
 			if (winRecordTag.intersects(x, y)) {
-				return winRecordTag.winRecords;
+				return (List<TournamentRecord>)winRecordTag.tag;
 			}
 		}
 
 		return null;
 	}
+	
+	public Player getPlayer(int x, int y) {
+		for(Tag tag : tags) {
+			if(tag.intersects(x, y)) {
+				if(Player.class.isInstance(tag.tag)) {
+					return (Player) tag.tag;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public String getButtonCaption(int x, int y) {
+		for(Tag tag : tags) {
+			if(tag.intersects(x, y)) {
+				if(String.class.isInstance(tag.tag)) {
+					return (String) tag.tag;
+				}
+			}
+		}
+		
+		return null;
+	}
 
+	// TODO use tags instead
 	public Player getPlayer(int x, int y, Tournament tournament) {
 		if (x < 50 || x > size.width - 50) {
 			return null;
 		}
 
-		int index = (y - 100) / 20 - 1;
+		int index = (y - 120) / 20 - 1;
 		if (index >= 0 && index < tournament.lightWeightClone().getRankings().size()) {
 			return tournament.lightWeightClone().getRankings().get(index).getPlayer();
 		} else {

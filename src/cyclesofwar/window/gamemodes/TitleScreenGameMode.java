@@ -35,6 +35,14 @@ public class TitleScreenGameMode extends GameMode {
 	}
 
 	@Override
+	protected void mouseMovedGame(int x, int y) {
+	}
+	
+	@Override
+	protected void mousePressedGame(int x, int y) {
+	}
+	
+	@Override
 	protected void mouseReleasedGame(int x, int y) {
 	}
 
@@ -44,5 +52,9 @@ public class TitleScreenGameMode extends GameMode {
 
 	@Override
 	public void pause() {
+	}
+
+	@Override
+	public void reset() {
 	}
 }

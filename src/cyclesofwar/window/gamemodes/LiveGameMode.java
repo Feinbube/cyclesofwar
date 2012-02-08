@@ -53,21 +53,17 @@ public class LiveGameMode extends GameMode {
 		} else {
 			String pauseString = pause ? "continue" : "pause";
 			rendering.drawControlInfo(g, "[Key Mapping] ESC: Menue ... +/-: game speed (" + ((int) (speedUp * 10)) / 10.0 + ") ... SPACE: " + pauseString
-					+ " ... F5: new combat ... F6: replay ... F7: switch planets ... TAB: switch mode");
-			rendering.drawSeed(g);
+					+ " ... F5: new combat ... F6: replay ... F7: switch planets");
+			rendering.drawSeed(g, universe.getSeed());
 		}
 		
-		if(pause) {
+		if(pause && !universe.isGameOver()) {
 			rendering.drawInfo(g, "press SPACE to resume");
 		}
 	}
 
 	@Override
 	protected void keyPressedGame(KeyEvent arg0) {
-		if (arg0.getKeyCode() == KeyEvent.VK_TAB) {
-			this.switchTo(GameModes.ARENA);
-		}
-		
 		if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			this.switchTo(GameModes.PLAYERSELECTION);
 		}
@@ -118,6 +114,14 @@ public class LiveGameMode extends GameMode {
 	@Override
 	protected void mouseReleasedGame(int x, int y) {
 	}
+	
+	@Override
+	protected void mousePressedGame(int x, int y) {
+	}
+
+	@Override
+	protected void mouseMovedGame(int x, int y) {
+	}
 
 	@Override
 	public void resume() {
@@ -131,5 +135,14 @@ public class LiveGameMode extends GameMode {
 
 	public void setUniverse(Universe universe) {
 		this.universe = universe;
+	}
+
+	public long getUniverseSeed() {
+		return this.universe.getSeed();
+	}
+
+	@Override
+	public void reset() {
+		universe = new Universe(universe.getSeed(), this.getSelectedPlayers());
 	}
 }

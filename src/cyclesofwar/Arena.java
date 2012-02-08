@@ -39,7 +39,7 @@ public class Arena {
 		result.add(new Defender());		
 		result.add(new FastExpand());
 		result.add(new AttackLargestPlayer());
-		// result.add(new Borg());
+		result.add(new Borg());
 		
 		// Theo
 		result.add(new HelloWorld());

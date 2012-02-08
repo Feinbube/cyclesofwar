@@ -3,6 +3,7 @@ package cyclesofwar.window.gamemodes;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
+import cyclesofwar.Player;
 import cyclesofwar.window.GameModes;
 import cyclesofwar.window.GamePanel;
 
@@ -10,25 +11,19 @@ public class PlayerSelectionGameMode extends GameMode {
 
 	public PlayerSelectionGameMode(GamePanel gamePanel) {
 		super(gamePanel);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void updateGame() {
-		// TODO Auto-generated method stub
-		switchTo(GameModes.LIVE);
 	}
 
 	@Override
 	protected void paintGame(Graphics g) {
-		rendering.drawPlayers(g, getSelectedPlayers(), getAllPlayers());
-
+		rendering.drawPlayerSelection(g, getSelectedPlayers(), getAllPlayers());
 	}
 
 	@Override
 	protected void drawControls(Graphics g) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -36,9 +31,30 @@ public class PlayerSelectionGameMode extends GameMode {
 	}
 
 	@Override
-	protected void mouseReleasedGame(int x, int y) {
-		// TODO Auto-generated method stub
+	protected void mouseMovedGame(int x, int y) {
+	}
 
+	@Override
+	protected void mousePressedGame(int x, int y) {
+	}
+
+	@Override
+	protected void mouseReleasedGame(int x, int y) {
+		Player player = rendering.getPlayer(x, y);
+		if (player != null) {
+			this.toggleSelection(player);
+		}
+
+		String buttonCaption = rendering.getButtonCaption(x, y);
+		if (buttonCaption != null) {
+			if (buttonCaption.equals("Live Mode")) {
+				this.switchTo(GameModes.LIVE);
+			} else if (buttonCaption.equals("Tournament Mode")) {
+				this.switchTo(GameModes.TOURNAMENT);
+			} else if (buttonCaption.equals("Arena Mode")) {
+				this.switchTo(GameModes.ARENA);
+			}
+		}
 	}
 
 	@Override
@@ -46,6 +62,10 @@ public class PlayerSelectionGameMode extends GameMode {
 	}
 
 	@Override
-	public void pause() {	
+	public void pause() {
+	}
+
+	@Override
+	public void reset() {
 	}
 }

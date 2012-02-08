@@ -55,11 +55,23 @@ public abstract class GameMode {
 
 	protected abstract void keyPressedGame(KeyEvent arg0);
 
+	public void mousePressed(MouseEvent arg0) {
+		mousePressedGame(arg0.getX() - 10, arg0.getY() - 32);
+	}
+	
+	protected abstract void mousePressedGame(int x, int y);
+	
 	public void mouseReleased(MouseEvent arg0) {
 		mouseReleasedGame(arg0.getX() - 10, arg0.getY() - 32);
 	}
 
 	protected abstract void mouseReleasedGame(int x, int y);
+	
+	public void mouseMoved(MouseEvent arg0) {
+		mouseMovedGame(arg0.getX() - 10, arg0.getY() - 32);
+	}
+	
+	protected abstract void mouseMovedGame(int x, int y);
 
 	protected void switchTo(GameModes gameMode) {
 		gamePanel.switchTo(gameMode);
@@ -77,11 +89,17 @@ public abstract class GameMode {
 
 	public abstract void pause();
 
+	public abstract void reset();
+	
 	protected void setLiveUniverse(Universe universe) {
 		gamePanel.setLiveUniverse(universe);
 	}
 
 	protected boolean getShowControls() {
 		return gamePanel.getShowControls();
+	}
+	
+	protected void toggleSelection(Player player) {
+		gamePanel.toggleSelection(player);
 	}
 }

@@ -1,24 +1,20 @@
 package cyclesofwar.window.rendering;
 
-import java.util.List;
-
-import cyclesofwar.tournament.TournamentRecord;
-
-class WinRecordsTag {
+class Tag {
 
 	int x;
 	int y;
 	int w;
 	int h;
-	List<TournamentRecord> winRecords;
+	Object tag;
 
-	WinRecordsTag(int x, int y, int w, int h, List<TournamentRecord> winRecords) {
+	Tag(int x, int y, int w, int h, Object tag) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.winRecords = winRecords;
+		this.tag = tag;
 	}
 
 	boolean intersects(int x, int y) {
