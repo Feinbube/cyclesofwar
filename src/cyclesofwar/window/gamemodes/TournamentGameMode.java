@@ -14,16 +14,11 @@ import cyclesofwar.window.GamePanel;
 public class TournamentGameMode extends GameMode {
 
 	private LastManStandingTournament tournament;
-	private int threads;
-	private int matches;
 
-	public TournamentGameMode(GamePanel gamePanel, int threads, int matches) {
+	public TournamentGameMode(GamePanel gamePanel) {
 		super(gamePanel);
 
-		this.threads = threads;
-		this.matches = matches;
-
-		tournament = new LastManStandingTournament(threads, this.getSelectedPlayers(), matches);
+		tournament = new LastManStandingTournament(this.getThreadCount(), this.getSelectedPlayers(),  this.getSelectedNumberOfRounds());
 		tournament.start();
 	}
 
@@ -39,11 +34,11 @@ public class TournamentGameMode extends GameMode {
 	@Override
 	protected void drawControls(Graphics g) {
 		if (!getShowControls()) {
-			rendering.drawControlInfo(g, "F1 toggle info");
+			rendering.drawControlInfo(g, "F1/1 toggle info");
 		} else {
 			String pauseString = tournament.isPaused() ? "continue" : "pause";
 			rendering.drawControlInfo(g, "[Key Mapping]: ESC Menue ... CLICK player: toogle priority ... CLICK stats: see battle ... SPACE: " + pauseString
-					+ " ... F5: new combat");
+					+ " ... 5: new combat");
 		}
 	}
 
@@ -53,7 +48,7 @@ public class TournamentGameMode extends GameMode {
 			this.switchTo(GameModes.PLAYERSELECTION);
 		}
 		
-		if (arg0.getKeyCode() == KeyEvent.VK_F5) {
+		if (arg0.getKeyCode() == KeyEvent.VK_5) {
 			reset();
 		}
 
@@ -103,7 +98,7 @@ public class TournamentGameMode extends GameMode {
 	@Override
 	public void reset() {
 		tournament.abort();
-		tournament = new LastManStandingTournament(threads, this.getSelectedPlayers(), matches);
+		tournament = new LastManStandingTournament(this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds());
 		tournament.start();	
 	}
 }

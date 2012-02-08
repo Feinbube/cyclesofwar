@@ -228,22 +228,39 @@ public class Rendering {
 		return result;
 	}
 
-	public void drawPlayerSelection(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers) {
+	public void drawPlayerSelection(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers,
+			List<Integer> possibleNumbersOfRounds, Integer selectedNumber) {
 		drawBackground(g);
 
-		int marginLeft = 60;		
-		int marginTop = 60;
-		
+		int marginLeft = 60;
+		int marginTop = 40;
+
 		tags.clear();
 
-		Font f = new Font("Courier New", Font.BOLD, 24);
-		drawText(g, marginLeft, marginTop - 12 - 10, "chose wisely:", Color.yellow, null, f);
+		Font f = new Font("Courier New", Font.BOLD, 18);
+		drawText(g, marginLeft, marginTop - 12, "chose champions:", Color.yellow, null, f);
 
 		drawPlayers(g, selectedPlayers, allPlayers, marginLeft, marginTop);
 
-		drawButton(g, "Live Mode", 15 + marginLeft, size.height - marginTop, HAlign.LEFT);
-		drawButton(g, "Tournament Mode", 0, size.height - marginTop, HAlign.CENTER);
-		drawButton(g, "Arena Mode", 15 + marginLeft, size.height - marginTop, HAlign.RIGHT);
+		drawText(g, marginLeft, size.height - marginTop - 160, "chose number of matches:", Color.yellow, null, f);
+
+		int w = size.width - marginLeft * 4;
+		int tile = (int) (w / (double) (possibleNumbersOfRounds.size() - 1));
+		for (int i = 0; i < possibleNumbersOfRounds.size(); i++) {
+			if (possibleNumbersOfRounds.get(i).equals(selectedNumber)) {
+				drawButton(g, possibleNumbersOfRounds.get(i) + "", marginLeft * 2 + i * tile, size.height - marginTop - 100, HAlign.CENTER,
+						16, 10, Color.yellow);
+			} else {
+				drawButton(g, possibleNumbersOfRounds.get(i) + "", marginLeft * 2 + i * tile, size.height - marginTop - 100, HAlign.CENTER,
+						16, 10, Color.white);
+			}
+		}
+
+		drawText(g, marginLeft, size.height - marginTop - 80, "chose game mode:", Color.yellow, null, f);
+
+		drawButton(g, "Live Mode", 15 + marginLeft, size.height - marginTop, HAlign.LEFT, 22, 20, Color.yellow);
+		drawButton(g, "Tournament Mode", size.width / 2, size.height - marginTop, HAlign.CENTER, 22, 20, Color.yellow);
+		drawButton(g, "Arena Mode", 15 + marginLeft, size.height - marginTop, HAlign.RIGHT, 22, 20, Color.yellow);
 	}
 
 	private void drawPlayers(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers, int marginLeft, int marginTop) {
@@ -267,8 +284,8 @@ public class Rendering {
 		}
 	}
 
-	private void drawButton(Graphics g, String caption, int x, int y, HAlign hAlign) {
-		Font f = new Font("Courier New", Font.BOLD, 22);
+	private void drawButton(Graphics g, String caption, int x, int y, HAlign hAlign, int fontSize, int buttonBorderSize, Color c) {
+		Font f = new Font("Courier New", Font.BOLD, fontSize);
 
 		int w = g.getFontMetrics(f).stringWidth(caption);
 		int h = g.getFontMetrics(f).getHeight();
@@ -277,14 +294,17 @@ public class Rendering {
 			x = size.width - w - x;
 		} else {
 			if (hAlign == HAlign.CENTER) {
-				x = (size.width - w) / 2;
+				x = x - w / 2;
 			}
 		}
 
+		float[] hsv = new float[3];
+		Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), hsv);
+
 		drawText(g, x, y - h, caption, Color.black, Color.white, f);
-		remember(x, y-h, w, h, caption);
-		for (int i = 1; i < 20; i++) {
-			g.setColor(Color.getHSBColor(0, 0, 40.0f / (i + 20)));
+		remember(x - buttonBorderSize, y - h - buttonBorderSize, w + buttonBorderSize * 2, h + buttonBorderSize * 2, caption);
+		for (int i = 1; i < buttonBorderSize; i++) {
+			g.setColor(Color.getHSBColor(hsv[0], hsv[1], (float) ((2.0 * buttonBorderSize) / (i + buttonBorderSize))));
 			g.drawRect(x - i - 2, y - i + 4 - h, w + 2 * i + 2, h + 2 * i - 1);
 		}
 	}
@@ -467,34 +487,34 @@ public class Rendering {
 	public List<TournamentRecord> getFightRecords(int x, int y) {
 		for (Tag winRecordTag : this.tags) {
 			if (winRecordTag.intersects(x, y)) {
-				return (List<TournamentRecord>)winRecordTag.tag;
+				return (List<TournamentRecord>) winRecordTag.tag;
 			}
 		}
 
 		return null;
 	}
-	
+
 	public Player getPlayer(int x, int y) {
-		for(Tag tag : tags) {
-			if(tag.intersects(x, y)) {
-				if(Player.class.isInstance(tag.tag)) {
+		for (Tag tag : tags) {
+			if (tag.intersects(x, y)) {
+				if (Player.class.isInstance(tag.tag)) {
 					return (Player) tag.tag;
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public String getButtonCaption(int x, int y) {
-		for(Tag tag : tags) {
-			if(tag.intersects(x, y)) {
-				if(String.class.isInstance(tag.tag)) {
+		for (Tag tag : tags) {
+			if (tag.intersects(x, y)) {
+				if (String.class.isInstance(tag.tag)) {
 					return (String) tag.tag;
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

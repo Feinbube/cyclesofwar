@@ -75,9 +75,17 @@ public class ConfigManager extends WindowAdapter {
 			return new Integer(properties.getProperty("height"));
 		}
 	}
+	
+	public int getNumberOfRounds() {
+		if (properties == null) {
+			return Arena.matchesInTournament;
+		} else {
+			return new Integer(properties.getProperty("matches"));
+		}
+	}
 
 	public List<Player> getSelectedPlayers() {
-		return getPlayers(Arena.champions(), "Champion");
+		return getPlayers(Arena.champions(), "champion");
 	}
 
 	public List<Player> getPlayers(List<Player> defaultResult, String s) {
@@ -117,7 +125,8 @@ public class ConfigManager extends WindowAdapter {
 		properties.setProperty("y", "" + e.getWindow().getY());
 		properties.setProperty("width", "" + e.getWindow().getSize().width);
 		properties.setProperty("height", "" + e.getWindow().getSize().height);
-		savePlayers(properties, panel.getSelectedPlayers(), "Champion");
+		properties.setProperty("matches", "" + panel.getSelectedNumberOfRounds());
+		savePlayers(properties, panel.getSelectedPlayers(), "champion");
 
 		try {
 			properties.store(new FileOutputStream("cow.config"), "cow last session config");

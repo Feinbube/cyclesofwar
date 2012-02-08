@@ -102,4 +102,20 @@ public abstract class GameMode {
 	protected void toggleSelection(Player player) {
 		gamePanel.toggleSelection(player);
 	}
+	
+	protected void setSelectNumberOfRounds(int selectedNumberOfRounds) {
+		gamePanel.setSelectNumberOfRounds(selectedNumberOfRounds);
+	}
+	
+	protected int getSelectedNumberOfRounds() {
+		return gamePanel.getSelectedNumberOfRounds();
+	}
+
+	protected List<Integer> getPossibleNumbersOfRounds() {
+		return gamePanel.possibleNumbersOfRounds;
+	}
+	
+	protected int getThreadCount() {
+		return gamePanel.getThreadCount();
+	}
 }
