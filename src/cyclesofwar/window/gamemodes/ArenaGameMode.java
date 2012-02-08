@@ -43,24 +43,18 @@ public class ArenaGameMode extends GameMode {
 		} else {
 			String pauseString = tournament.isPaused() ? "continue" : "pause";
 			rendering.drawControlInfo(g, "[Key Mapping]: ESC Menue ... CLICK player: toogle priority ... CLICK stats: see battle ... SPACE: " + pauseString
-					+ " ... F5: new combat ... TAB: switch mode");
+					+ " ... F5: new combat");
 		}
 	}
 
 	@Override
-	protected void keyPressedGame(KeyEvent arg0) {
-		if (arg0.getKeyCode() == KeyEvent.VK_TAB) {
-			this.switchTo(GameModes.TOURNAMENT);
-		}
-		
+	protected void keyPressedGame(KeyEvent arg0) {		
 		if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			this.switchTo(GameModes.PLAYERSELECTION);
 		}
 
 		if (arg0.getKeyCode() == KeyEvent.VK_F5) {
-			tournament.abort();
-			tournament = new OneOnOneTournament(threads, this.getSelectedPlayers(), matches);
-			tournament.start();
+			reset();
 		}
 
 		if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
@@ -68,6 +62,14 @@ public class ArenaGameMode extends GameMode {
 		}
 	}
 
+	@Override
+	protected void mousePressedGame(int x, int y) {
+	}
+
+	@Override
+	protected void mouseMovedGame(int x, int y) {
+	}
+	
 	@Override
 	protected void mouseReleasedGame(int x, int y) {
 		List<TournamentRecord> winRecords = rendering.getFightRecords(x, y);
@@ -96,5 +98,12 @@ public class ArenaGameMode extends GameMode {
 		if (!tournament.isPaused()) {
 			tournament.togglePause();
 		}
+	}
+
+	@Override
+	public void reset() {
+		tournament.abort();
+		tournament = new OneOnOneTournament(threads, this.getSelectedPlayers(), matches);
+		tournament.start();
 	}
 }

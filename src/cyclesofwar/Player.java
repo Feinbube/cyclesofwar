@@ -51,6 +51,17 @@ public abstract class Player {
 
 		return false;
 	}
+	
+
+	public List<Player> listWithoutPlayer(List<Player> players) {
+		List<Player> result = new ArrayList<Player>();
+		for (Player candidate : players) {
+			if (!candidate.isEqualTo(this)) {
+				result.add(candidate);
+			}
+		}
+		return result;
+	}
 
 	public double getGroundForce() {
 		double result = 0.0;

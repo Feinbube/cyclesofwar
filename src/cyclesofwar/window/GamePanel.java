@@ -59,7 +59,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	public void switchTo(GameModes gameMode) {
 		this.gameMode.pause();
-		
+
 		if (gameMode == GameModes.LIVE) {
 			this.gameMode = liveGame;
 		} else if (gameMode == GameModes.ARENA) {
@@ -83,6 +83,18 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 		gameMode.update();
 	}
 
+	public void toggleSelection(Player player) {
+		if (player.isInList(selectedPlayers)) {
+			selectedPlayers = player.listWithoutPlayer(selectedPlayers);
+		} else {
+			selectedPlayers.add(player);
+		}
+		
+		liveGame.reset();
+		tournamentGame.reset();
+		arenaGame.reset();
+	}
+
 	@Override
 	protected void paintComponent(Graphics g) {
 		gameMode.paintComponent(g, getSize());
@@ -95,7 +107,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	public boolean getShowControls() {
 		return showControls;
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.update();
@@ -113,6 +125,16 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		gameMode.mouseReleased(arg0);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		gameMode.mousePressed(arg0);
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		gameMode.mouseMoved(arg0);
 	}
 
 	@Override
@@ -136,14 +158,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-	}
-
-	@Override
 	public void mouseDragged(MouseEvent arg0) {
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent arg0) {
 	}
 }
