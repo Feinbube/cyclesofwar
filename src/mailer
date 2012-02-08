@@ -6,7 +6,7 @@ to = "wimi-polze@hpi.uni-potsdam.de"
 records = [line.strip().split(",") for line in open(sys.argv[1])]
 text = ""
 for record in records:
-    text += "%s. %s (%s played, %s won)\n" % record
+    text += "%s. %s (%s played, %s won)\n" % tuple(record)
 
 msg = """From: %(from_)s
 To: %(to)s
