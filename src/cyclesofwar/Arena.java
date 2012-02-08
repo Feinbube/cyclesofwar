@@ -3,6 +3,7 @@ package cyclesofwar;
 import java.util.ArrayList;
 import java.util.List;
 
+import cyclesofwar.players.peter.*;
 import cyclesofwar.players.robert.*;
 import cyclesofwar.players.frank.*;
 import cyclesofwar.players.theo.*;
@@ -20,6 +21,7 @@ public class Arena {
 		result.add(new Bean()); // Frank
 		result.add(new Cratters()); // Martin
 		result.add(new AttackLargestPlayer()); // Robert
+		result.add(new ViralForces()); // Peter		
 		
 		return result;
 	}
@@ -50,6 +52,11 @@ public class Arena {
 		result.add(new CrazyTom());
 		result.add(new Alai());
 		result.add(new Bean());
+
+		// Peter
+		result.add(new DumbVirus());
+		result.add(new ViralForces());
+
 		
 		return result;
 	}
