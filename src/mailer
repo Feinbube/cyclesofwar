@@ -1,0 +1,28 @@
+#!/usr/bin/python
+import sys, smtplib
+from_ = "martin.vonloewis@hpi.uni-potsdam.de"
+to = "wimi-polze@hpi.uni-potsdam.de"
+
+records = [line.strip().split(",") for line in open(sys.argv[1])]
+text = ""
+for record in records:
+    text += "%s. %s (%s played, %s won)\n" % record
+
+msg = """From: %(from_)s
+To: %(to)s
+Subject: New cyclesofwar ranking
+
+We have a new ranking in the cyclesofwar arena.
+
+%(text)s
+
+Each developer can contribute one champion, by adding it
+to cyclesofwar.Arena.champions().
+For each position in this ranking, a series of matches are
+made involving all unranked champions. The player with the
+highest win rate is placed; all others compete for the next
+place.
+
+"""
+
+smtplib.SMTP('localhost').sendmail(from_, [to], msg % vars())
