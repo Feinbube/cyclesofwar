@@ -8,7 +8,7 @@ import cyclesofwar.window.GameModes;
 import cyclesofwar.window.GamePanel;
 
 public class PlayerSelectionGameMode extends GameMode {
-
+	
 	public PlayerSelectionGameMode(GamePanel gamePanel) {
 		super(gamePanel);
 	}
@@ -19,7 +19,7 @@ public class PlayerSelectionGameMode extends GameMode {
 
 	@Override
 	protected void paintGame(Graphics g) {
-		rendering.drawPlayerSelection(g, getSelectedPlayers(), getAllPlayers());
+		rendering.drawPlayerSelection(g, getSelectedPlayers(), getAllPlayers(), getPossibleNumbersOfRounds(), getSelectedNumberOfRounds());
 	}
 
 	@Override
@@ -53,6 +53,12 @@ public class PlayerSelectionGameMode extends GameMode {
 				this.switchTo(GameModes.TOURNAMENT);
 			} else if (buttonCaption.equals("Arena Mode")) {
 				this.switchTo(GameModes.ARENA);
+			}
+			
+			for(Integer i : getPossibleNumbersOfRounds()) {
+				if(("" + i).equals(buttonCaption)) {
+					this.setSelectNumberOfRounds(i);
+				}
 			}
 		}
 	}

@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -25,6 +26,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	private static final long serialVersionUID = 1L;
 
+	public final List<Integer> possibleNumbersOfRounds = Arrays.asList(2, 4, 6, 8, 12, 16, 24, 32, 48, 64);
+
 	private GameMode gameMode;
 
 	private TitleScreenGameMode titleScreen;
@@ -33,21 +36,27 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	private TournamentGameMode tournamentGame;
 	private PlayerSelectionGameMode playerSelection;
 
-	List<Player> allPlayers;
+	private List<Player> allPlayers;
 	private List<Player> selectedPlayers;
+
+	private int matchCount;
+	private int threadCount;
 
 	private Timer timer;
 
 	private boolean showControls = false;
 
-	public GamePanel(int threads, List<Player> lastPlayers, List<Player> allPlayers, int matches) {
+	public GamePanel(int threadCount, List<Player> lastPlayers, List<Player> allPlayers, int matchCount) {
+		this.threadCount = threadCount;
 		this.selectedPlayers = lastPlayers;
 		this.allPlayers = allPlayers;
+		
+		setSelectNumberOfRounds(matchCount);
 
 		titleScreen = new TitleScreenGameMode(this);
 		liveGame = new LiveGameMode(this);
-		arenaGame = new ArenaGameMode(this, threads, matches);
-		tournamentGame = new TournamentGameMode(this, threads, matches);
+		arenaGame = new ArenaGameMode(this);
+		tournamentGame = new TournamentGameMode(this);
 		playerSelection = new PlayerSelectionGameMode(this);
 
 		gameMode = titleScreen;
@@ -89,10 +98,40 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 		} else {
 			selectedPlayers.add(player);
 		}
-		
-		liveGame.reset();
-		tournamentGame.reset();
-		arenaGame.reset();
+
+		resetGames();
+	}
+
+	public void setSelectNumberOfRounds(int matchCount) {
+		if (matchCount < 2) {
+			matchCount = 2;
+		}
+		while (!possibleNumbersOfRounds.contains(matchCount)) {
+			matchCount--;
+		}
+		this.matchCount = matchCount;
+
+		resetGames();
+	}
+
+	private void resetGames() {
+		if (liveGame != null) {
+			liveGame.reset();
+		}
+		if (tournamentGame != null) {
+			tournamentGame.reset();
+		}
+		if (arenaGame != null) {
+			arenaGame.reset();
+		}
+	}
+
+	public int getSelectedNumberOfRounds() {
+		return this.matchCount;
+	}
+	
+	public int getThreadCount() {
+		return this.threadCount;
 	}
 
 	@Override
@@ -117,7 +156,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	public void keyReleased(KeyEvent arg0) {
 		gameMode.keyReleased(arg0);
 
-		if (arg0.getKeyCode() == KeyEvent.VK_F1) {
+		if (arg0.getKeyCode() == KeyEvent.VK_1 || arg0.getKeyCode() == KeyEvent.VK_F1) {
 			showControls = !showControls;
 		}
 	}

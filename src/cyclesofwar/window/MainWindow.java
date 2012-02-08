@@ -16,7 +16,7 @@ public class MainWindow {
 		f.addWindowListener(configManager);
 
 		GamePanel panel = new GamePanel(Runtime.getRuntime().availableProcessors(), configManager.getSelectedPlayers(),
-				Arena.registeredPlayers(), Arena.matchesInTournament);
+				Arena.registeredPlayers(), configManager.getNumberOfRounds());
 		configManager.setGamePanel(panel);
 
 		f.getContentPane().add(panel, BorderLayout.CENTER);

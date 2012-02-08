@@ -49,11 +49,11 @@ public class LiveGameMode extends GameMode {
 	@Override
 	protected void drawControls(Graphics g) {
 		if (!getShowControls()) {
-			rendering.drawControlInfo(g, "F1 toggle info");
+			rendering.drawControlInfo(g, "F1/1 toggle info");
 		} else {
 			String pauseString = pause ? "continue" : "pause";
 			rendering.drawControlInfo(g, "[Key Mapping] ESC: Menue ... +/-: game speed (" + ((int) (speedUp * 10)) / 10.0 + ") ... SPACE: " + pauseString
-					+ " ... F5: new combat ... F6: replay ... F7: switch planets");
+					+ " ... 5: new combat ... 6: replay ... 7: switch planets");
 			rendering.drawSeed(g, universe.getSeed());
 		}
 		
@@ -68,7 +68,7 @@ public class LiveGameMode extends GameMode {
 			this.switchTo(GameModes.PLAYERSELECTION);
 		}
 
-		if (arg0.getKeyCode() == KeyEvent.VK_F5) {
+		if (arg0.getKeyCode() == KeyEvent.VK_5) {
 			universe = new Universe(random.nextLong(), getSelectedPlayers());
 		}
 
@@ -76,11 +76,11 @@ public class LiveGameMode extends GameMode {
 			pause = !pause;
 		}
 
-		if (arg0.getKeyCode() == KeyEvent.VK_F6) {
+		if (arg0.getKeyCode() == KeyEvent.VK_6) {
 			universe = new Universe(universe.getSeed(), universe.getPlayers());
 		}
 
-		if (arg0.getKeyCode() == KeyEvent.VK_F7) {
+		if (arg0.getKeyCode() == KeyEvent.VK_7) {
 			universe = new Universe(universe.getSeed(), rotate(universe.getPlayers()));
 		}
 
