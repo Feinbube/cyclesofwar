@@ -110,7 +110,7 @@ public class Target {
 		Collections.sort(targets, new Comparator<Target>() {
 			@Override
 			public int compare(Target one, Target other) {
-				return Double.compare(planet.getDistanceTo(one.planet), planet.getDistanceTo(other.planet));
+				return Double.compare(planet.getDistanceToSquared(one.planet), planet.getDistanceToSquared(other.planet));
 			}
 		});
 	}

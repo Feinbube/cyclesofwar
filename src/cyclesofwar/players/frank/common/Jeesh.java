@@ -87,7 +87,7 @@ public abstract class Jeesh extends Player {
 	}
 	
 	protected double valueOf(Target target) {
-		Planet planet = this.firstOrNull(this.othersOnly(target.getPlanet().getOthersByDistance()));
+		Planet planet = Player.firstOrNull(this.othersOnly(target.getPlanet().getOthersByDistance()));
 		if (planet == null) {
 			return -target.getForcesToConquer() - target.getForcesToKeep();
 		} else {
