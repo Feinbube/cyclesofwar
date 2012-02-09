@@ -18,7 +18,12 @@ public class Arena {
 	/*
 	 * the number of matches per round for the daily tournament
 	 */
-	public static final int matchesInTournament = 100;
+	public static final int matchesInLastManStandingTournamentPerRound = 20;
+	
+	/*
+	 * the number of matches per player for the daily tournament
+	 */
+	public static final int matchesInOneOnOneTournamentPerPlayer = 20;
 	
 	/*
 	 * please register your champion here for the daily tournament
@@ -27,10 +32,10 @@ public class Arena {
 		ArrayList<Player> result = new ArrayList<Player>();
 
 		result.add(new HelloWorld()); // Theo
-		result.add(new Bean()); // Frank
+		//result.add(new Bean()); // Frank
 		result.add(new Cratters()); // Martin
 		result.add(new AttackLargestPlayer()); // Robert
-		result.add(new DumbVirus()); // Peter		
+		//result.add(new ViralForces()); // Peter		
 		
 		return result;
 	}

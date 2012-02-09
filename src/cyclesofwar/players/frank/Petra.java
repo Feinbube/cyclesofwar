@@ -12,7 +12,7 @@ public class Petra extends Jeesh {
 		boolean attacked = false;
 		for (Planet planet : this.getPlanets()) {
 			List<Planet> targets = mostProductiveByDistance(planet);
-			if (targets.size() == 0)
+			if (targets.isEmpty())
 				continue;
 
 			attacked = attack(attacked, planet, targets, 0, 1.5, 0.3);
@@ -22,9 +22,7 @@ public class Petra extends Jeesh {
 
 		if (attacked == false) {
 			List<Planet> targets = mostProductiveByDistance(null);
-			if (targets.size() == 0) {
-				return;
-			} else if (this.getGroundForce() > targets.get(0).getForces() * 3) {
+			if (!targets.isEmpty() && this.getGroundForce() > targets.get(0).getForces() * 3) {
 				attackFromAll(targets.get(0), 0.5);
 			}
 		}

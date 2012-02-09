@@ -1,9 +1,6 @@
 package cyclesofwar;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /*
  * the game is all about planets. get as much as you can ;)
@@ -132,10 +129,18 @@ public class Planet extends GameObject{
 	 * distance from this planet to the other planet
 	 */
 	public double getDistanceTo(Planet other) {
+		return Math.sqrt(getDistanceToSquared(other));
+	}
+        
+        /*
+	 * the square distance from this planet to the other planet
+         * can be used for high performance distance comparisons
+	 */
+	public double getDistanceToSquared(Planet other) {
 		double xDiff = other.x - this.x;
 		double yDiff = other.y - this.y;
 
-		return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+		return xDiff * xDiff + yDiff * yDiff;
 	}
 
 	/*
@@ -169,30 +174,38 @@ public class Planet extends GameObject{
 		return result;
 	}
 	
+        private List<Planet> getOthersByDistanceCache;
+        
 	/*
 	 * all other planets ordered by distance (ascending)
 	 */
 	public List<Planet> getOthersByDistance() {
-		List<Planet> result = getOthers();
-		sortByDistanceTo(result, this);
-		return result;
+            if(getOthersByDistanceCache == null)
+            {
+                getOthersByDistanceCache = new ArrayList<Planet>();
+		getOthersByDistanceCache = getOthers();
+		sortByDistanceTo(getOthersByDistanceCache, this);
+            }
+            return getOthersByDistanceCache;
 	}
-
+        
 	/*
 	 * sort others by distance to this planet (ascending)
 	 */
 	public void sortOthersByDistance(List<Planet> others) {
-		sortByDistanceTo(others, this);
+		others.clear();
+                others.addAll(Player.inBothLists(getOthersByDistance(), others));
 	}
 	
 	/*
 	 * sort others by distance to planet (ascending)
+         * for performance reasons it is recommended to use filter(planet.getOthersByDistance())
 	 */
 	public static void sortByDistanceTo(List<Planet> others, final Planet planet) {
 		Collections.sort(others, new Comparator<Planet>() {
 			@Override
 			public int compare(Planet planet1, Planet planet2) {
-				return Double.compare(planet.getDistanceTo(planet1), planet.getDistanceTo(planet2));
+				return Double.compare(planet.getDistanceToSquared(planet1), planet.getDistanceToSquared(planet2));
 			}
 		});
 	}

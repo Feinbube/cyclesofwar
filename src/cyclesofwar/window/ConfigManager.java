@@ -78,7 +78,7 @@ public class ConfigManager extends WindowAdapter {
 	
 	public int getNumberOfRounds() {
 		if (properties == null) {
-			return Arena.matchesInTournament;
+			return Arena.matchesInOneOnOneTournamentPerPlayer;
 		} else {
 			return new Integer(properties.getProperty("matches"));
 		}

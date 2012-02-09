@@ -261,7 +261,7 @@ public abstract class Player {
 	 * returns all planets/fleets in list that shallBelongTo: belong to player
 	 * !shallBelongTo: do not belong to player
 	 */
-	<T extends GameObject> List<T> filter(List<T> list, Player player, boolean shallBelongTo) {
+	static <T extends GameObject> List<T> filter(List<T> list, Player player, boolean shallBelongTo) {
 		ArrayList<T> result = new ArrayList<T>();
 		for (T gameObject : list) {
 			if ((gameObject.getPlayer() == player) == shallBelongTo) {
@@ -274,7 +274,7 @@ public abstract class Player {
 	/*
 	 * returns all planets/fleets in list that belong to player
 	 */
-	public <T extends GameObject> List<T> filter(List<T> list, Player player) {
+	public static <T extends GameObject> List<T> filter(List<T> list, Player player) {
 		return filter(list, player, true);
 	}
 
@@ -288,7 +288,7 @@ public abstract class Player {
 	/*
 	 * returns all planets/fleets in list that do not belong to player
 	 */
-	public <T extends GameObject> List<T> othersOnly(List<T> list, Player player) {
+	public static <T extends GameObject> List<T> othersOnly(List<T> list, Player player) {
 		return filter(list, player, false);
 	}
 
@@ -302,7 +302,7 @@ public abstract class Player {
 	/*
 	 * returns the first element of list or null if list is empty
 	 */
-	public <T> T firstOrNull(List<T> list) {
+	public static <T> T firstOrNull(List<T> list) {
 		return atIndexOrNull(list, 0);
 	}
 
@@ -310,12 +310,25 @@ public abstract class Player {
 	 * returns the first element of list or null if list does not have so many
 	 * elements
 	 */
-	public <T> T atIndexOrNull(List<T> list, int index) {
+	public static <T> T atIndexOrNull(List<T> list, int index) {
 		if (list.size() > index + 1) {
 			return list.get(index);
 		} else {
 			return null;
 		}
+	}
+        
+        /*
+         * returns a new list that contains all elements that are in both lists
+         */
+        public static <T> List<T> inBothLists(List<T> list1, List<T> list2) {
+                List<T> result = new ArrayList<T>();
+                for(T one : list1){
+                        if(list2.contains(one)) {
+                            result.add(one);
+                        }
+                }
+		return result;
 	}
 
 	/*
