@@ -50,7 +50,7 @@ public class Prediction {
 	public void update(Player player, int force, double timeToTarget) {
 		update(timeToTarget);
 
-		if (this.player.equals(player)) {
+		if (this.player == player) {
 			this.forces += force;
 		} else {
 			this.forces -= force;
@@ -64,7 +64,7 @@ public class Prediction {
 	}
 
 	double producedForces(double duration) {
-		if (player.equals(Player.NonePlayer)) {
+		if (player == Player.NonePlayer) {
 			return 0;
 		} else {
 			return duration * this.planet.getProductionRatePerSecond();
@@ -122,7 +122,7 @@ public class Prediction {
 	public static List<Prediction> enemyPlanetsOnly(List<Prediction> predictions, Player player) {
 		List<Prediction> result = new ArrayList<Prediction>();
 		for (Prediction prediction : predictions) {
-			if (!prediction.player.equals(player)) {
+			if (prediction.player != player) {
 				result.add(prediction);
 			}
 		}

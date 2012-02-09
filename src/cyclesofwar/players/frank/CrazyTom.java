@@ -22,9 +22,9 @@ public class CrazyTom extends Jeesh {
 			predictions.remove(localPrediction);
 
 			for (Prediction prediction : predictions) {
-				if (prediction.getPlayer().equals(this) && prediction.getForces() < localPrediction.getForces()) {
+				if (prediction.getPlayer() == this && prediction.getForces() < localPrediction.getForces()) {
 					sendFleetUpTo(planet, (int) (localPrediction.getForces() - prediction.getForces()), prediction.getPlanet());
-				} else if (!prediction.getPlayer().equals(this)) {
+				} else if (prediction.getPlayer() != this) {
 					sendFleetUpTo(planet, (int) (prediction.getForces() + 1), prediction.getPlanet());
 				}
 				if (planet.getForces() < 1) {

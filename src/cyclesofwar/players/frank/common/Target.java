@@ -68,7 +68,7 @@ public class Target {
 			Prediction predictionAtArrivalTime = Prediction.getPrediction(player, targetPlanet, origin.getTimeTo(targetPlanet));
 
 			int fleetsToConquer = (int) predictionAtArrivalTime.getForces() + 1;
-			if (predictionAtArrivalTime.getPlayer().equals(player)) {
+			if (predictionAtArrivalTime.getPlayer() == player) {
 				fleetsToConquer = -fleetsToConquer;
 			}
 
@@ -132,7 +132,7 @@ public class Target {
 	
 	private static boolean targetAlreadyHandled(Player player, Planet target, double arrivalTime) {
 		for (Fleet fleet : player.getFleets()) {
-			if (fleet.getTarget().equals(target) && fleet.getTimeToTarget() > arrivalTime) {
+			if (fleet.getTarget() == target && fleet.getTimeToTarget() > arrivalTime) {
 				return true;
 			}
 		}
@@ -162,7 +162,7 @@ public class Target {
 			prediction.update(fleet);
 		}
 
-		if (prediction.getPlayer().equals(player)) {
+		if (prediction.getPlayer() == player) {
 			return -(int) prediction.getForces();
 		} else {
 			return (int) prediction.getForces();
