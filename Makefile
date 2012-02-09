@@ -17,9 +17,17 @@ ranking:	ranking.update all ranking.new
 		rm ranking.new; \
 	else \
 		mv ranking.new ranking; \
-		src/mailer ranking; \
+		src/mailer; \
 	fi
 
-ranking.new:
-	java -cp src:lib/loewis.jar:lib/theo.jar -Djava.security.manager -Djava.security.policy=cow.policy cyclesofwar.console.Console > ranking.new
+ranking.new:	ranking.lms ranking.ooo
+	cat ranking.lms ranking.ooo > ranking.new
+
+.PHONY:	ranking.lms ranking.ooo
+
+ranking.lms:
+	java -cp src:lib/loewis.jar:lib/theo.jar -Djava.security.manager -Djava.security.policy=cow.policy cyclesofwar.console.LastManStandingTournamentConsole > ranking.lms
+
+ranking.ooo:
+	java -cp src:lib/loewis.jar:lib/theo.jar -Djava.security.manager -Djava.security.policy=cow.policy cyclesofwar.console.OneOnOneTournamentConsole > ranking.ooo
 
