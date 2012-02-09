@@ -44,7 +44,7 @@ public class Prediction {
 	}
 	
 	public void update(Fleet fleet) {
-		update(fleet.getPlayer(), fleet.getForce(), fleet.timeToTarget());
+		update(fleet.getPlayer(), fleet.getForce(), fleet.getTimeToTarget());
 	}
 
 	public void update(Player player, int force, double timeToTarget) {
@@ -75,7 +75,7 @@ public class Prediction {
 		Collections.sort(predictions, new Comparator<Prediction>() {
 			@Override
 			public int compare(Prediction one, Prediction other) {
-				return Double.compare(planet.distanceTo(one.planet), planet.distanceTo(other.planet));
+				return Double.compare(planet.getDistanceTo(one.planet), planet.getDistanceTo(other.planet));
 			}
 		});
 	}
@@ -93,9 +93,9 @@ public class Prediction {
 		Prediction result = new Prediction(planet);
 
 		List<Fleet> fleets = player.getFleetsWithTarget(planet);
-		Player.sortByArrivalTime(fleets);
+		Fleet.sortByArrivalTime(fleets);
 		for (Fleet fleet : fleets) {
-			if (fleet.timeToTarget() > time) {
+			if (fleet.getTimeToTarget() > time) {
 				break;
 			}
 			result.update(fleet);

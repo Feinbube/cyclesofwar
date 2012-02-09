@@ -277,7 +277,7 @@ public class Rendering {
 			}
 			drawText(g, posX, posY, player.getName(), player.getPlayerForeColor(), player.getPlayerBackColor(), f);
 			remember(posX, posY, w, h, player);
-			if (player.isInList(selectedPlayers)) {
+			if (selectedPlayers.contains(player)) {
 				drawBorder(g, posX, posY, w, h);
 			}
 			posX += w + 12;
@@ -409,7 +409,7 @@ public class Rendering {
 
 			String s;
 			List<TournamentRecord> winRecords = null;
-			if (!player.isEqualTo(competitor)) {
+			if (player != competitor) {
 				winRecords = tournament.winsOver(player, competitor);
 				s = percentage(winRecords.size() / (double) tournament.fightsAgainst(player, competitor).size());
 			} else {

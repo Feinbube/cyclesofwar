@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
-import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.tournament.LastManStandingTournament;
 import cyclesofwar.tournament.TournamentRecord;
@@ -37,7 +36,7 @@ public class TournamentGameMode extends GameMode {
 			rendering.drawControlInfo(g, "F1/1 toggle info");
 		} else {
 			String pauseString = tournament.isPaused() ? "continue" : "pause";
-			rendering.drawControlInfo(g, "[Key Mapping]: ESC Menue ... CLICK player: toogle priority ... CLICK stats: see battle ... SPACE: " + pauseString
+			rendering.drawControlInfo(g, "[Key Mapping]: ESC Menue ... CLICK stats: see battle ... SPACE: " + pauseString
 					+ " ... 5: new combat");
 		}
 	}
@@ -73,11 +72,6 @@ public class TournamentGameMode extends GameMode {
 			this.setLiveUniverse(new Universe(winRecord.getUniverseSeed(), winRecord.getPlayers()));
 
 			this.switchTo(GameModes.LIVE);
-		} else {
-			Player player = rendering.getPlayer(x, y, tournament);
-			if (player != null) {
-				tournament.switchPriority(player);
-			}
 		}
 	}
 

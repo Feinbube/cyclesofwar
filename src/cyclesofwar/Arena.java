@@ -10,10 +10,19 @@ import cyclesofwar.players.theo.*;
 import cyclesofwar.players.training.*;
 import de.loewis.*;
 
+/*
+ * here new players are registered and tournaments are configured
+ */
 public class Arena {
 	
-	public static final int matchesInTournament = 10;
+	/*
+	 * the number of matches per round for the daily tournament
+	 */
+	public static final int matchesInTournament = 100;
 	
+	/*
+	 * please register your champion here for the daily tournament
+	 */
 	public static List<Player> champions(){
 		ArrayList<Player> result = new ArrayList<Player>();
 
@@ -26,6 +35,9 @@ public class Arena {
 		return result;
 	}
 	
+	/*
+	 * this list contains all known players. please register yours as well 
+	 */
 	public static List<Player> registeredPlayers(){
 		ArrayList<Player> result = new ArrayList<Player>();
 		

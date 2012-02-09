@@ -65,16 +65,16 @@ public class Target {
 	public static List<Target> bestTargets(Jeesh player, List<Planet> targetPlanets, Planet origin) {
 		List<Target> targets = new ArrayList<Target>();
 		for (Planet targetPlanet : targetPlanets) {
-			Prediction predictionAtArrivalTime = Prediction.getPrediction(player, targetPlanet, origin.timeTo(targetPlanet));
+			Prediction predictionAtArrivalTime = Prediction.getPrediction(player, targetPlanet, origin.getTimeTo(targetPlanet));
 
 			int fleetsToConquer = (int) predictionAtArrivalTime.getForces() + 1;
 			if (predictionAtArrivalTime.getPlayer().equals(player)) {
 				fleetsToConquer = -fleetsToConquer;
 			}
 
-			int fleetsToKeep = getFleetsToKeep(player, predictionAtArrivalTime, fleetsToConquer, origin.timeTo(targetPlanet));
+			int fleetsToKeep = getFleetsToKeep(player, predictionAtArrivalTime, fleetsToConquer, origin.getTimeTo(targetPlanet));
 
-			if (!targetAlreadyHandled(player, targetPlanet, origin.timeTo(targetPlanet))) {
+			if (!targetAlreadyHandled(player, targetPlanet, origin.getTimeTo(targetPlanet))) {
 				targets.add(new Target(player, fleetsToConquer, fleetsToKeep, targetPlanet));
 			}
 		}
@@ -110,7 +110,7 @@ public class Target {
 		Collections.sort(targets, new Comparator<Target>() {
 			@Override
 			public int compare(Target one, Target other) {
-				return Double.compare(planet.distanceTo(one.planet), planet.distanceTo(other.planet));
+				return Double.compare(planet.getDistanceTo(one.planet), planet.getDistanceTo(other.planet));
 			}
 		});
 	}
@@ -132,7 +132,7 @@ public class Target {
 	
 	private static boolean targetAlreadyHandled(Player player, Planet target, double arrivalTime) {
 		for (Fleet fleet : player.getFleets()) {
-			if (fleet.getTarget().equals(target) && fleet.timeToTarget() > arrivalTime) {
+			if (fleet.getTarget().equals(target) && fleet.getTimeToTarget() > arrivalTime) {
 				return true;
 			}
 		}
@@ -153,10 +153,10 @@ public class Target {
 		prediction.update(player, fleetsToConquer, time);
 
 		List<Fleet> fleets = player.getFleetsWithTarget(prediction.getPlanet());
-		Player.sortByArrivalTime(fleets);
+		Fleet.sortByArrivalTime(fleets);
 
 		for (Fleet fleet : fleets) {
-			if (fleet.timeToTarget() < time) {
+			if (fleet.getTimeToTarget() < time) {
 				continue;
 			}
 			prediction.update(fleet);

@@ -14,7 +14,7 @@ public class FastExpand extends Player {
 	protected void think() {
 		for (Planet  planet : getPlanets()) {
 			List<Planet> targets = getAllPlanetsButMine();
-			sortByForceCount(targets);
+			Planet.sortByForceCount(targets);
 			Collections.reverse(targets);
 			
 			while (planet.getForces() > 1 && !targets.isEmpty()) {

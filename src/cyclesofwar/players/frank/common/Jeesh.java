@@ -34,8 +34,8 @@ public abstract class Jeesh extends Player {
 		if (fleets.size() == 0) {
 			return 0;
 		}
-		sortByArrivalTime(fleets);
-		return fleets.get(fleets.size() - 1).timeToTarget();
+		Fleet.sortByArrivalTime(fleets);
+		return fleets.get(fleets.size() - 1).getTimeToTarget();
 	}
 
 	protected List<Planet> mostProductiveByDistance(Planet planet) {
@@ -45,7 +45,7 @@ public abstract class Jeesh extends Player {
 		while (targets.size() > 0) {
 			List<Planet> next = mostProductive(targets);
 			if (planet != null) {
-				sortByDistanceTo(next, planet);
+				planet.sortOthersByDistance(next);
 			}
 
 			for (Planet productivePlanet : next) {
@@ -58,7 +58,7 @@ public abstract class Jeesh extends Player {
 	}
 
 	protected List<Planet> mostProductive(List<Planet> planets) {
-		sortByProductivity(planets);
+		Planet.sortByProductivity(planets);
 		double maxProductionRate = planets.get(0).getProductionRatePerSecond();
 
 		List<Planet> result = new ArrayList<Planet>();
@@ -82,17 +82,17 @@ public abstract class Jeesh extends Player {
 	
 	protected void fireOverproductionFromAll(Planet target, int rounds) {
 		for (Planet planet : getPlanets()) {
-			this.sendFleetUpTo(planet, (int) (planet.getProductionRatePerSecond() * rounds), target);
+			this.sendFleetUpTo(planet, (int) (planet.getProductionRatePerRound() * rounds), target);
 		}
 	}
 	
 	protected double valueOf(Target target) {
-		Planet planet = this.getNearestFreeOrEnemyPlanet(target.getPlanet());
+		Planet planet = this.firstOrNull(this.othersOnly(target.getPlanet().getOthersByDistance()));
 		if (planet == null) {
 			return -target.getForcesToConquer() - target.getForcesToKeep();
 		} else {
 			// TODO: consider nearestPlanet in the FUTURE!!
-			return -target.getForcesToConquer() - target.getForcesToKeep() + target.getPlanet().timeTo(planet)
+			return -target.getForcesToConquer() - target.getForcesToKeep() + target.getPlanet().getTimeTo(planet)
 					* target.getPlanet().getProductionRatePerSecond();
 		}
 	}

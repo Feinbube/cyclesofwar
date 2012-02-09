@@ -86,18 +86,15 @@ public abstract class Tournament {
 	// Priority
 
 	public void switchPriority(Player player) {
-		for (Player prioritizedPlayer : prioritized) {
-			if (player.isEqualTo(prioritizedPlayer)) {
-				prioritized.remove(prioritizedPlayer);
-				return;
-			}
+		if (prioritized.contains(player)) {
+			prioritized.remove(player);
+		} else {
+			prioritized.add(player);
 		}
-
-		prioritized.add(player);
 	}
 
 	public boolean hasPriority(Player player) {
-		return player.isInList(prioritized);
+		return prioritized.contains(player);
 	}
 
 	// Rankings
