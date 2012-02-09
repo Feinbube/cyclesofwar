@@ -30,7 +30,7 @@ public class Arena {
 		result.add(new Bean()); // Frank
 		result.add(new Cratters()); // Martin
 		result.add(new AttackLargestPlayer()); // Robert
-		result.add(new ViralForces()); // Peter		
+		result.add(new DumbVirus()); // Peter		
 		
 		return result;
 	}
