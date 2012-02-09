@@ -123,6 +123,21 @@ public abstract class Player {
 		return result;
 	}
 
+	/*
+	 * returns a list of all other players in the universe (not including
+	 * extinct ones)
+	 */
+	public List<Player> getOtherAlivePlayers() {
+		List<Player> result = new ArrayList<Player>();
+		for (Player player : universe.getPlayers()) {
+			if (player.isAlive()) {
+				result.add(player);
+			}
+		}
+		result.remove(this);
+		return result;
+	}
+
 	// Planets
 
 	/*
@@ -202,7 +217,7 @@ public abstract class Player {
 	 */
 	public List<Fleet> getFleetsWithTarget(Planet target) {
 		List<Fleet> result = new ArrayList<Fleet>();
-		for (Fleet fleet : this.getFleets()) {
+		for (Fleet fleet : this.getAllFleets()) {
 			if (fleet.getTarget() == target) {
 				result.add(fleet);
 			}
@@ -317,17 +332,17 @@ public abstract class Player {
 			return null;
 		}
 	}
-        
-        /*
-         * returns a new list that contains all elements that are in both lists
-         */
-        public static <T> List<T> inBothLists(List<T> list1, List<T> list2) {
-                List<T> result = new ArrayList<T>();
-                for(T one : list1){
-                        if(list2.contains(one)) {
-                            result.add(one);
-                        }
-                }
+
+	/*
+	 * returns a new list that contains all elements that are in both lists
+	 */
+	public static <T> List<T> inBothLists(List<T> list1, List<T> list2) {
+		List<T> result = new ArrayList<T>();
+		for (T one : list1) {
+			if (list2.contains(one)) {
+				result.add(one);
+			}
+		}
 		return result;
 	}
 
@@ -369,5 +384,12 @@ public abstract class Player {
 	@Deprecated
 	public static void sortByForceCount(List<Planet> planets) {
 		Planet.sortByForceCount(planets);
+	}
+
+	/*
+	 * returns true if the player has fleets or planets left
+	 */
+	public boolean isAlive() {
+		return !this.getFleets().isEmpty() || !this.getPlanets().isEmpty();
 	}
 }

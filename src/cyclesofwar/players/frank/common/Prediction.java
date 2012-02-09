@@ -75,7 +75,7 @@ public class Prediction {
 		Collections.sort(predictions, new Comparator<Prediction>() {
 			@Override
 			public int compare(Prediction one, Prediction other) {
-				return Double.compare(planet.getDistanceToSquared(one.planet), planet.getDistanceToSquared(other.planet));
+				return Double.compare(planet.getDistanceTo(one.planet), planet.getDistanceTo(other.planet));
 			}
 		});
 	}

@@ -99,12 +99,15 @@ public class ConfigManager extends WindowAdapter {
 				String id = s + i;
 				if (properties.containsKey(id)) {
 					String playerName = properties.getProperty(id);
-					result.add(getPlayerByName(playerName));
+                                        Player player = getPlayerByName(playerName);
+                                        if(player != null) {
+                                            result.add(player);
+                                        }
 				} else {
 					break;
 				}
-			}
-
+                        }
+                        
 			return result;
 		}
 	}

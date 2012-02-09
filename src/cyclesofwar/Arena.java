@@ -18,12 +18,12 @@ public class Arena {
 	/*
 	 * the number of matches per round for the daily tournament
 	 */
-	public static final int matchesInLastManStandingTournamentPerRound = 20;
+	public static final int matchesInLastManStandingTournamentPerRound = 100;
 	
 	/*
 	 * the number of matches per player for the daily tournament
 	 */
-	public static final int matchesInOneOnOneTournamentPerPlayer = 20;
+	public static final int matchesInOneOnOneTournamentPerPlayer = 50;
 	
 	/*
 	 * please register your champion here for the daily tournament
@@ -32,10 +32,10 @@ public class Arena {
 		ArrayList<Player> result = new ArrayList<Player>();
 
 		result.add(new HelloWorld()); // Theo
-		//result.add(new Bean()); // Frank
+		result.add(new BraveRabbit()); // Frank
 		result.add(new Cratters()); // Martin
 		result.add(new AttackLargestPlayer()); // Robert
-		//result.add(new ViralForces()); // Peter		
+		result.add(new DumbVirus()); // Peter		
 		
 		return result;
 	}
@@ -50,6 +50,7 @@ public class Arena {
 		result.add(new IdlePlayer());
 		result.add(new RandomPlayer());
 		result.add(new SharpShooter());
+		result.add(new FairPlayer());
 		
 		// Martin
 		result.add(new Cratters());
@@ -58,7 +59,7 @@ public class Arena {
 		result.add(new Defender());		
 		result.add(new FastExpand());
 		result.add(new AttackLargestPlayer());
-		result.add(new Borg());
+		// result.add(new Borg());
 		
 		// Theo
 		result.add(new HelloWorld());
@@ -69,6 +70,8 @@ public class Arena {
 		result.add(new CrazyTom());
 		result.add(new Alai());
 		result.add(new Bean());
+		result.add(new Rabbit());
+		result.add(new BraveRabbit());
 
 		// Peter
 		result.add(new DumbVirus());
