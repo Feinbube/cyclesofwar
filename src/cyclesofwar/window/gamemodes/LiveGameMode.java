@@ -29,13 +29,13 @@ public class LiveGameMode extends GameMode {
 		if (!pause) {
 			if (speedUp >= 1) {
 				for (int i = 0; i < speedUp; i++) {
-					universe.update(Universe.speedOfLight);
+					universe.update(Universe.getRoundDuration());
 				}
 			} else {
 				speedUpCounter++;
 				if (speedUpCounter > 1 / speedUp) {
 					speedUpCounter = 0;
-					universe.update(Universe.speedOfLight);
+					universe.update(Universe.getRoundDuration());
 				}
 			}
 		}

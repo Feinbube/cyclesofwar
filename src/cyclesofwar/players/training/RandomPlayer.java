@@ -11,18 +11,18 @@ public class RandomPlayer extends Player {
 	public void think() {
 		for (Planet planet : this.getPlanets()) {
 			if (planet.getForces() > 20)
-				sendFleet(planet, (int) (planet.getForces() / 2), getRandomPlanet(planet));
+				sendFleet(planet, (int) (planet.getForces() / 2), planet.getOthers().get(getRandomInt(planet.getOthers().size())));
 		}
 	}
 	
 	@Override
 	public Color getPlayerBackColor() {
-		return Color.gray;
+		return Color.gray.darker();
 	}
 
 	@Override
 	public Color getPlayerForeColor() {
-		return Color.white;
+		return Color.yellow;
 	}
 
 	@Override

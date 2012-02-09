@@ -12,7 +12,7 @@ public class AttackLargestPlayer extends Player {
 	@Override
 	protected void think() {
 		List<Planet> myPlanets = this.getPlanets();
-		sortByForceCount(myPlanets);
+		Planet.sortByForceCount(myPlanets);
 		
 		for (Planet planet : myPlanets) {
 			int attackForceSize = (int)(planet.getForces()/2);
@@ -24,7 +24,7 @@ public class AttackLargestPlayer extends Player {
 			
 			if (getOtherPlanetsNotUnderAttack().size() == 1) {
 				myPlanets = this.getPlanets();
-				sortByForceCount(myPlanets);
+				Planet.sortByForceCount(myPlanets);
 				sendFleetUpTo(myPlanets.get(0), (int)myPlanets.get(0).getForces() / 2, getOtherPlanetsNotUnderAttack().get(0));
 			}
 		}
@@ -41,7 +41,7 @@ public class AttackLargestPlayer extends Player {
 	
 	public List<Planet> getOtherPlanetsNotUnderAttack() {
 		List<Planet> result = getAllPlanetsButMine();
-		sortByForceCount(result);
+		Planet.sortByForceCount(result);
 		for (Fleet fleet : this.getFleets()) {
 			result.remove(fleet.getTarget());
 		}

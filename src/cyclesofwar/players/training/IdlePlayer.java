@@ -13,12 +13,12 @@ public class IdlePlayer extends Player {
 
 	@Override
 	public Color getPlayerBackColor() {
-		return Color.gray;
+		return Color.gray.darker();
 	}
 
 	@Override
 	public Color getPlayerForeColor() {
-		return Color.white;
+		return Color.yellow;
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import java.util.TreeMap;
 
 public class Universe {
 
-	public static final double speedOfLight = 0.05;
+	private static final double speedOfLight = 0.05;
 	public static final int planetCountPerPlayer = 10;
 
 	private List<Planet> planets = new ArrayList<Planet>();
@@ -25,7 +25,7 @@ public class Universe {
 	private long seed;
 
 	private long currentRound = 0;
-	private double nothingHappenedCounter = 0;
+	private int nothingHappenedCounter = 0;
 
 	private boolean gameOver = true;
 	private Player winner = null;
@@ -87,7 +87,7 @@ public class Universe {
 		}
 
 		now += elapsedSeconds;
-		nothingHappenedCounter += elapsedSeconds;
+		nothingHappenedCounter++;
 		currentRound++;
 
 		for (Planet planet : planets) {
@@ -120,7 +120,7 @@ public class Universe {
 		}
 		currentPlayer = NonePlayer.NonePlayer;
 
-		if (nothingHappenedCounter > 60 || currentRound > 100000) {
+		if (nothingHappenedCounter > 1000 || currentRound > 100000) {
 			gameOver = true;
 			winner = NonePlayer.NonePlayer;
 			return;
@@ -160,24 +160,8 @@ public class Universe {
 	}
 
 	// for Player
-	List<Player> getOtherPlayers(Player player) {
-		List<Player> result = new ArrayList<Player>(players);
-		result.remove(player);
-		return result;
-	}
-
 	public List<Planet> getAllPlanets() {
 		return new ArrayList<Planet>(planets);
-	}
-
-	List<Planet> getPlanetsOf(Player player) {
-		List<Planet> result = new ArrayList<Planet>();
-		for (Planet planet : planets) {
-			if (planet.getPlayer().equals(player)) {
-				result.add(planet);
-			}
-		}
-		return result;
 	}
 
 	public List<Fleet> getAllFleets() {
@@ -203,19 +187,19 @@ public class Universe {
 		return result;
 	}
 
-	Fleet SendFleet(Player player, Planet origin, int force, Planet target) {
+	Fleet sendFleet(Planet origin, int force, Planet target) {
 		if (force > origin.getForces()) {
 			throw new IllegalArgumentException("fleet size exceeds planetary forces");
 		}
 
-		if (!player.isMyPlanet(origin)) {
+		if (!currentPlayer.isMyPlanet(origin)) {
 			throw new IllegalArgumentException("fleet must be send from owned planet");
 		}
 
-		Fleet newFleet = new Fleet(this, player, force, origin, target);
+		Fleet newFleet = new Fleet(this, currentPlayer, force, origin, target);
 		newFleets.add(newFleet);
 		origin.setNewForces(origin.getNewForces() - newFleet.getForce());
-		nothingHappenedCounter = 0.0;
+		nothingHappenedCounter = 0;
 
 		return newFleet;
 	}
@@ -256,11 +240,23 @@ public class Universe {
 		return now;
 	}
 
-	public boolean inhabitedByPlayer(Player player) {
-		return player.isInList(players);
-	}
-
 	public List<Player> getPlayers() {
 		return players;
+	}
+	
+	public static double getFlightSpeed() {
+		return speedOfLight;
+	}
+	
+	public static double getRoundDuration(){
+		return speedOfLight;
+	}
+	
+	public static double getRoundsPerSecond(){
+		return 1.0/speedOfLight;
+	}
+
+	public boolean inhabitedByPlayer(Player player) {
+		return players.contains(player);
 	}
 }

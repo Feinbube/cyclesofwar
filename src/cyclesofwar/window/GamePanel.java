@@ -93,8 +93,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	}
 
 	public void toggleSelection(Player player) {
-		if (player.isInList(selectedPlayers)) {
-			selectedPlayers = player.listWithoutPlayer(selectedPlayers);
+		if (selectedPlayers.contains(player)) {
+			selectedPlayers.remove(player);
 		} else {
 			selectedPlayers.add(player);
 		}

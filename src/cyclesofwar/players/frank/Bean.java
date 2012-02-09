@@ -30,7 +30,7 @@ public class Bean extends Jeesh {
 
 		// TODO Teamwork
 		if (this.getFleets().size() == 0) {
-			attackFromAll(getNearestFreeOrEnemyPlanet(this.getPlanets().get(0)), 0.5);
+			attackFromAll(firstOrNull(othersOnly((this.getPlanets().get(0).getOthersByDistance()))), 0.5);
 		}
 	}
 }

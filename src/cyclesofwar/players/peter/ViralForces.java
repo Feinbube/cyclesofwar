@@ -1,9 +1,7 @@
 package cyclesofwar.players.peter;
 import java.awt.Color;
-import java.util.Collections;
 import java.util.List;
 
-import cyclesofwar.Fleet;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
@@ -17,7 +15,7 @@ public class ViralForces extends Player {
 		for (Planet  planet : getPlanets()) {
 			List<Planet> targets = getAllPlanetsButMine();
 			if (targets.size() >= maxNeigbours) {
-				sortByDistanceTo(targets, planet);
+				planet.sortOthersByDistance(targets);
 				for (int i=0; i<maxNeigbours; i++) {
 					Planet target = targets.get(i);		
 					if (target.getForces()*looserFactor < planet.getForces()) {

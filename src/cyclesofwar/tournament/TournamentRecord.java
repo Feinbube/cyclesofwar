@@ -48,11 +48,11 @@ public class TournamentRecord {
 	}
 
 	boolean containsPlayer(Player competitor) {
-		return competitor.isInList(players);
+		return players.contains(competitor);
 	}
 
 	boolean winnerIs(Player player) {
-		return winner.isEqualTo(player);
+		return winner.equals(player);
 	}
 	
 	static List<TournamentRecord> participatedIn(List<TournamentRecord> records, Player competitor) {

@@ -30,7 +30,7 @@ public class WorkerThread implements Runnable {
 					sleep();
 				}
 
-				universe.update(Universe.speedOfLight);
+				universe.update(Universe.getRoundDuration());
 			}
 
 			if (!running) {

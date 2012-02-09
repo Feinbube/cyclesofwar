@@ -11,7 +11,7 @@ public class Defender extends Player {
 	@Override
 	protected void think() {
 		List<Planet> myPlanets = this.getPlanets();
-		sortByForceCount(myPlanets);
+		Planet.sortByForceCount(myPlanets);
 
 		if (myPlanets.size() == 0)
 			return;
@@ -20,7 +20,7 @@ public class Defender extends Player {
 		myPlanets.remove(capital);
 
 		List<Planet> other = getAllPlanetsButMine();
-		sortByForceCount(other);
+		Planet.sortByForceCount(other);
 		if (other.size() > 0) {
 			Planet target = other.get(other.size() - 1);
 			int requiredForce = (int)target.getForces() + 1;

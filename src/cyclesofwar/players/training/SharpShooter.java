@@ -15,19 +15,19 @@ public class SharpShooter extends Player {
 
 		for (Planet planet : this.getPlanets()) {
 			if (planet.getForces() / 2 >= 1) {
-				sendFleet(planet, (int) (planet.getForces() / 2), getRandomPlanet(planet));
+				sendFleet(planet, (int) (planet.getForces() / 2), planet.getOthers().get(getRandomInt(planet.getOthers().size())));
 			}
 		}
 	}
 
 	@Override
 	public Color getPlayerBackColor() {
-		return Color.gray;
+		return Color.gray.darker();
 	}
 
 	@Override
 	public Color getPlayerForeColor() {
-		return Color.white;
+		return Color.yellow;
 	}
 
 	@Override
