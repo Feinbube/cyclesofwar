@@ -3,10 +3,15 @@ import sys, smtplib
 from_ = "martin.vonloewis@hpi.uni-potsdam.de"
 to = "wimi-polze@hpi.uni-potsdam.de"
 
-records = [line.strip().split(",") for line in open(sys.argv[1])]
-text = ""
+records = [line.strip().split(",") for line in open('ranking.lms')]
+lms = ""
 for record in records:
-    text += "%s. %s (%s played, %s won)\n" % tuple(record)
+    lms += "%s. %s (%s won out of %s)\n" % tuple(record)
+
+records = [line.strip().split(",") for line in open('ranking.ooo')]
+ooo = ""
+for record in records:
+    ooo += "%s. %s (%s won out of %s)\n" % tuple(record)
 
 msg = """From: %(from_)s
 To: %(to)s
@@ -14,15 +19,30 @@ Subject: New cyclesofwar ranking
 
 We have a new ranking in the cyclesofwar arena.
 
-%(text)s
+Last Man Standing Tournament
+----------------------------
+
+%(lms)s
+
+For each position in this ranking, a series of matches are
+made involving all unranked champions. The player with the
+highest win rate is ranked; all others compete for the next
+rank.
+
+One On One Tournament
+---------------------
+
+%(ooo)s
+
+In this ranking, each player plays against each other a
+number of times. The ranking is defined by the total
+number of games won.
 
 Each developer can contribute one champion, by adding it
 to cyclesofwar.Arena.champions().
-For each position in this ranking, a series of matches are
-made involving all unranked champions. The player with the
-highest win rate is placed; all others compete for the next
-place.
 
 """
+
+#print msg % vars()
 
 smtplib.SMTP('localhost').sendmail(from_, [to], msg % vars())
