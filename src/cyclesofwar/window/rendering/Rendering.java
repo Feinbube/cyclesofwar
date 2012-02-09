@@ -158,7 +158,7 @@ public class Rendering {
 				d = MaxRenderedFleet;
 			}
 
-			if (fleet.getFormation().equals(Fleet.Formation.ARROW)) {
+			if (fleet.getFormation() == Fleet.Formation.ARROW) {
 				drawArrowFormation(g, fleet, x, y, d);
 			} else {
 				drawSwarmFormation(g, fleet, x, y, d);

@@ -170,7 +170,7 @@ public class Universe {
 
 	List<Fleet> getFleetsOf(Player player) {
 		List<Fleet> result = filterFleetsOf(fleets, player);
-		if (currentPlayer.equals(player)) {
+		if (currentPlayer == player) {
 			result.addAll(filterFleetsOf(newFleets, player));
 		}
 
@@ -180,7 +180,7 @@ public class Universe {
 	private List<Fleet> filterFleetsOf(List<Fleet> fleets, Player player) {
 		List<Fleet> result = new ArrayList<Fleet>();
 		for (Fleet fleet : fleets) {
-			if (fleet.getPlayer().equals(player)) {
+			if (fleet.getPlayer() == player) {
 				result.add(fleet);
 			}
 		}
