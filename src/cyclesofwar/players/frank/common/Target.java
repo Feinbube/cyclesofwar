@@ -51,7 +51,7 @@ public class Target {
 
 	public static Target bestTarget(Jeesh player, List<Planet> targetPlanets, Planet origin) {
 		List<Target> targets = bestTargets(player, origin);
-		if(targets == null || targets.size() == 0) {
+		if(targets == null || targets.isEmpty()) {
 			return null;
 		} else {
 			return targets.get(0);
@@ -82,7 +82,7 @@ public class Target {
 		targets = Target.removePlanetsThatAreFine(targets, player);
 		targets = mostValueByDistance(player, targets, origin);
 
-		if (targets.size() == 0) {
+		if (targets.isEmpty()) {
 			return null;
 		} else {
 			return targets;
@@ -110,7 +110,7 @@ public class Target {
 		Collections.sort(targets, new Comparator<Target>() {
 			@Override
 			public int compare(Target one, Target other) {
-				return Double.compare(planet.getDistanceToSquared(one.planet), planet.getDistanceToSquared(other.planet));
+				return Double.compare(planet.getDistanceTo(one.planet), planet.getDistanceTo(other.planet));
 			}
 		});
 	}

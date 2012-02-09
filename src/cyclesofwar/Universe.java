@@ -47,9 +47,10 @@ public class Universe {
 		this.seed = seed;
 		random.setSeed(seed);
 
+		int planetId = 0;
 		planets.clear();
 		for (int i = 0; i < planetCountPerPlayer * combatants.size(); i++) {
-			planets.add(suiteablePlanet(-1));
+			planets.add(suiteablePlanet(planetId++, -1));
 		}
 
 		fleets.clear();
@@ -59,23 +60,27 @@ public class Universe {
 		for (Player player : combatants) {
 			Player freshOne = player.freshOne();
 			freshOne.setUniverse(this);
-			createStarterPlanet(freshOne);
+			createStarterPlanet(planetId++, freshOne);
 			players.add(freshOne);
 		}
 
 		gameOver = false;
+
+		for(Planet planet : planets) {
+			planet.calculateDistances();
+		}
 	}
-	
-	private Planet createStarterPlanet(Player player) {
-		Planet planet = suiteablePlanet(5);
+
+	private Planet createStarterPlanet(int planetId, Player player) {
+		Planet planet = suiteablePlanet(planetId, 5);
 		planet.setPlayer(player);
 		planets.add(planet);
 		return planet;
 	}
 
-	private Planet suiteablePlanet(double productionRate) {
+	private Planet suiteablePlanet(int planetId, double productionRate) {
 		while (true) {
-			Planet planet = new Planet(this, random, getSize(), productionRate);
+			Planet planet = new Planet(planetId, this, random, getSize(), productionRate);
 			if (planet.fits(planets))
 				return planet;
 		}
@@ -139,7 +144,7 @@ public class Universe {
 	private boolean justOnePlayerLeft() {
 		int playersAlive = 0;
 		for (Player player : players) {
-			if (player.getFleets().size() > 0 || player.getPlanets().size() > 0) {
+			if (player.isAlive()) {
 				playersAlive++;
 			}
 		}
@@ -211,7 +216,7 @@ public class Universe {
 	public int getRandomInt(int max) {
 		return random.nextInt(max);
 	}
-	
+
 	void fleetArrived(Fleet fleet, double distance) {
 		fleetsAtDestination.put(distance, fleet);
 	}
@@ -241,19 +246,19 @@ public class Universe {
 	}
 
 	public List<Player> getPlayers() {
-		return players;
+		return new ArrayList<Player>(players);
 	}
-	
+
 	public static double getFlightSpeed() {
 		return speedOfLight;
 	}
-	
-	public static double getRoundDuration(){
+
+	public static double getRoundDuration() {
 		return speedOfLight;
 	}
-	
-	public static double getRoundsPerSecond(){
-		return 1.0/speedOfLight;
+
+	public static double getRoundsPerSecond() {
+		return 1.0 / speedOfLight;
 	}
 
 	public boolean inhabitedByPlayer(Player player) {

@@ -9,13 +9,14 @@ import java.util.*;
  * every round a planet produces some troops for its owner. (numbers can be acquired using getForces() and getProductionRatePerRound())
  * the distance to the next planet is always so big that you need at least one round to send a fleet there
  */
-public class Planet extends GameObject{
-	private static int nextid;
+public class Planet extends GameObject {
 	private int id;
 
 	private double forces;
 	private double newForces;
 	private double productionRatePerSecond;
+
+	private double[] distances;
 
 	/*
 	 * gets the unique id of a planet
@@ -29,7 +30,7 @@ public class Planet extends GameObject{
 	}
 
 	/*
-	 * gets the forces currently residing on the planet 
+	 * gets the forces currently residing on the planet
 	 */
 	public double getForces() {
 		if (universe.getCurrentPlayer() == player) {
@@ -45,7 +46,7 @@ public class Planet extends GameObject{
 	public double getProductionRatePerSecond() {
 		return productionRatePerSecond;
 	}
-	
+
 	/*
 	 * gets the amount of forces that are added to the planet by round
 	 */
@@ -61,11 +62,10 @@ public class Planet extends GameObject{
 		this.newForces = newForces;
 	}
 
-	Planet(Universe universe, Random random, double size, double productionRatePerSecond) {
+	Planet(int id, Universe universe, Random random, double size, double productionRatePerSecond) {
 		super(universe, Player.NonePlayer, random.nextDouble() * size, random.nextDouble() * size);
 
-		nextid++;
-		id = nextid;
+		this.id = id;
 
 		if (productionRatePerSecond <= 0) {
 			productionRatePerSecond = random.nextInt(3) + 1;
@@ -104,19 +104,6 @@ public class Planet extends GameObject{
 		}
 	}
 
-	boolean fits(List<Planet> others) {
-		for (Planet other : others) {
-			if (istooCloseTo(other))
-				return false;
-		}
-
-		return true;
-	}
-
-	private boolean istooCloseTo(Planet other) {
-		return getDistanceTo(other) < (other.productionRatePerSecond + this.productionRatePerSecond) / 2 * Fleet.getFlightSpeed();
-	}
-
 	/*
 	 * Deprecated. use getDistanceTo instead
 	 */
@@ -124,23 +111,12 @@ public class Planet extends GameObject{
 	public double distanceTo(Planet other) {
 		return getDistanceTo(other);
 	}
-	
+
 	/*
 	 * distance from this planet to the other planet
 	 */
 	public double getDistanceTo(Planet other) {
-		return Math.sqrt(getDistanceToSquared(other));
-	}
-        
-        /*
-	 * the square distance from this planet to the other planet
-         * can be used for high performance distance comparisons
-	 */
-	public double getDistanceToSquared(Planet other) {
-		double xDiff = other.x - this.x;
-		double yDiff = other.y - this.y;
-
-		return xDiff * xDiff + yDiff * yDiff;
+		return distances[other.getId()];
 	}
 
 	/*
@@ -150,21 +126,21 @@ public class Planet extends GameObject{
 	public double timeTo(Planet other) {
 		return getTimeTo(other);
 	}
-	
+
 	/*
 	 * time needed to go from this planet to the other planet in seconds
 	 */
 	public double getTimeTo(Planet other) {
 		return getDistanceTo(other) / Fleet.getFlightSpeed();
 	}
-	
+
 	/*
 	 * rounds needed to get from this planet to the other planet
 	 */
 	public int getRoundsTo(Planet other) {
 		return (int) Math.ceil(getTimeTo(other) * Universe.getRoundsPerSecond());
 	}
-	
+
 	/*
 	 * all other planets in the universe (ascending)
 	 */
@@ -173,43 +149,52 @@ public class Planet extends GameObject{
 		result.remove(this);
 		return result;
 	}
-	
-        private List<Planet> getOthersByDistanceCache;
-        
+
+	private List<Planet> getOthersByDistanceCache;
+
 	/*
 	 * all other planets ordered by distance (ascending)
 	 */
 	public List<Planet> getOthersByDistance() {
-            if(getOthersByDistanceCache == null)
-            {
-                getOthersByDistanceCache = new ArrayList<Planet>();
-		getOthersByDistanceCache = getOthers();
-		sortByDistanceTo(getOthersByDistanceCache, this);
-            }
-            return getOthersByDistanceCache;
+		if (getOthersByDistanceCache == null) {
+			getOthersByDistanceCache = getOthers();
+			sortByDistanceTo(getOthersByDistanceCache, this);
+		}
+		return getOthersByDistanceCache;
 	}
-        
+	
+	/*
+	 * all other planets ordered by force count (ascending)
+	 */
+	public static List<Planet> sortedByForceCount(List<Planet> planets) {
+		List<Planet> result = new ArrayList<Planet>();
+		result.addAll(planets);
+		sortByForceCount(result);
+		return result;
+	}
+
 	/*
 	 * sort others by distance to this planet (ascending)
 	 */
 	public void sortOthersByDistance(List<Planet> others) {
+		List<Planet> newOthers = Player.inBothLists(getOthersByDistance(), others);
 		others.clear();
-                others.addAll(Player.inBothLists(getOthersByDistance(), others));
+		others.addAll(newOthers);
 	}
-	
+
 	/*
-	 * sort others by distance to planet (ascending)
-         * for performance reasons it is recommended to use filter(planet.getOthersByDistance())
+	 * sort others by distance to planet (ascending) for performance reasons it
+	 * is recommended to use filter(planet.getOthersByDistance())
 	 */
 	public static void sortByDistanceTo(List<Planet> others, final Planet planet) {
 		Collections.sort(others, new Comparator<Planet>() {
 			@Override
 			public int compare(Planet planet1, Planet planet2) {
-				return Double.compare(planet.getDistanceToSquared(planet1), planet.getDistanceToSquared(planet2));
+				return Double.compare(planet.getDistanceTo(planet1), planet.getDistanceTo(planet2));
 			}
 		});
 	}
-	
+
 	/*
 	 * sort planets by force count (descending)
 	 */
@@ -233,11 +218,43 @@ public class Planet extends GameObject{
 			}
 		});
 	}
-	
+
 	/*
 	 * returns true if the planet is not owned by no player
 	 */
-	public boolean isFree(){
+	public boolean isFree() {
 		return player == Player.NonePlayer;
+	}
+
+	void calculateDistances() {
+		List<Planet> planets = universe.getAllPlanets();
+		distances = new double[planets.size()];
+		for (int i = 0; i < planets.size(); i++) {
+			if (i != planets.get(i).getId()) {
+				throw new IllegalStateException();
+			}
+			distances[i] = calculateDistance(planets.get(i));
+		}
+	}
+
+	double calculateDistance(Planet other) {
+		double xDiff = other.x - this.x;
+		double yDiff = other.y - this.y;
+
+		return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+	}
+
+	boolean fits(List<Planet> others) {
+		for (Planet other : others) {
+			if (istooCloseTo(other))
+				return false;
+		}
+
+		return true;
+	}
+
+	private boolean istooCloseTo(Planet other) {
+		return calculateDistance(other) < (other.getProductionRatePerSecond() + this.getProductionRatePerSecond()) / 2
+				* Fleet.getFlightSpeed();
 	}
 }

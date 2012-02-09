@@ -1,5 +1,6 @@
 package cyclesofwar;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -29,6 +30,8 @@ public class Fleet extends GameObject{
 
 	private Planet target;
 	private int force;
+	
+	private double distanceToTarget;
 
 	private Formation formation = Formation.SWARM;
 
@@ -36,6 +39,11 @@ public class Fleet extends GameObject{
 		super(universe, player, start.getX(), start.getY());
 		this.target = target;
 		this.force = checkForce(start, target, force);
+		
+		double xDiff = target.getX() - this.x;
+		double yDiff = target.getY() - this.y;
+
+		distanceToTarget = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 	}
 
 	private static int checkForce(Planet start, Planet target, int force) {
@@ -75,6 +83,8 @@ public class Fleet extends GameObject{
 
 		double sqrt = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
+		distanceToTarget = sqrt;
+		
 		if (sqrt < getFlightSpeed() * elapsedSeconds)
 			hit(sqrt);
 
@@ -105,10 +115,7 @@ public class Fleet extends GameObject{
 	 * current distance of the fleet to the target planet
 	 */
 	public double getDistanceToTarget() {
-		double xDiff = target.getX() - this.x;
-		double yDiff = target.getY() - this.y;
-
-		return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+		return distanceToTarget;
 	}
 
 	/*
@@ -130,7 +137,7 @@ public class Fleet extends GameObject{
 	 * rounds till the fleet arrives at the target planet in seconds
 	 */
 	public int getRoundsToTarget() {
-		return (int) Math.ceil(getTimeToTarget() * Universe.getRoundsPerSecond());
+		return (int)(getTimeToTarget() * Universe.getRoundsPerSecond());
 	}
 
 	/*
@@ -166,5 +173,15 @@ public class Fleet extends GameObject{
 				return Double.compare(one.getTimeToTarget(), other.getTimeToTarget());
 			}
 		});
+	}
+	
+	/*
+	 * returns fleets by arrival time (ascending)
+	 */
+	public static List<Fleet> sortedByArrivalTime(List<Fleet> fleets) {
+		List<Fleet> result = new ArrayList<Fleet>();
+		result.addAll(fleets);
+		sortByArrivalTime(result);
+		return result;
 	}
 }
