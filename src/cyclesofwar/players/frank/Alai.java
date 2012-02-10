@@ -25,7 +25,7 @@ public class Alai extends Bean {
 
 		// TODO Teamwork
 		if (this.getFleets().size() == 0) {
-			attackFromAll(firstOrNull(othersOnly((this.getPlanets().get(0).getOthersByDistance()))), 0.5);
+			attackFromAll(firstOrNull(hostileOnly((this.getPlanets().get(0).getOthersByDistance()))), 0.5);
 		}
 	}
 

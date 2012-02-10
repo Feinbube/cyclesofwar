@@ -66,7 +66,7 @@ public class Universe {
 
 		gameOver = false;
 
-		for(Planet planet : planets) {
+		for (Planet planet : planets) {
 			planet.calculateDistances();
 		}
 	}
@@ -154,7 +154,6 @@ public class Universe {
 
 	private Player bestPlayer() {
 		Collections.sort(players, new Comparator<Player>() {
-
 			@Override
 			public int compare(Player player1, Player player2) {
 				return (int) (player2.getFullForce() - player1.getFullForce());

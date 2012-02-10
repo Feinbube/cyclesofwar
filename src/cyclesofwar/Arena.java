@@ -47,10 +47,14 @@ public class Arena {
 		ArrayList<Player> result = new ArrayList<Player>();
 		
 		// Training
-		result.add(new IdlePlayer());
-		result.add(new RandomPlayer());
-		result.add(new SharpShooter());
-		result.add(new FairPlayer());
+		result.add(new Idle());
+		result.add(new Random());
+		result.add(new Sniper());
+		result.add(new Fair());
+		result.add(new Fugitive());
+		result.add(new Clone());
+		result.add(new Gunner());
+		result.add(new Collective());
 		
 		// Martin
 		result.add(new Cratters());

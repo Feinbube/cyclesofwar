@@ -4,7 +4,7 @@ import java.awt.Color;
 import cyclesofwar.Player;
 
 
-public class IdlePlayer extends Player {
+public class Idle extends Player {
 
 	@Override
 	public void think() {
@@ -23,7 +23,6 @@ public class IdlePlayer extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "Training";
+		return "Noob";
 	}
-
 }
