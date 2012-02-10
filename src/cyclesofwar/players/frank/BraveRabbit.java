@@ -12,7 +12,7 @@ public class BraveRabbit extends Jeesh {
 		}
 
 		for (Planet planet : this.getPlanets()) {
-			Planet target = this.othersOnly(planet.getOthersByDistance()).get(0);
+			Planet target = this.hostileOnly(planet.getOthersByDistance()).get(0);
 
 			// jump around
 			if (planet.getForces() >= 21) {

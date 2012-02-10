@@ -172,7 +172,7 @@ public abstract class Player {
 	 * returns all planets not owned by this player
 	 */
 	public List<Planet> getAllPlanetsButMine() {
-		return othersOnly(getAllPlanets(), this);
+		return hostileOnly(getAllPlanets(), this);
 	}
 
 	// Fleets
@@ -209,7 +209,7 @@ public abstract class Player {
 	 * returns all fleets not owned by this player
 	 */
 	public List<Fleet> getAllEnemyFleets() {
-		return othersOnly(getAllFleets(), this);
+		return hostileOnly(getAllFleets(), this);
 	}
 
 	/*
@@ -243,7 +243,11 @@ public abstract class Player {
 	 * 
 	 * throws an exception if sender does not own the planet
 	 */
-	public Fleet sendFleetUpTo(Planet planet, int force, Planet target) {
+	public Fleet sendFleetUpTo(Planet planet, double force, Planet target) {
+		if(target == null) {
+			return null;
+		}
+		
 		int forcesToSend = (int) Math.min(force, planet.getForces());
 		if (forcesToSend > 0) {
 			return sendFleet(planet, forcesToSend, target);
@@ -303,14 +307,14 @@ public abstract class Player {
 	/*
 	 * returns all planets/fleets in list that do not belong to player
 	 */
-	public static <T extends GameObject> List<T> othersOnly(List<T> list, Player player) {
+	public static <T extends GameObject> List<T> hostileOnly(List<T> list, Player player) {
 		return filter(list, player, false);
 	}
 
 	/*
 	 * returns all planets/fleets in list that do not belong to this player
 	 */
-	public <T extends GameObject> List<T> othersOnly(List<T> list) {
+	public <T extends GameObject> List<T> hostileOnly(List<T> list) {
 		return filter(list, this, false);
 	}
 
@@ -326,7 +330,7 @@ public abstract class Player {
 	 * elements
 	 */
 	public static <T> T atIndexOrNull(List<T> list, int index) {
-		if (list.size() > index + 1) {
+		if (list.size() > index) {
 			return list.get(index);
 		} else {
 			return null;

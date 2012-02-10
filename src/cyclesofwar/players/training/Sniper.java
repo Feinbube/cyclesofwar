@@ -5,16 +5,25 @@ import java.awt.Color;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-public class RandomPlayer extends Player {
+public class Sniper extends Player {
 
 	@Override
 	public void think() {
+		if (this.getFleets().size() > 0) {
+			return;
+		}
+
 		for (Planet planet : this.getPlanets()) {
-			if (planet.getForces() > 20)
-				sendFleet(planet, (int) (planet.getForces() / 2), planet.getOthers().get(getRandomInt(planet.getOthers().size())));
+			if (planet.getForces() / 2 >= 1) {
+				sendFleet(planet, (int) (planet.getForces() / 2), getRandomTarget(planet));
+			}
 		}
 	}
-	
+
+	private Planet getRandomTarget(Planet planet) {
+		return planet.getOthers().get(getRandomInt(planet.getOthers().size()));
+	}
+
 	@Override
 	public Color getPlayerBackColor() {
 		return Color.gray.darker();
@@ -27,6 +36,6 @@ public class RandomPlayer extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "Training";
+		return "Noob";
 	}
 }

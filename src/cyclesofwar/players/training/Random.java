@@ -1,27 +1,24 @@
 package cyclesofwar.players.training;
+
 import java.awt.Color;
-import java.util.List;
 
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-
-public class FairPlayer extends Player {
+public class Random extends Player {
 
 	@Override
 	public void think() {
-		List<Planet> targets = this.getAllPlanetsButMine();
 		for (Planet planet : this.getPlanets()) {
-			if(planet.getForces() < targets.size()){
-				continue;
-			}
-			
-			for(Planet target : targets) {
-				sendFleet(planet, 1, target);
-			}	
+			if (planet.getForces() > 20)
+				sendFleet(planet, (int) (planet.getForces() / 2), getRandomTarget(planet));
 		}
 	}
 
+	private Planet getRandomTarget(Planet planet) {
+		return planet.getOthers().get(getRandomInt(planet.getOthers().size()));
+	}
+	
 	@Override
 	public Color getPlayerBackColor() {
 		return Color.gray.darker();
@@ -34,7 +31,6 @@ public class FairPlayer extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "Training";
+		return "Noob";
 	}
-
 }

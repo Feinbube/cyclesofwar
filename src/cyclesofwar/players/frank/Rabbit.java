@@ -1,6 +1,5 @@
 package cyclesofwar.players.frank;
 
-import cyclesofwar.Fleet;
 import cyclesofwar.Planet;
 import cyclesofwar.players.frank.common.Jeesh;
 
@@ -13,7 +12,7 @@ public class Rabbit extends Jeesh {
 		}
 
 		for (Planet planet : this.getPlanets()) {
-			Planet target = this.othersOnly(planet.getOthersByDistance()).get(0);
+			Planet target = this.hostileOnly(planet.getOthersByDistance()).get(0);
 
 			// jump around
 			if (planet.getForces() >= 31) {
@@ -25,15 +24,5 @@ public class Rabbit extends Jeesh {
 				sendFleetUpTo(planet, (int) planet.getForces(), target);
 			}
 		}
-	}
-
-	private int forcesArrivingNextRound(Planet planet) {
-		int result = 0;
-		for (Fleet fleet : Fleet.sortedByArrivalTime(othersOnly(getFleetsWithTarget(planet)))) {
-			if (fleet.getRoundsToTarget() <= 1) {
-				result += fleet.getForce();
-			}
-		}
-		return result;
 	}
 }
