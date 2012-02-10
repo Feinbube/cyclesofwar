@@ -14,7 +14,14 @@ public class DumbVirus extends Player {
 			List<Planet> targets = getAllPlanetsButMine();
 			if (targets.size() > 0) {
 				planet.sortOthersByDistance(targets);
-				sendFleetUpTo(planet, 9999, targets.get(0));			
+				if (targets.size() > 1) {
+					if (targets.get(0).getProductionRatePerRound() > planet.getProductionRatePerRound())
+						// cool, mehr Futter, umziehen - allerdings mit Anti-Dumm-Bot-Logik
+						sendFleetUpTo(planet, planet.getForces()-1, targets.get(0));
+					else
+						// nur vermehren
+						sendFleetUpTo(planet, planet.getForces()/2, targets.get(0));
+				}
 			}
 		}
 	}
