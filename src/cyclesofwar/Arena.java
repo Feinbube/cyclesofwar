@@ -31,7 +31,7 @@ public class Arena {
 	public static List<Player> champions(){
 		ArrayList<Player> result = new ArrayList<Player>();
 
-		result.add(new HelloWorld()); // Theo
+		result.add(new SpaceMenace()); // Theo
 		result.add(new BraveRabbit()); // Frank
 		result.add(new Cratters()); // Martin
 		result.add(new AttackLargestPlayer()); // Robert
@@ -67,6 +67,7 @@ public class Arena {
 		
 		// Theo
 		result.add(new HelloWorld());
+		result.add(new SpaceMenace());
 		
 		// Frank
 		result.add(new Petra());
