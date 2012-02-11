@@ -18,19 +18,19 @@ import java.util.List;
  * 
  * you can also chose between various formations (which is just a rendering gimmick and does not affect game logic at all)
  */
-public class Fleet extends GameObject{
+public class Fleet extends GameObject {
 
 	/*
-	 * chose a formation to make your fleet look unique
-	 * just for rendering. does not affect game logic at all 
+	 * chose a formation to make your fleet look unique just for rendering. does
+	 * not affect game logic at all
 	 */
 	public enum Formation {
-		SWARM, ARROW
+		SWARM, O, EYE, ARROW, V, SPIRAL
 	}
 
 	private Planet target;
 	private int force;
-	
+
 	private double distanceToTarget;
 
 	private Formation formation = Formation.SWARM;
@@ -39,7 +39,7 @@ public class Fleet extends GameObject{
 		super(universe, player, start.getX(), start.getY());
 		this.target = target;
 		this.force = checkForce(start, target, force);
-		
+
 		double xDiff = target.getX() - this.x;
 		double yDiff = target.getY() - this.y;
 
@@ -58,7 +58,7 @@ public class Fleet extends GameObject{
 		if (target == start) {
 			throw new IllegalArgumentException("start and target are not allowed to be identical");
 		}
-		
+
 		return force;
 	}
 
@@ -68,7 +68,7 @@ public class Fleet extends GameObject{
 	public Planet getTarget() {
 		return target;
 	}
-	
+
 	/*
 	 * gets the strength of the fleet
 	 */
@@ -84,7 +84,7 @@ public class Fleet extends GameObject{
 		double sqrt = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
 		distanceToTarget = sqrt;
-		
+
 		if (sqrt < getFlightSpeed() * elapsedSeconds)
 			hit(sqrt);
 
@@ -110,7 +110,7 @@ public class Fleet extends GameObject{
 	public double distanceToTarget() {
 		return getDistanceToTarget();
 	}
-	
+
 	/*
 	 * current distance of the fleet to the target planet
 	 */
@@ -125,7 +125,7 @@ public class Fleet extends GameObject{
 	public double timeToTarget() {
 		return getTimeToTarget();
 	}
-	
+
 	/*
 	 * time till the fleet arrives at the target planet in seconds
 	 */
@@ -137,7 +137,7 @@ public class Fleet extends GameObject{
 	 * rounds till the fleet arrives at the target planet in seconds
 	 */
 	public int getRoundsToTarget() {
-		return (int)(getTimeToTarget() * Universe.getRoundsPerSecond());
+		return (int) (getTimeToTarget() * Universe.getRoundsPerSecond());
 	}
 
 	/*
@@ -148,21 +148,21 @@ public class Fleet extends GameObject{
 	}
 
 	/*
-	 * chose a formation to make your fleet look unique
-	 * just for rendering. does not affect game logic at all 
+	 * chose a formation to make your fleet look unique just for rendering. does
+	 * not affect game logic at all
 	 */
 	public Formation getFormation() {
 		return this.formation;
 	}
 
 	/*
-	 * chose a formation to make your fleet look unique
-	 * just for rendering. does not affect game logic at all 
+	 * chose a formation to make your fleet look unique just for rendering. does
+	 * not affect game logic at all
 	 */
 	public void setFormation(Formation formation) {
 		this.formation = formation;
 	}
-	
+
 	/*
 	 * sort fleets by arrival time (ascending)
 	 */
@@ -174,7 +174,7 @@ public class Fleet extends GameObject{
 			}
 		});
 	}
-	
+
 	/*
 	 * returns fleets by arrival time (ascending)
 	 */

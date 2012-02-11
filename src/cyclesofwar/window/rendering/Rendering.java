@@ -55,6 +55,10 @@ public class Rendering {
 		}
 	}
 
+	public Font getFont(int style, int fontSize) {
+		return new Font("Courier New", style, (int) (fontSize*0.5 + fontSize*0.5 * size.width / 1000.0));
+	}
+
 	public void drawUniverse(Graphics g, Universe universe) {
 		if (this.universeSize != universe.getSize()) {
 			this.universeSize = universe.getSize();
@@ -64,7 +68,7 @@ public class Rendering {
 
 		if (!universe.isGameOver()) {
 			drawPlanets(g, universe.getAllPlanets());
-			drawFleets(g, universe.getAllFleets());
+			drawFleets(g, universe.getAllFleets(), universe.getNow());
 			drawPlayers(g, universe.getPlayers());
 		} else {
 			drawGameOverScreen(g, universe.getWinner().getName());
@@ -87,22 +91,21 @@ public class Rendering {
 	}
 
 	public void drawInfo(Graphics g, String s) {
-		drawText(g, size.width / 2, size.height / 2, s, Color.yellow, null, HAlign.CENTER, VAlign.CENTER, new Font("Courier New",
-				Font.BOLD, 32));
+		drawText(g, size.width / 2, size.height / 2, s, Color.yellow, null, HAlign.CENTER, VAlign.CENTER, getFont(Font.BOLD, 32));
 	}
 
 	public void drawTitleScreen(Graphics g) {
 		drawBackground(g);
-		drawText(g, size.width / 2, size.height / 2, "Cycles of War", Color.yellow, null, HAlign.CENTER, VAlign.CENTER, new Font(
-				"Courier New", Font.BOLD, 48));
+		drawText(g, size.width / 2, size.height / 2, "Cycles of War", Color.yellow, null, HAlign.CENTER, VAlign.CENTER,
+				getFont(Font.BOLD, 48));
 	}
 
 	private void drawGameOverScreen(Graphics g, String winnerName) {
-		drawText(g, size.width / 2, size.height / 3 + 20, "GAME OVER", Color.yellow, null, HAlign.CENTER, VAlign.CENTER, new Font(
-				"Courier New", Font.BOLD, 48));
+		drawText(g, size.width / 2, size.height / 3 + 20, "GAME OVER", Color.yellow, null, HAlign.CENTER, VAlign.CENTER,
+				getFont(Font.BOLD, 48));
 
 		drawText(g, size.width / 2, size.height / 3 + 100, winnerName + " has won!", Color.yellow, null, HAlign.CENTER, VAlign.CENTER,
-				new Font("Courier New", Font.PLAIN, 32));
+				getFont(Font.PLAIN, 32));
 	}
 
 	private void drawStars(Graphics g) {
@@ -146,7 +149,7 @@ public class Rendering {
 		return ((size.height - borderSize * 2) * y / universeSize) + borderSize;
 	}
 
-	private void drawFleets(Graphics g, List<Fleet> fleets) {
+	private void drawFleets(Graphics g, List<Fleet> fleets, double time) {
 		for (Fleet fleet : fleets) {
 			g.setColor(fleet.getPlayer().getPlayerBackColor());
 
@@ -158,10 +161,25 @@ public class Rendering {
 				d = MaxRenderedFleet;
 			}
 
+			double localTime = time - fleet.getTimeToTarget();
+
 			if (fleet.getFormation() == Fleet.Formation.ARROW) {
-				drawArrowFormation(g, fleet, x, y, d);
-			} else {
-				drawSwarmFormation(g, fleet, x, y, d);
+				drawArrowFormation(g, fleet, x, y, d, true, localTime);
+			} else if (fleet.getFormation() == Fleet.Formation.V) {
+				drawArrowFormation(g, fleet, x, y, d, false, localTime);
+			}
+			if (fleet.getFormation() == Fleet.Formation.SWARM) {
+				drawSwarmFormation(g, fleet, x, y, d, true, localTime);
+			} else if (fleet.getFormation() == Fleet.Formation.O) {
+				drawSwarmFormation(g, fleet, x, y, d, false, localTime);
+			} else if (fleet.getFormation() == Fleet.Formation.EYE) {
+				drawSwarmFormation(g, fleet, x, y, d, false, localTime);
+				if (d < MaxRenderedFleet) {
+					g.setColor(fleet.getPlayer().getPlayerForeColor());
+					g.fillOval((int) x - 1, (int) y - 1, 5, 5);
+				}
+			} else if (fleet.getFormation() == Fleet.Formation.SPIRAL) {
+				drawSpiralFormation(g, fleet, x, y, d, localTime);
 			}
 
 			if (d == MaxRenderedFleet) {
@@ -171,7 +189,7 @@ public class Rendering {
 		}
 	}
 
-	private void drawArrowFormation(Graphics g, Fleet fleet, double x, double y, int d) {
+	private void drawArrowFormation(Graphics g, Fleet fleet, double x, double y, int d, boolean filled, double time) {
 		double xDiff = fleet.getTarget().getX() - fleet.getX();
 		double yDiff = fleet.getTarget().getY() - fleet.getY();
 
@@ -185,7 +203,14 @@ public class Rendering {
 		double length = Math.sqrt(d) * 5;
 		for (int i = 0; i < d; i++) {
 			double localx = random.nextDouble() * length;
-			double localy = random.nextDouble() * localx - localx / 2.0;
+			double localy;
+			if (filled) {
+				localy = random.nextDouble() * localx - localx / 2.0;
+			} else {
+				localy = (random.nextDouble() * 0.2 + 0.8) * localx - localx / 2.0;
+				localy *= random.nextDouble() > 0.5 ? 1.0 : -1.0;
+			}
+			localy = localy * Math.sin(time);
 			localx -= length / 2;
 
 			double renderx = localx * cosAngle + localy * sinAngle;
@@ -198,9 +223,15 @@ public class Rendering {
 		}
 	}
 
-	private void drawSwarmFormation(Graphics g, Fleet fleet, double x, double y, int d) {
-		for (int i = 0; i < fleet.getForce(); i++) {
-			double r = random.nextDouble() * Math.sqrt(d) * 5;
+	private void drawSwarmFormation(Graphics g, Fleet fleet, double x, double y, int d, boolean filled, double time) {
+		for (int i = 0; i < d; i++) {
+			double r;
+			if (filled) {
+				r = random.nextDouble() * Math.sqrt(d) * 5;
+			} else {
+				r = (random.nextDouble() * 0.1 + 0.9) * Math.sqrt(d) * 5;
+			}
+			r = r * 0.5 + r * Math.sin(time);
 			double v = random.nextDouble() * r;
 			double localX = r * Math.cos(v);
 			double localY = r * Math.sin(v);
@@ -209,11 +240,26 @@ public class Rendering {
 		}
 	}
 
+	private void drawSpiralFormation(Graphics g, Fleet fleet, double x, double y, int d, double time) {
+		for (int i = 0; i < d; i++) {
+			double rnd = random.nextDouble();
+			double r = rnd * Math.sqrt(d) * 7;
+			double v = rnd * -10;
+
+			double localX = r * Math.cos(v);
+			double localY = -r * Math.sin(v);
+
+			g.fillOval((int) (x + localX / 2), (int) (y + localY / 2), 2, 2);
+		}
+	}
+
 	private void drawPlayers(Graphics g, List<Player> players) {
+		int h = g.getFontMetrics().getHeight();
+		
 		for (int i = 0; i < players.size(); i++) {
 			Player player = players.get(i);
 
-			drawText(g, 5, i * 20 + 5, shortInfo(player), player.getPlayerForeColor(), player.getPlayerBackColor(), HAlign.LEFT,
+			drawText(g, 5, i * (h+4) + 5, shortInfo(player), player.getPlayerForeColor(), player.getPlayerBackColor(), HAlign.LEFT,
 					VAlign.CENTER, 12);
 		}
 	}
@@ -237,7 +283,7 @@ public class Rendering {
 
 		tags.clear();
 
-		Font f = new Font("Courier New", Font.BOLD, 18);
+		Font f = getFont(Font.BOLD, 18);
 		drawText(g, marginLeft, marginTop - 12, "chose champions:", Color.yellow, null, f);
 
 		drawPlayers(g, selectedPlayers, allPlayers, marginLeft, marginTop);
@@ -264,7 +310,7 @@ public class Rendering {
 	}
 
 	private void drawPlayers(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers, int marginLeft, int marginTop) {
-		Font f = new Font("Courier New", Font.PLAIN, 16);
+		Font f = getFont(Font.PLAIN, 16);
 
 		int h = g.getFontMetrics(f).getHeight();
 		int posX = marginLeft;
@@ -273,7 +319,7 @@ public class Rendering {
 			int w = g.getFontMetrics(f).stringWidth(player.getName());
 			if (posX + w > size.width - marginLeft) {
 				posX = marginLeft;
-				posY += 24;
+				posY += h + 6;
 			}
 			drawText(g, posX, posY, player.getName(), player.getPlayerForeColor(), player.getPlayerBackColor(), f);
 			remember(posX, posY, w, h, player);
@@ -285,7 +331,7 @@ public class Rendering {
 	}
 
 	private void drawButton(Graphics g, String caption, int x, int y, HAlign hAlign, int fontSize, int buttonBorderSize, Color c) {
-		Font f = new Font("Courier New", Font.BOLD, fontSize);
+		Font f = getFont(Font.BOLD, fontSize);
 
 		int w = g.getFontMetrics(f).stringWidth(caption);
 		int h = g.getFontMetrics(f).getHeight();
@@ -321,16 +367,16 @@ public class Rendering {
 	public void drawStatistics(Graphics g, Tournament tournament, String s) {
 		drawBackground(g);
 
-		Font f = new Font("Courier New", Font.PLAIN, 14);
+		Font f = getFont(Font.PLAIN, 14);
 
 		int marginLeft = 50;
 		int padding = 10;
 		int marginTop = 120;
 
-		drawText(g, marginLeft, marginLeft, s, Color.yellow, null, HAlign.LEFT, VAlign.CENTER, new Font("Courier New", Font.BOLD, 32));
+		drawText(g, marginLeft, marginLeft, s, Color.yellow, null, HAlign.LEFT, VAlign.CENTER, getFont(Font.BOLD, 32));
 
 		tournament = tournament.lightWeightClone();
-
+		
 		drawLines(g, tournament, f, marginLeft, marginTop);
 
 		int pos = drawRank(g, tournament, f, marginLeft, marginTop);
@@ -343,14 +389,15 @@ public class Rendering {
 			pos = drawPerformanceAgainst(g, tournament, i, f, pos + padding, marginTop);
 		}
 
+		int h = g.getFontMetrics(f).getHeight();		
 		for (int i = 0; i < tournament.getRankings().size(); i++) {
 			Player player = tournament.getRankings().get(i).getPlayer();
 			if (tournament.hasPriority(player)) {
-				drawBorder(g, marginLeft, marginTop + 20 * (i + 1), size.width - marginLeft * 2, g.getFontMetrics(f).getHeight());
+				drawBorder(g, marginLeft, marginTop + (h+2) * (i + 1), size.width - marginLeft * 2, h);
 			}
 		}
 
-		drawText(g, size.width - marginLeft, marginTop + 20 * (tournament.getRankings().size() + 1), tournament.getGamesToPlayCount()
+		drawText(g, size.width - marginLeft, marginTop + (h+2) * (tournament.getRankings().size() + 1), tournament.getGamesToPlayCount()
 				+ " games left, " + tournament.getGamesPlayedCount() + " games played.", Color.white, Color.black, HAlign.RIGHT,
 				VAlign.BOTTOM, f);
 	}
@@ -360,10 +407,11 @@ public class Rendering {
 	}
 
 	private void drawLines(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
+		int h = g.getFontMetrics(f).getHeight();
 		for (int i = 0; i < tournament.getRankings().size(); i++) {
 			Player player = tournament.getRankings().get(i).getPlayer();
 			g.setColor(player.getPlayerBackColor());
-			g.fillRect(marginLeft - 2, marginTop + 20 * (i + 1) + 4, size.width - marginLeft * 2 + 3, g.getFontMetrics(f).getHeight());
+			g.fillRect(marginLeft - 2, marginTop + (h+2) * (i + 1) + 4, size.width - marginLeft * 2 + 3, g.getFontMetrics(f).getHeight());
 		}
 	}
 
@@ -403,6 +451,8 @@ public class Rendering {
 		Player competitor = tournament.getRankings().get(rank).getPlayer();
 		int maxPos = drawText(g, marginLeft, marginTop, (rank + 1) + ".", competitor.getPlayerForeColor(), competitor.getPlayerBackColor(),
 				f);
+		
+		int h = g.getFontMetrics(f).getHeight();
 
 		for (int i = 0; i < tournament.getRankings().size(); i++) {
 			Player player = tournament.getRankings().get(i).getPlayer();
@@ -416,9 +466,9 @@ public class Rendering {
 				s = "--";
 			}
 
-			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), s, player.getPlayerForeColor(), null, f);
+			int pos = drawText(g, marginLeft, marginTop + (h+2) * (i + 1), s, player.getPlayerForeColor(), null, f);
 			if (winRecords != null) {
-				remember(marginLeft - 2, marginTop + 20 * (i + 1) + 4, pos - marginLeft + 3, g.getFontMetrics(f).getHeight(), winRecords);
+				remember(marginLeft - 2, marginTop + (h+2) * (i + 1) + 4, pos - marginLeft + 3, g.getFontMetrics(f).getHeight(), winRecords);
 			}
 
 			if (pos > maxPos) {
@@ -435,9 +485,10 @@ public class Rendering {
 	private int drawContent(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop,
 			DrawContentProvider drawContentProvider) {
 		int maxPos = 0;
+		int h = g.getFontMetrics(f).getHeight();
 		for (int i = 0; i < tournament.getRankings().size(); i++) {
 			Player player = tournament.getRankings().get(i).getPlayer();
-			int pos = drawText(g, marginLeft, marginTop + 20 * (i + 1), drawContentProvider.getString(tournament, i),
+			int pos = drawText(g, marginLeft, marginTop + (h+2) * (i + 1), drawContentProvider.getString(tournament, i),
 					player.getPlayerForeColor(), null, f);
 			if (pos > maxPos) {
 				maxPos = pos;
@@ -451,7 +502,7 @@ public class Rendering {
 	}
 
 	private int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, int fontSize) {
-		return drawText(g, x, y, s, fc, bc, hAlgin, vAlign, new Font("Courier New", Font.PLAIN, fontSize));
+		return drawText(g, x, y, s, fc, bc, hAlgin, vAlign, getFont(Font.PLAIN, fontSize));
 	}
 
 	private int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, Font font) {

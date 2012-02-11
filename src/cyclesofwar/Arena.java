@@ -23,7 +23,7 @@ public class Arena {
 	/*
 	 * the number of matches per player for the daily tournament
 	 */
-	public static final int matchesInOneOnOneTournamentPerPlayer = 50;
+	public static final int matchesInOneOnOneTournamentPerPlayer = 200;
 	
 	/*
 	 * please register your champion here for the daily tournament
@@ -32,7 +32,7 @@ public class Arena {
 		ArrayList<Player> result = new ArrayList<Player>();
 
 		result.add(new SpaceMenace()); // Theo
-		result.add(new BraveRabbit()); // Frank
+		result.add(new Bean()); // Frank
 		result.add(new Cratters()); // Martin
 		result.add(new AttackLargestPlayer()); // Robert
 		result.add(new DumbVirus()); // Peter		
@@ -48,21 +48,23 @@ public class Arena {
 		
 		// Training
 		result.add(new Idle());
-		result.add(new Random());
 		result.add(new Sniper());
 		result.add(new Fair());
 		result.add(new Fugitive());
-		result.add(new Clone());
+		result.add(new Random());
 		result.add(new Gunner());
+		result.add(new Clone());
+		result.add(new Traveller());
 		result.add(new Collective());
+		result.add(new Rabbit());
 		
 		// Martin
 		result.add(new Cratters());
 		
 		// Robert
+		result.add(new AttackLargestPlayer());
 		result.add(new Defender());		
 		result.add(new FastExpand());
-		result.add(new AttackLargestPlayer());
 		// result.add(new Borg());
 		
 		// Theo
@@ -70,12 +72,11 @@ public class Arena {
 		result.add(new SpaceMenace());
 		
 		// Frank
-		result.add(new Petra());
-		result.add(new HanTzu());
-		result.add(new CrazyTom());
 		result.add(new Alai());
 		result.add(new Bean());
-		result.add(new Rabbit());
+		result.add(new CrazyTom());
+		result.add(new Petra());
+		result.add(new HanTzu());
 		result.add(new BraveRabbit());
 
 		// Peter

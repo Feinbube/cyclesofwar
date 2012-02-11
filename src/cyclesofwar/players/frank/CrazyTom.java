@@ -6,6 +6,6 @@ public class CrazyTom extends Jeesh {
 
 	@Override
 	public void thinkYourself() {
-		spreadTheWordStrategy();
+		spreadTheWordStrategy(1);
 	}
 }
