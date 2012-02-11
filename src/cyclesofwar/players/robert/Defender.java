@@ -42,17 +42,16 @@ public class Defender extends Player {
 
 	@Override
 	public Color getPlayerBackColor() {
-		return Color.red;
+		return Color.red.darker().darker();
 	}
 
 	@Override
 	public Color getPlayerForeColor() {
-		return Color.orange;
+		return Color.orange.brighter();
 	}
 
 	@Override
 	public String getCreatorsName() {
 		return "Robert";
 	}
-
 }

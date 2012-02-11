@@ -12,6 +12,134 @@ import cyclesofwar.Player;
 
 public abstract class BattleSchoolStudent extends Player {
 
+	// --------------------------------------------------------------------------------------------
+
+	protected interface TargetSelector {
+		List<Planet> getTargets(Planet planet);
+	}
+
+	protected class NearestTargetSelector implements TargetSelector {
+		@Override
+		public List<Planet> getTargets(Planet planet) {
+			return planet.getOthersByDistance();
+		}
+	}
+
+	protected static TargetSelector Nearest;
+
+	protected class NearestOfMineTargetSelector implements TargetSelector {
+		@Override
+		public List<Planet> getTargets(Planet planet) {
+			return mineOnly(planet.getOthersByDistance());
+		}
+	}
+
+	protected static TargetSelector NearestOfMine;
+
+	protected class NearestEnemyTargetSelector implements TargetSelector {
+		@Override
+		public List<Planet> getTargets(Planet planet) {
+			return hostileOnly(planet.getOthersByDistance());
+		}
+	}
+
+	protected static TargetSelector NearestEnemy;
+
+	protected class NearestFreeTargetSelector implements TargetSelector {
+		@Override
+		public List<Planet> getTargets(Planet planet) {
+			return freeOnly(planet.getOthersByDistance());
+		}
+	}
+
+	protected static TargetSelector NearestFree;
+
+	// --------------------------------------------------------------------------------------------
+
+	protected interface PlanetSelector {
+		List<Planet> getPlanets(Player player);
+	}
+
+	protected class HinterlandPlanetSelector implements PlanetSelector {
+		@Override
+		public List<Planet> getPlanets(Player player) {
+			List<Planet> result = new ArrayList<Planet>();
+
+			for (Planet planet : player.getPlanets()) {
+				List<Planet> neighbors = getNeighbors(planet);
+				boolean hinterland = true;
+				for (Planet neighbor : neighbors) {
+					if (!neighbor.isFree() && neighbor.getPlayer() != player) {
+						hinterland = false;
+						break;
+					}
+				}
+				if (hinterland) {
+					result.add(planet);
+				}
+			}
+
+			return result;
+		}
+	}
+
+	protected static PlanetSelector Hinterland;
+
+	protected class BorderPlanetSelector implements PlanetSelector {
+		@Override
+		public List<Planet> getPlanets(Player player) {
+			return null;
+		}
+	}
+
+	protected static PlanetSelector Border;
+
+	// ---------------------------------------------------------------------------------------------
+
+	BattleSchoolStudent() {
+		Nearest = new NearestTargetSelector();
+		NearestOfMine = new NearestOfMineTargetSelector();
+		NearestEnemy = new NearestEnemyTargetSelector();
+		NearestFree = new NearestFreeTargetSelector();
+		Hinterland = new HinterlandPlanetSelector();
+		Border = new BorderPlanetSelector();
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	protected int enemyForcesArrivingNextRound(Planet planet) {
+		int result = 0;
+		for (Fleet fleet : Fleet
+				.sortedByArrivalTime(hostileOnly(getFleetsWithTarget(planet)))) {
+			if (fleet.getRoundsToTarget() <= 1) {
+				result += fleet.getForce();
+			}
+		}
+		return result;
+	}
+
+	protected int myForcesArrivingNextRound(Planet planet) {
+		int result = 0;
+		for (Fleet fleet : Fleet
+				.sortedByArrivalTime(mineOnly((getFleetsWithTarget(planet))))) {
+			if (fleet.getRoundsToTarget() <= 1) {
+				result += fleet.getForce();
+			}
+		}
+		return result;
+	}
+
+	protected List<Planet> getNeighbors(Planet planet) {
+		return firstElements(planet.getOthersByDistance(), 5);
+	}
+
+	protected boolean isLost(Planet planet) {
+		return planet.getForces() + planet.getProductionRatePerRound()
+				+ myForcesArrivingNextRound(planet) < enemyForcesArrivingNextRound(planet);
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
 	protected double getlastFleetArrivalTime() {
 		List<Fleet> fleets = getAllFleets();
 		if (fleets.isEmpty()) {
@@ -92,37 +220,43 @@ public abstract class BattleSchoolStudent extends Player {
 
 		return result;
 	}
-	
+
 	protected Planet mostForcefulEnemyPlanet() {
-		return Collections.max(this.getAllPlanetsButMine(), new Comparator<Planet>() {
-			@Override
-			public int compare(Planet one, Planet other) {
-				return Double.compare(one.getForces(), other.getForces());
-			}
-		});
+		return Collections.max(this.getAllPlanetsButMine(),
+				new Comparator<Planet>() {
+					@Override
+					public int compare(Planet one, Planet other) {
+						return Double.compare(one.getForces(),
+								other.getForces());
+					}
+				});
 	}
 
 	protected void attackFromAll(Planet target, double factor) {
 		if (target != null) {
 			for (Planet planet : this.getPlanets()) {
-				this.sendFleetUpTo(planet, (int) (planet.getForces() * factor), target);
+				this.sendFleetUpTo(planet, (int) (planet.getForces() * factor),
+						target);
 			}
 		}
 	}
 
 	protected void fireOverproductionFromAll(Planet target, int rounds) {
 		for (Planet planet : getPlanets()) {
-			this.sendFleetUpTo(planet, (int) (planet.getProductionRatePerRound() * rounds), target);
+			this.sendFleetUpTo(planet,
+					(int) (planet.getProductionRatePerRound() * rounds), target);
 		}
 	}
 
 	protected double valueOf(Target target) {
-		Planet planet = Player.firstOrNull(this.hostileOnly(target.getPlanet().getOthersByDistance()));
+		Planet planet = Player.firstOrNull(this.hostileOnly(target.getPlanet()
+				.getOthersByDistance()));
 		if (planet == null) {
 			return -target.getForcesToConquer() - target.getForcesToKeep();
 		} else {
 			// TODO: consider nearestPlanet in the FUTURE!!
-			return -target.getForcesToConquer() - target.getForcesToKeep() + target.getPlanet().getTimeTo(planet)
+			return -target.getForcesToConquer() - target.getForcesToKeep()
+					+ target.getPlanet().getTimeTo(planet)
 					* target.getPlanet().getProductionRatePerSecond();
 		}
 	}
@@ -134,17 +268,7 @@ public abstract class BattleSchoolStudent extends Player {
 		}
 		return result;
 	}
-	
-	protected int forcesArrivingNextRound(Planet planet) {
-		int result = 0;
-		for (Fleet fleet : Fleet.sortedByArrivalTime(hostileOnly(getFleetsWithTarget(planet)))) {
-			if (fleet.getRoundsToTarget() <= 1) {
-				result += fleet.getForce();
-			}
-		}
-		return result;
-	}
-	
+
 	@Override
 	public Color getPlayerBackColor() {
 		return Color.blue.darker();

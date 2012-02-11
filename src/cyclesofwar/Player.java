@@ -319,6 +319,13 @@ public abstract class Player {
 	}
 
 	/*
+	 * returns all planets/fleets in list that do not belong to any player
+	 */
+	public <T extends GameObject> List<T> freeOnly(List<T> list) {
+		return filter(list, Player.NonePlayer, true);
+	}
+	
+	/*
 	 * returns the first element of list or null if list is empty
 	 */
 	public static <T> T firstOrNull(List<T> list) {
@@ -346,6 +353,17 @@ public abstract class Player {
 			if (list2.contains(one)) {
 				result.add(one);
 			}
+		}
+		return result;
+	}
+	
+	/*
+	 * returns a list containing up to the specified number of elements of list, starting from the first one
+	 */
+	public static <T> List<T> firstElements(List<T> list, int numberOfElements) {
+		List<T> result = new ArrayList<T>();
+		for (int i = 0; i<Math.min(numberOfElements, list.size()); i++) {
+			result.add(list.get(i));
 		}
 		return result;
 	}

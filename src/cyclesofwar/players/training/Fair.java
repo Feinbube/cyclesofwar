@@ -10,14 +10,16 @@ public class Fair extends Player {
 
 	@Override
 	public void think() {
-		List<Planet> targets = this.getAllPlanetsButMine();
+		List<Planet> targets = this.getAllPlanets();
 		for (Planet planet : this.getPlanets()) {
 			if (planet.getForces() < targets.size()) {
 				continue;
 			}
 
 			for (Planet target : targets) {
-				sendFleet(planet, 1, target);
+				if (target != planet) {
+					sendFleet(planet, 1, target);
+				}
 			}
 		}
 	}
