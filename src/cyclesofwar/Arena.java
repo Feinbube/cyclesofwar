@@ -57,6 +57,7 @@ public class Arena {
 		result.add(new Traveller());
 		result.add(new Collective());
 		result.add(new Rabbit());
+		result.add(new Borderline());
 		
 		// Martin
 		result.add(new Cratters());
