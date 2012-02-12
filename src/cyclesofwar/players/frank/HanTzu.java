@@ -6,10 +6,11 @@ public class HanTzu extends Jeesh {
 
 	@Override
 	protected void thinkYourself() {
-		if (getOtherAlivePlayers().size() > 1) {
-			strategyFightMultipleEnemies();
-		} else {
-			spreadTheWordStrategy(10);
-		}
+		strategyAlwaysTheSecond3(8);
+//		if (getOtherAlivePlayers().size() > 1) {
+//			strategyFightMultipleEnemies();
+//		} else {
+//			spreadTheWordStrategy(10);
+//		}
 	}
 }

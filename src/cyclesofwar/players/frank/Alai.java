@@ -1,16 +1,14 @@
 package cyclesofwar.players.frank;
 
-import cyclesofwar.players.frank.common.Target;
+import cyclesofwar.players.frank.common.Jeesh;
 
-public class Alai extends Bean {
+public class Alai extends Jeesh {
 
 	@Override
 	public void thinkYourself() {
-		strategyAlwaysTheSecond2();
-	}
-
-	@Override
-	protected double valueOf(Target target) {
-		return -target.getForcesToConquer() - target.getForcesToKeep();
+		strategyAlwaysTheSecond();
+		//colonizeFree(Hinterland);
+		// supportBorderPlanets();
+		//evacutatePlanetsThatAreLost(NearestOfMine);
 	}
 }

@@ -109,8 +109,7 @@ public abstract class BattleSchoolStudent extends Player {
 
 	protected int enemyForcesArrivingNextRound(Planet planet) {
 		int result = 0;
-		for (Fleet fleet : Fleet
-				.sortedByArrivalTime(hostileOnly(getFleetsWithTarget(planet)))) {
+		for (Fleet fleet : Fleet.sortedByArrivalTime(hostileOnly(getFleetsWithTarget(planet)))) {
 			if (fleet.getRoundsToTarget() <= 1) {
 				result += fleet.getForce();
 			}
@@ -120,8 +119,7 @@ public abstract class BattleSchoolStudent extends Player {
 
 	protected int myForcesArrivingNextRound(Planet planet) {
 		int result = 0;
-		for (Fleet fleet : Fleet
-				.sortedByArrivalTime(mineOnly((getFleetsWithTarget(planet))))) {
+		for (Fleet fleet : Fleet.sortedByArrivalTime(mineOnly((getFleetsWithTarget(planet))))) {
 			if (fleet.getRoundsToTarget() <= 1) {
 				result += fleet.getForce();
 			}
@@ -129,13 +127,12 @@ public abstract class BattleSchoolStudent extends Player {
 		return result;
 	}
 
+	protected boolean isLost(Planet planet) {
+		return planet.getForces() + planet.getProductionRatePerRound() + myForcesArrivingNextRound(planet) < enemyForcesArrivingNextRound(planet);
+	}
+	
 	protected List<Planet> getNeighbors(Planet planet) {
 		return firstElements(planet.getOthersByDistance(), 5);
-	}
-
-	protected boolean isLost(Planet planet) {
-		return planet.getForces() + planet.getProductionRatePerRound()
-				+ myForcesArrivingNextRound(planet) < enemyForcesArrivingNextRound(planet);
 	}
 
 	// ---------------------------------------------------------------------------------------------
@@ -222,42 +219,25 @@ public abstract class BattleSchoolStudent extends Player {
 	}
 
 	protected Planet mostForcefulEnemyPlanet() {
-		return Collections.max(this.getAllPlanetsButMine(),
-				new Comparator<Planet>() {
-					@Override
-					public int compare(Planet one, Planet other) {
-						return Double.compare(one.getForces(),
-								other.getForces());
-					}
-				});
+		return Collections.max(this.getAllPlanetsButMine(), new Comparator<Planet>() {
+			@Override
+			public int compare(Planet one, Planet other) {
+				return Double.compare(one.getForces(), other.getForces());
+			}
+		});
 	}
 
 	protected void attackFromAll(Planet target, double factor) {
 		if (target != null) {
 			for (Planet planet : this.getPlanets()) {
-				this.sendFleetUpTo(planet, (int) (planet.getForces() * factor),
-						target);
+				this.sendFleetUpTo(planet, (int) (planet.getForces() * factor), target);
 			}
 		}
 	}
 
 	protected void fireOverproductionFromAll(Planet target, int rounds) {
 		for (Planet planet : getPlanets()) {
-			this.sendFleetUpTo(planet,
-					(int) (planet.getProductionRatePerRound() * rounds), target);
-		}
-	}
-
-	protected double valueOf(Target target) {
-		Planet planet = Player.firstOrNull(this.hostileOnly(target.getPlanet()
-				.getOthersByDistance()));
-		if (planet == null) {
-			return -target.getForcesToConquer() - target.getForcesToKeep();
-		} else {
-			// TODO: consider nearestPlanet in the FUTURE!!
-			return -target.getForcesToConquer() - target.getForcesToKeep()
-					+ target.getPlanet().getTimeTo(planet)
-					* target.getPlanet().getProductionRatePerSecond();
+			this.sendFleetUpTo(planet, (int) (planet.getProductionRatePerRound() * rounds), target);
 		}
 	}
 
