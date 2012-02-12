@@ -8,10 +8,14 @@ nogui:
 	java -cp src:lib/loewis.jar:lib/theo.jar -Djava.security.manager -Djava.security.policy=cow.policy cyclesofwar.console.Console
 
 
+clean:
+	rm -f src/cyclesofwar/*.class src/cyclesofwar/*/*.class src/cyclesofwar/*/*/*.class src/cyclesofwar/*/*/*/*.class
+
+
 ranking.update:
 	svn --config-option config:tunnels:ssh='ssh -i cyclesofwar' up -q
 
-ranking:	ranking.update all ranking.new
+ranking:	ranking.update clean all ranking.new
 	if cmp -s ranking ranking.new; \
 	then \
 		rm ranking.new; \
