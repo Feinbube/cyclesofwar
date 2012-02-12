@@ -162,16 +162,6 @@ public class Planet extends GameObject {
 		}
 		return getOthersByDistanceCache;
 	}
-	
-	/*
-	 * all other planets ordered by force count (ascending)
-	 */
-	public static List<Planet> sortedByForceCount(List<Planet> planets) {
-		List<Planet> result = new ArrayList<Planet>();
-		result.addAll(planets);
-		sortByForceCount(result);
-		return result;
-	}
 
 	/*
 	 * sort others by distance to this planet (ascending)
@@ -196,6 +186,16 @@ public class Planet extends GameObject {
 	}
 
 	/*
+	 * all other planets ordered by force count (ascending)
+	 */
+	public static List<Planet> sortedByForceCount(List<Planet> planets) {
+		List<Planet> result = new ArrayList<Planet>();
+		result.addAll(planets);
+		sortByForceCount(result);
+		return result;
+	}
+	
+	/*
 	 * sort planets by force count (descending)
 	 */
 	public static void sortByForceCount(List<Planet> planets) {
@@ -207,6 +207,16 @@ public class Planet extends GameObject {
 		});
 	}
 
+	/*
+	 * all other planets ordered by production rate (descending)
+	 */
+	public static List<Planet> sortedByProductivity(List<Planet> planets) {
+		List<Planet> result = new ArrayList<Planet>();
+		result.addAll(planets);
+		sortByProductivity(result);
+		return result;
+	}
+	
 	/*
 	 * sort planets by production rate (descending)
 	 */

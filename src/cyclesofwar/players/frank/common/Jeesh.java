@@ -5,7 +5,9 @@ import java.util.List;
 
 import cyclesofwar.Fleet;
 import cyclesofwar.Planet;
+import cyclesofwar.Player;
 import cyclesofwar.Fleet.Formation;
+import cyclesofwar.players.frank.common.Target.Evaluator;
 
 public abstract class Jeesh extends BattleSchoolStudent {
 
@@ -97,9 +99,38 @@ public abstract class Jeesh extends BattleSchoolStudent {
 			boolean send = false;
 
 			for (Planet planet : this.getPlanets()) {
-				Target target = Target.bestTarget(this, planet);
+				Target target = Target.bestTarget(this, getAllPlanets(), planet, new Evaluator() {
+					@Override
+					public double valueOf(Target target) {
+						// TODO: consider nearestPlanet in the FUTURE!!
+						// Planet planet =
+						// Player.firstOrNull(target.getPlanet().getOthersByDistance());
+
+						// 57%
+						return -target.getForcesToConquer();
+
+						// 33%
+						// return -target.getForcesToConquer() -
+						// target.getForcesToKeep();
+
+						// 35% return -target.getForcesToConquer() -
+						// target.getForcesToKeep() +
+						// target.getPlanet().getProductionRatePerSecond();
+
+						// 40% return -target.getForcesToConquer() -
+						// target.getForcesToKeep() +
+						// target.getPlanet().getTimeTo(planet) *
+						// target.getPlanet().getProductionRatePerSecond();
+
+						// 55% return -target.getForcesToConquer() +
+						// target.getPlanet().getTimeTo(planet) *
+						// target.getPlanet().getProductionRatePerSecond();
+					}
+
+				});
+
 				if (target == null) {
-					return; // already won :D
+					return; // nothing to do
 				} else if ((int) target.getForcesToConquer() > 0 && planet.getForces() >= target.getForcesToConquer()) {
 					this.sendFleet(planet, target.getForcesToConquer(), target.getPlanet());
 					send = true;
@@ -121,7 +152,13 @@ public abstract class Jeesh extends BattleSchoolStudent {
 
 	protected void strategyAlwaysTheSecond2() {
 		for (Planet planet : this.getPlanets()) {
-			Target target = Target.bestTarget(this, planet);
+			Target target = Target.bestTarget(this, getAllPlanets(), planet, new Evaluator() {
+
+				@Override
+				public double valueOf(Target target) {
+					return -target.getForcesToConquer() - target.getForcesToKeep();
+				}
+			});
 			if (target == null) {
 				return; // already won :D
 			} else if ((int) target.getForcesToConquer() > 0 && planet.getForces() >= target.getForcesToConquer()) {
@@ -142,32 +179,63 @@ public abstract class Jeesh extends BattleSchoolStudent {
 		}
 	}
 
-	protected void strategyAttackMostProductiveByDistance() {
-		boolean attacked = false;
-		for (Planet planet : this.getPlanets()) {
-			List<Planet> targets = mostProductiveByDistance(planet);
-			if (targets.isEmpty())
-				continue;
+	protected void strategyAlwaysTheSecond3(int restrictToNeighborCount) {
+		while (true) {
+			boolean send = false;
 
-			attacked = attack(attacked, planet, targets, 0, 1.5, 0.3);
-			attacked = attack(attacked, planet, targets, 1, 2, 0.3);
-			attacked = attack(attacked, planet, targets, 2, 3, 0.3);
-		}
+			for (Planet planet : this.getPlanets()) {
+				List<Planet> planets = firstElements(planet.getOthersByDistance(), restrictToNeighborCount);
+				planets.add(planet);
+				Target target = Target.bestTarget(this, planets, planet, new Evaluator() {
+					@Override
+					public double valueOf(Target target) {
+						// TODO: consider nearestPlanet in the FUTURE!!
+						// Planet planet =
+						// Player.firstOrNull(target.getPlanet().getOthersByDistance());
 
-		if (attacked == false) {
-			List<Planet> targets = mostProductiveByDistance(null);
-			if (!targets.isEmpty() && this.getGroundForce() > targets.get(0).getForces() * 3) {
-				attackFromAll(targets.get(0), 0.5);
+						// 57%
+						return -target.getForcesToConquer();
+
+						// 33%
+						// return -target.getForcesToConquer() -
+						// target.getForcesToKeep();
+
+						// 35% return -target.getForcesToConquer() -
+						// target.getForcesToKeep() +
+						// target.getPlanet().getProductionRatePerSecond();
+
+						// 40% return -target.getForcesToConquer() -
+						// target.getForcesToKeep() +
+						// target.getPlanet().getTimeTo(planet) *
+						// target.getPlanet().getProductionRatePerSecond();
+
+						// 55% return -target.getForcesToConquer() +
+						// target.getPlanet().getTimeTo(planet) *
+						// target.getPlanet().getProductionRatePerSecond();
+					}
+
+				});
+
+				if (target == null) {
+					break; // nothing to do
+				} else if ((int) target.getForcesToConquer() > 0 && planet.getForces() >= target.getForcesToConquer()) {
+					Fleet fleet = this.sendFleet(planet, target.getForcesToConquer(), target.getPlanet());
+					if (fleet != null) {
+						send = true;
+					}
+				}
+
+				// TODO consider keeping the planet as well
+			}
+
+			if (!send) {
+				break;
 			}
 		}
-	}
 
-	private boolean attack(boolean attacked, Planet planet, List<Planet> targets, int i, double compareFactor, double attacFactor) {
-		if (!attacked && targets.size() > i && planet.getForces() > targets.get(i).getForces() * compareFactor) {
-			this.sendFleetUpTo(planet, (int) (planet.getForces() * attacFactor), targets.get(i));
-			return true;
-		} else {
-			return false;
+		// TODO Teamwork
+		if (this.getFleets().isEmpty()) {
+			attackFromAll(firstOrNull(hostileOnly((this.getPlanets().get(0).getOthersByDistance()))), 0.5);
 		}
 	}
 
@@ -228,6 +296,49 @@ public abstract class Jeesh extends BattleSchoolStudent {
 					sendFleet(planet, factor, target);
 				}
 			}
+		}
+	}
+
+	protected void strategySelective() {
+		if (getAllPlanetsButMine().isEmpty()) {
+			return;
+		}
+
+		if (this.getOtherPlayers().size() == 1) {
+			winArena(this.getOtherPlayers().get(0));
+		} else {
+			strategyCollective();
+		}
+	}
+
+	int strategyHyperactiveLastIndex = 0;
+
+	protected void strategyHyperactive() {
+		if (getAllPlanetsButMine().isEmpty()) {
+			return;
+		}
+
+		for (Planet planet : this.getPlanets()) {
+			if (planet.getForces() > 5) {
+				Fleet fleet = sendFleetUpTo(planet, planet.getForces() - 2,
+						hostileOnly(planet.getOthersByDistance()).get(strategyHyperactiveLastIndex % getAllPlanetsButMine().size()));
+				fleet.setFormation(Formation.EYE);
+			}
+		}
+		strategyHyperactiveLastIndex++;
+	}
+
+	protected void winArena(Player enemy) {
+		if (enemy.getCreatorsName().equals("Martin")) {
+			strategyCollective();
+		} else if (enemy.getCreatorsName().equals("Theo")) {
+			strategyAlwaysTheSecond();
+		} else if (enemy.getCreatorsName().equals("Robert")) {
+			strategyAlwaysTheSecond();
+		} else if (enemy.getCreatorsName().equals("Peter")) {
+			strategyHyperactive();
+		} else {
+			strategyAlwaysTheSecond();
 		}
 	}
 

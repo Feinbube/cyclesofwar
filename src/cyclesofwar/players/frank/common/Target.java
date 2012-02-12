@@ -10,6 +10,11 @@ import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
 public class Target {
+	
+	public interface Evaluator {
+		public double valueOf(Target target);
+	}
+	
 	private int forcesToConquer;
 	private int forcesToKeep;
 	private Planet planet;
@@ -27,11 +32,11 @@ public class Target {
 		return planet;
 	}
 
-	Target(Jeesh player, int forcesToConquer, int forcesToKeep, Planet planet) {
+	Target(Jeesh player, int forcesToConquer, int forcesToKeep, Planet planet, Evaluator evaluator) {
 		this.forcesToConquer = forcesToConquer;
 		this.forcesToKeep = forcesToKeep;
 		this.planet = planet;
-		this.value = player.valueOf(this);
+		this.value = evaluator.valueOf(this);
 	}
 
 	public static List<Target> removePlanetsThatAreFine(List<Target> targets, Player player) {
@@ -45,12 +50,8 @@ public class Target {
 		return result;
 	}
 
-	public static Target bestTarget(Jeesh player, Planet origin) {
-		return bestTarget(player, player.getAllPlanets(), origin);
-	}
-
-	public static Target bestTarget(Jeesh player, List<Planet> targetPlanets, Planet origin) {
-		List<Target> targets = bestTargets(player, origin);
+	public static Target bestTarget(Jeesh player, List<Planet> targetPlanets, Planet origin, Evaluator evaluator) {
+		List<Target> targets = bestTargets(player, targetPlanets, origin, evaluator);
 		if(targets == null || targets.isEmpty()) {
 			return null;
 		} else {
@@ -58,29 +59,25 @@ public class Target {
 		}
 	}
 
-	public static List<Target> bestTargets(Jeesh player, Planet origin) {
-		return bestTargets(player, player.getAllPlanets(), origin);
-	}
-
-	public static List<Target> bestTargets(Jeesh player, List<Planet> targetPlanets, Planet origin) {
+	public static List<Target> bestTargets(Jeesh player, List<Planet> targetPlanets, Planet origin, Evaluator evaluator) {
 		List<Target> targets = new ArrayList<Target>();
 		for (Planet targetPlanet : targetPlanets) {
 			Prediction predictionAtArrivalTime = Prediction.getPrediction(player, targetPlanet, origin.getTimeTo(targetPlanet));
 
 			int fleetsToConquer = (int) predictionAtArrivalTime.getForces() + 1;
 			if (predictionAtArrivalTime.getPlayer() == player) {
-				fleetsToConquer = -fleetsToConquer;
+				fleetsToConquer = -fleetsToConquer+1;
 			}
 
 			int fleetsToKeep = getFleetsToKeep(player, predictionAtArrivalTime, fleetsToConquer, origin.getTimeTo(targetPlanet));
 
 			if (!targetAlreadyHandled(player, targetPlanet, origin.getTimeTo(targetPlanet))) {
-				targets.add(new Target(player, fleetsToConquer, fleetsToKeep, targetPlanet));
+				targets.add(new Target(player, fleetsToConquer, fleetsToKeep, targetPlanet, evaluator));
 			}
 		}
 
 		targets = Target.removePlanetsThatAreFine(targets, player);
-		targets = mostValueByDistance(player, targets, origin);
+		targets = mostValueByDistance(player, targets, origin, evaluator);
 
 		if (targets.isEmpty()) {
 			return null;
@@ -89,11 +86,11 @@ public class Target {
 		}
 	}
 	
-	protected static List<Target> mostValueByDistance(Jeesh player, List<Target> targets, Planet planet) {
+	protected static List<Target> mostValueByDistance(Jeesh player, List<Target> targets, Planet planet, Evaluator evaluator) {
 		List<Target> result = new ArrayList<Target>();
 
 		while (targets.size() > 0) {
-			List<Target> next = mostValued(player, targets);
+			List<Target> next = mostValued(player, targets, evaluator);
 			if (planet != null) {
 				sortByDistanceTo(next, planet);
 			}
@@ -115,8 +112,8 @@ public class Target {
 		});
 	}
 
-	protected static List<Target> mostValued(Jeesh player, List<Target> targets) {
-		sortByValue(player, targets);
+	protected static List<Target> mostValued(Jeesh player, List<Target> targets, Evaluator evaluator) {
+		sortByValue(player, targets, evaluator);
 		double maxValue = targets.get(0).value;
 
 		List<Target> result = new ArrayList<Target>();
@@ -139,12 +136,12 @@ public class Target {
 
 		return false;
 	}
-
-	private static void sortByValue(final Jeesh player, List<Target> targets) {
+	
+	private static void sortByValue(final Jeesh player, List<Target> targets, final Evaluator evaluator) {
 		Collections.sort(targets, new Comparator<Target>() {
 			@Override
 			public int compare(Target one, Target other) {
-				return Double.compare(player.valueOf(other), player.valueOf(one));
+				return Double.compare(evaluator.valueOf(other), evaluator.valueOf(one));
 			}
 		});
 	}

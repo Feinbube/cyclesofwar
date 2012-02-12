@@ -6,6 +6,6 @@ public class Petra extends Jeesh {
 
 	@Override
 	public void thinkYourself() {
-		strategyAttackMostProductiveByDistance();
+		strategyBraveRabbit(31);
 	}
 }

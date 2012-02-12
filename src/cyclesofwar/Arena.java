@@ -23,7 +23,7 @@ public class Arena {
 	/*
 	 * the number of matches per player for the daily tournament
 	 */
-	public static final int matchesInOneOnOneTournamentPerPlayer = 200;
+	public static final int matchesInOneOnOneTournamentPerPlayer = 100;
 	
 	/*
 	 * please register your champion here for the daily tournament
@@ -77,7 +77,6 @@ public class Arena {
 		result.add(new CrazyTom());
 		result.add(new Petra());
 		result.add(new HanTzu());
-		result.add(new BraveRabbit());
 
 		// Peter
 		result.add(new DumbVirus());
