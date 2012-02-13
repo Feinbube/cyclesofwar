@@ -127,15 +127,15 @@ public class Target {
 		return result;
 	}
 	
-	private static boolean targetAlreadyHandled(Player player, Planet target, double arrivalTime) {
-		for (Fleet fleet : player.getFleets()) {
-			if (fleet.getTarget() == target && fleet.getTimeToTarget() >= arrivalTime) {
-				return true;
-			}
-		}
-
-		return false;
-	}
+//	private static boolean targetAlreadyHandled(Player player, Planet target, double arrivalTime) {
+//		for (Fleet fleet : player.getFleets()) {
+//			if (fleet.getTarget() == target && fleet.getTimeToTarget() >= arrivalTime) {
+//				return true;
+//			}
+//		}
+//
+//		return false;
+//	}
 	
 	private static void sortByValue(final Jeesh player, List<Target> targets, final Evaluator evaluator) {
 		Collections.sort(targets, new Comparator<Target>() {

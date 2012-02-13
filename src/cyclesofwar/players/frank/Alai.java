@@ -6,14 +6,6 @@ public class Alai extends Jeesh {
 
 	@Override
 	public void thinkYourself() {
-		if (getAllPlanetsButMine().isEmpty()) {
-			return;
-		}
-
-		if (this.getOtherPlayers().size() == 1) {
-			strategyAlwaysTheSecond();
-		} else {
-			strategyCollective();
-		}
+		strategyAlwaysTheSecond3(12);
 	}
 }

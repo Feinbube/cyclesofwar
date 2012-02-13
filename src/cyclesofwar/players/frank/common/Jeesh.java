@@ -234,11 +234,11 @@ public abstract class Jeesh extends BattleSchoolStudent {
 		}
 
 		// TODO Teamwork
-		if (this.getFleets().isEmpty()) {
-			attackFromAll(firstOrNull(hostileOnly((this.getPlanets().get(0).getOthersByDistance()))), 0.5);
+		if (this.getFleets().isEmpty() || this.getOtherAlivePlayers().size() == 1) {
+			strategyBraveRabbit(100);
 		}
 	}
-
+	
 	protected void strategyFightMultipleEnemies() {
 		double forcesOfLargestEnemy = mostForcefulEnemyPlanet().getForces();
 		double myForce = this.getGroundForce();
