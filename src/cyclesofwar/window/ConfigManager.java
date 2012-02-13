@@ -77,10 +77,26 @@ public class ConfigManager extends WindowAdapter {
 	}
 	
 	public int getNumberOfRounds() {
-		if (properties == null) {
+		if (properties == null || !properties.containsKey("matches")) {
 			return Arena.matchesInOneOnOneTournamentPerPlayer;
 		} else {
 			return new Integer(properties.getProperty("matches"));
+		}
+	}
+	
+	public int getNumberOfPlanetsPerPlayer() {
+		if (properties == null || !properties.containsKey("planetsperplayer")) {
+			return 10;
+		} else {
+			return new Integer(properties.getProperty("planetsperplayer"));
+		}
+	}
+
+	public double getUniverseSizeFactor() {
+		if (properties == null || !properties.containsKey("universesizefactor")) {
+			return 1.0;
+		} else {
+			return new Double(properties.getProperty("universesizefactor"));
 		}
 	}
 
@@ -129,6 +145,8 @@ public class ConfigManager extends WindowAdapter {
 		properties.setProperty("width", "" + e.getWindow().getSize().width);
 		properties.setProperty("height", "" + e.getWindow().getSize().height);
 		properties.setProperty("matches", "" + panel.getSelectedNumberOfRounds());
+		properties.setProperty("planetsperplayer", "" + panel.getSelectedNumberOfPlanetsPerPlayer());
+		properties.setProperty("universesizefactor", "" + panel.getSelectedUniverseSizeFactor());
 		savePlayers(properties, panel.getSelectedPlayers(), "champion");
 
 		try {

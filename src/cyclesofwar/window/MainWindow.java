@@ -15,8 +15,9 @@ public class MainWindow {
 		ConfigManager configManager = new ConfigManager();
 		f.addWindowListener(configManager);
 
-		GamePanel panel = new GamePanel(Runtime.getRuntime().availableProcessors()-1, configManager.getSelectedPlayers(),
-				Arena.registeredPlayers(), configManager.getNumberOfRounds());
+		GamePanel panel = new GamePanel(Runtime.getRuntime().availableProcessors() - 1, configManager.getSelectedPlayers(),
+				Arena.registeredPlayers(), configManager.getNumberOfRounds(), configManager.getNumberOfPlanetsPerPlayer(),
+				configManager.getUniverseSizeFactor());
 		configManager.setGamePanel(panel);
 
 		f.getContentPane().add(panel, BorderLayout.CENTER);

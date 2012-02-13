@@ -8,8 +8,8 @@ import cyclesofwar.Universe;
 
 public class OneOnOneTournament extends Tournament {
 
-	public OneOnOneTournament(int threads, List<Player> champions, int matches) {
-		super(threads, champions, matches);
+	public OneOnOneTournament(int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
+		super(threads, champions, matches, planetsPerPlayer, universeSizeFactor);
 	}
 
 	private OneOnOneTournament(OneOnOneTournament oneOnOneTournament) {
@@ -23,8 +23,8 @@ public class OneOnOneTournament extends Tournament {
 			for (int i = 0; i < count - 1; i++) {
 				for (int j = i + 1; j < count; j++) {
 					long seed = random.nextLong();
-					gamesToPlay.add(new Universe(seed, getChampions(i, j)));
-					gamesToPlay.add(new Universe(seed, getChampions(j, i)));
+					gamesToPlay.add(new Universe(seed, getChampions(i, j), planetsPerPlayer, universeSizeFactor));
+					gamesToPlay.add(new Universe(seed, getChampions(j, i), planetsPerPlayer, universeSizeFactor));
 				}
 			}
 		}

@@ -18,7 +18,8 @@ public class ArenaGameMode extends GameMode {
 	public ArenaGameMode(GamePanel gamePanel) {
 		super(gamePanel);
 
-		tournament = new OneOnOneTournament(this.getThreadCount(), this.getSelectedPlayers(),  this.getSelectedNumberOfRounds());
+		tournament = new OneOnOneTournament(this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
+				this.getSelectedNumberOfPlanetsPerPlayer(), this.getSelectedUniverseSizeFactor());
 		tournament.start();
 	}
 
@@ -37,13 +38,14 @@ public class ArenaGameMode extends GameMode {
 			rendering.drawControlInfo(g, "F1/1 toggle info");
 		} else {
 			String pauseString = tournament.isPaused() ? "continue" : "pause";
-			rendering.drawControlInfo(g, "[Key Mapping]: ESC Menue ... CLICK player: toogle priority ... CLICK stats: see battle ... SPACE: " + pauseString
-					+ " ... 5: new combat");
+			rendering.drawControlInfo(g,
+					"[Key Mapping]: ESC Menue ... CLICK player: toogle priority ... CLICK stats: see battle ... SPACE: " + pauseString
+							+ " ... 5: new combat");
 		}
 	}
 
 	@Override
-	protected void keyPressedGame(KeyEvent arg0) {		
+	protected void keyPressedGame(KeyEvent arg0) {
 		if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			this.switchTo(GameModes.PLAYERSELECTION);
 		}
@@ -64,13 +66,14 @@ public class ArenaGameMode extends GameMode {
 	@Override
 	protected void mouseMovedGame(int x, int y) {
 	}
-	
+
 	@Override
 	protected void mouseReleasedGame(int x, int y) {
 		List<TournamentRecord> winRecords = rendering.getFightRecords(x, y);
 		if (winRecords != null && winRecords.size() > 0) {
 			TournamentRecord winRecord = winRecords.get(random.nextInt(winRecords.size()));
-			setLiveUniverse(new Universe(winRecord.getUniverseSeed(), winRecord.getPlayers()));
+			setLiveUniverse(new Universe(winRecord.getUniverseSeed(), winRecord.getPlayers(), this.getSelectedNumberOfPlanetsPerPlayer(),
+					this.getSelectedUniverseSizeFactor()));
 
 			this.switchTo(GameModes.LIVE);
 		} else {
@@ -98,7 +101,8 @@ public class ArenaGameMode extends GameMode {
 	@Override
 	public void reset() {
 		tournament.abort();
-		tournament = new OneOnOneTournament(this.getThreadCount(), this.getSelectedPlayers(),  this.getSelectedNumberOfRounds());
+		tournament = new OneOnOneTournament(this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
+				this.getSelectedNumberOfPlanetsPerPlayer(), this.getSelectedUniverseSizeFactor());
 		tournament.start();
 	}
 }

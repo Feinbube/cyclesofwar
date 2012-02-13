@@ -8,7 +8,7 @@ import cyclesofwar.window.GameModes;
 import cyclesofwar.window.GamePanel;
 
 public class PlayerSelectionGameMode extends GameMode {
-	
+
 	public PlayerSelectionGameMode(GamePanel gamePanel) {
 		super(gamePanel);
 	}
@@ -19,7 +19,9 @@ public class PlayerSelectionGameMode extends GameMode {
 
 	@Override
 	protected void paintGame(Graphics g) {
-		rendering.drawPlayerSelection(g, getSelectedPlayers(), getAllPlayers(), getPossibleNumbersOfRounds(), getSelectedNumberOfRounds());
+		rendering.drawPlayerSelection(g, getSelectedPlayers(), getAllPlayers(), getPossibleNumbersOfRounds(), getSelectedNumberOfRounds(),
+				getPossibleNumbersOfPlanetsPerPlayer(), getSelectedNumberOfPlanetsPerPlayer(), getPossibleValuesForUniverseSizeFactor(),
+				getSelectedUniverseSizeFactor());
 	}
 
 	@Override
@@ -54,10 +56,22 @@ public class PlayerSelectionGameMode extends GameMode {
 			} else if (buttonCaption.equals("Arena Mode")) {
 				this.switchTo(GameModes.ARENA);
 			}
+
+			for (Integer i : getPossibleNumbersOfRounds()) {
+				if (("rounds" + i).equals(buttonCaption)) {
+					this.setSelectedNumberOfRounds(i);
+				}
+			}
 			
-			for(Integer i : getPossibleNumbersOfRounds()) {
-				if(("" + i).equals(buttonCaption)) {
-					this.setSelectNumberOfRounds(i);
+			for (Integer i : getPossibleNumbersOfPlanetsPerPlayer()) {
+				if (("planets" + i).equals(buttonCaption)) {
+					this.setSelectedNumberOfPlanetsPerPlayer(i);
+				}
+			}
+			
+			for (Double d : getPossibleValuesForUniverseSizeFactor()) {
+				if (("sizefactors" + d).equals(buttonCaption)) {
+					this.setSelectedUniverseSizeFactor(d);
 				}
 			}
 		}
