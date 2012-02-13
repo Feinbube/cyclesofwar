@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -26,7 +27,13 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	private static final long serialVersionUID = 1L;
 
-	public final List<Integer> possibleNumbersOfRounds = Arrays.asList(2, 4, 8, 16, 32, 64, 128, 256, 512, 1024);
+	public final List<Integer> possibleNumbersOfRounds = Arrays.asList(2, 5, 10, 20, 50, 75, 100, 250, 500);
+	public final List<Integer> possibleNumbersOfPlanetsPerPlayer = Arrays.asList(1, 2, 5, 10, 20, 25, 50);
+	public final List<Double> possibleValuesForUniverseSizeFactor = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0);
+
+	private double universeSizeFactor;
+	private int numberOfPlanetsPerPlayer;
+	private int numbersOfRounds;
 
 	private GameMode gameMode;
 
@@ -39,19 +46,21 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	private List<Player> allPlayers;
 	private List<Player> selectedPlayers;
 
-	private int matchCount;
 	private int threadCount;
 
 	private Timer timer;
 
 	private boolean showControls = false;
 
-	public GamePanel(int threadCount, List<Player> lastPlayers, List<Player> allPlayers, int matchCount) {
+	public GamePanel(int threadCount, List<Player> lastPlayers, List<Player> allPlayers, int numbersOfRounds, int numberOfPlanetsPerPlayer,
+			double universeSizeFactor) {
 		this.threadCount = threadCount;
 		this.selectedPlayers = lastPlayers;
 		this.allPlayers = allPlayers;
-		
-		setSelectNumberOfRounds(matchCount);
+
+		setSelectedNumberOfRounds(numbersOfRounds);
+		setSelectedNumberOfPlanetsPerPlayer(numberOfPlanetsPerPlayer);
+		setSelectedUniverseSizeFactor(universeSizeFactor);
 
 		titleScreen = new TitleScreenGameMode(this);
 		liveGame = new LiveGameMode(this);
@@ -102,14 +111,38 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 		resetGames();
 	}
 
-	public void setSelectNumberOfRounds(int matchCount) {
-		if (matchCount < 2) {
-			matchCount = 2;
+	public void setSelectedNumberOfRounds(int numbersOfRounds) {
+		if (numbersOfRounds < Collections.min(possibleNumbersOfRounds)) {
+			numbersOfRounds = Collections.min(possibleNumbersOfRounds);
 		}
-		while (!possibleNumbersOfRounds.contains(matchCount)) {
-			matchCount--;
+		while (!possibleNumbersOfRounds.contains(numbersOfRounds)) {
+			numbersOfRounds--;
 		}
-		this.matchCount = matchCount;
+		this.numbersOfRounds = numbersOfRounds;
+
+		resetGames();
+	}
+	
+	public void setSelectedNumberOfPlanetsPerPlayer(int numberOfPlanetsPerPlayer) {
+		if (numberOfPlanetsPerPlayer < Collections.min(possibleNumbersOfPlanetsPerPlayer)) {
+			numberOfPlanetsPerPlayer = Collections.min(possibleNumbersOfPlanetsPerPlayer);
+		}
+		while (!possibleNumbersOfPlanetsPerPlayer.contains(numberOfPlanetsPerPlayer)) {
+			numberOfPlanetsPerPlayer--;
+		}
+		this.numberOfPlanetsPerPlayer = numberOfPlanetsPerPlayer;
+
+		resetGames();
+	}
+	
+	public void setSelectedUniverseSizeFactor(double universeSizeFactor) {
+		if (universeSizeFactor < Collections.min(possibleValuesForUniverseSizeFactor)) {
+			universeSizeFactor = Collections.min(possibleValuesForUniverseSizeFactor);
+		}
+		while (!possibleValuesForUniverseSizeFactor.contains(universeSizeFactor)) {
+			universeSizeFactor -= 0.1;
+		}
+		this.universeSizeFactor = universeSizeFactor;
 
 		resetGames();
 	}
@@ -127,7 +160,15 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	}
 
 	public int getSelectedNumberOfRounds() {
-		return this.matchCount;
+		return this.numbersOfRounds;
+	}
+
+	public int getSelectedNumberOfPlanetsPerPlayer() {
+		return this.numberOfPlanetsPerPlayer;
+	}
+	
+	public double getSelectedUniverseSizeFactor() {
+		return this.universeSizeFactor;
 	}
 	
 	public int getThreadCount() {

@@ -103,16 +103,40 @@ public abstract class GameMode {
 		gamePanel.toggleSelection(player);
 	}
 	
-	protected void setSelectNumberOfRounds(int selectedNumberOfRounds) {
-		gamePanel.setSelectNumberOfRounds(selectedNumberOfRounds);
+	protected void setSelectedNumberOfRounds(int selectedNumberOfRounds) {
+		gamePanel.setSelectedNumberOfRounds(selectedNumberOfRounds);
+	}
+	
+	protected void setSelectedNumberOfPlanetsPerPlayer(int selectedNumberOfPlanetsPerPlayer) {
+		gamePanel.setSelectedNumberOfPlanetsPerPlayer(selectedNumberOfPlanetsPerPlayer);
+	}
+	
+	protected void setSelectedUniverseSizeFactor(double selectedUniverseSizeFactor) {
+		gamePanel.setSelectedUniverseSizeFactor(selectedUniverseSizeFactor);
 	}
 	
 	protected int getSelectedNumberOfRounds() {
 		return gamePanel.getSelectedNumberOfRounds();
 	}
+	
+	protected int getSelectedNumberOfPlanetsPerPlayer() {
+		return gamePanel.getSelectedNumberOfPlanetsPerPlayer();
+	}
+	
+	protected double getSelectedUniverseSizeFactor() {
+		return gamePanel.getSelectedUniverseSizeFactor();
+	}
 
+	protected List<Integer> getPossibleNumbersOfPlanetsPerPlayer() {
+		return gamePanel.possibleNumbersOfPlanetsPerPlayer;
+	}
+	
 	protected List<Integer> getPossibleNumbersOfRounds() {
 		return gamePanel.possibleNumbersOfRounds;
+	}
+	
+	protected List<Double> getPossibleValuesForUniverseSizeFactor() {
+		return gamePanel.possibleValuesForUniverseSizeFactor;
 	}
 	
 	protected int getThreadCount() {

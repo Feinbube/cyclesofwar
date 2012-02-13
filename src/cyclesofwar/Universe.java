@@ -11,7 +11,8 @@ import java.util.TreeMap;
 public class Universe {
 
 	private static final double speedOfLight = 0.05;
-	public static final int planetCountPerPlayer = 10;
+	int planetCountPerPlayer = 10;
+	double universeSizeFactor = 1.0;
 
 	private List<Planet> planets = new ArrayList<Planet>();
 	private List<Fleet> fleets = new ArrayList<Fleet>();
@@ -35,14 +36,14 @@ public class Universe {
 	private SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<Double, Fleet>();
 	private List<Fleet> newFleets = new ArrayList<Fleet>();
 
-	public Universe(long seed, List<Player> combatants) {
+	public Universe(long seed, List<Player> combatants, int planetCountPerPlayer, double universeSizeFactor) {
 		gameOver = true;
 
 		now = 0;
 		currentRound = 0;
 		nothingHappenedCounter = 0;
 
-		size = Math.sqrt(combatants.size());
+		size = Math.sqrt(combatants.size()) * universeSizeFactor;
 
 		this.seed = seed;
 		random.setSeed(seed);

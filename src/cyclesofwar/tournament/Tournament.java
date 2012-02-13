@@ -23,10 +23,16 @@ public abstract class Tournament {
 
 	List<WorkerThread> workerThreads = new ArrayList<WorkerThread>();
 	boolean pause = true;
+	
+	int planetsPerPlayer;
+	double universeSizeFactor;
 
-	public Tournament(int threads, List<Player> champions, int matches) {
+	public Tournament(int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
 		this.champions = champions;
 
+		this.planetsPerPlayer = planetsPerPlayer;
+		this.universeSizeFactor = universeSizeFactor;
+		
 		setupGames(matches);
 		gamesToPlayCount = gamesToPlay.size();
 

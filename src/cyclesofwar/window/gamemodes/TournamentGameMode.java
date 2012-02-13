@@ -17,7 +17,8 @@ public class TournamentGameMode extends GameMode {
 	public TournamentGameMode(GamePanel gamePanel) {
 		super(gamePanel);
 
-		tournament = new LastManStandingTournament(this.getThreadCount(), this.getSelectedPlayers(),  this.getSelectedNumberOfRounds());
+		tournament = new LastManStandingTournament(this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
+				this.getSelectedNumberOfPlanetsPerPlayer(), this.getSelectedUniverseSizeFactor());
 		tournament.start();
 	}
 
@@ -46,7 +47,7 @@ public class TournamentGameMode extends GameMode {
 		if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			this.switchTo(GameModes.PLAYERSELECTION);
 		}
-		
+
 		if (arg0.getKeyCode() == KeyEvent.VK_5) {
 			reset();
 		}
@@ -55,11 +56,11 @@ public class TournamentGameMode extends GameMode {
 			tournament.togglePause();
 		}
 	}
-	
+
 	@Override
 	protected void mouseMovedGame(int x, int y) {
 	}
-	
+
 	@Override
 	protected void mousePressedGame(int x, int y) {
 	}
@@ -69,7 +70,8 @@ public class TournamentGameMode extends GameMode {
 		List<TournamentRecord> winRecords = rendering.getFightRecords(x, y);
 		if (winRecords != null && winRecords.size() > 0) {
 			TournamentRecord winRecord = winRecords.get(random.nextInt(winRecords.size()));
-			this.setLiveUniverse(new Universe(winRecord.getUniverseSeed(), winRecord.getPlayers()));
+			this.setLiveUniverse(new Universe(winRecord.getUniverseSeed(), winRecord.getPlayers(), this
+					.getSelectedNumberOfPlanetsPerPlayer(), this.getSelectedUniverseSizeFactor()));
 
 			this.switchTo(GameModes.LIVE);
 		}
@@ -92,7 +94,8 @@ public class TournamentGameMode extends GameMode {
 	@Override
 	public void reset() {
 		tournament.abort();
-		tournament = new LastManStandingTournament(this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds());
-		tournament.start();	
+		tournament = new LastManStandingTournament(this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
+				this.getSelectedNumberOfPlanetsPerPlayer(), this.getSelectedUniverseSizeFactor());
+		tournament.start();
 	}
 }

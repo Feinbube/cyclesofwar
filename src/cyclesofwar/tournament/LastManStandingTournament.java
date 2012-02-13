@@ -7,8 +7,8 @@ import cyclesofwar.Universe;
 
 public class LastManStandingTournament extends Tournament {
 
-	public LastManStandingTournament(int threads, List<Player> champions, int matches) {
-		super(threads, champions, matches);
+	public LastManStandingTournament(int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
+		super(threads, champions, matches, planetsPerPlayer, universeSizeFactor);
 	}
 
 	private LastManStandingTournament(
@@ -20,7 +20,7 @@ public class LastManStandingTournament extends Tournament {
 	protected void setupGames(int matches) {
 		for (int match = 0; match < matches; match++) {
 			long seed = random.nextLong();
-			gamesToPlay.add(new Universe(seed, champions));
+			gamesToPlay.add(new Universe(seed, champions, planetsPerPlayer, universeSizeFactor));
 		}
 	}
 

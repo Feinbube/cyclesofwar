@@ -21,7 +21,8 @@ public class LiveGameMode extends GameMode {
 	public LiveGameMode(GamePanel gamePanel) {
 		super(gamePanel);
 
-		universe = new Universe(random.nextLong(), getSelectedPlayers());
+		universe = new Universe(random.nextLong(), getSelectedPlayers(), this.getSelectedNumberOfPlanetsPerPlayer(),
+				this.getSelectedUniverseSizeFactor());
 	}
 
 	@Override
@@ -52,12 +53,12 @@ public class LiveGameMode extends GameMode {
 			rendering.drawControlInfo(g, "F1/1 toggle info");
 		} else {
 			String pauseString = pause ? "continue" : "pause";
-			rendering.drawControlInfo(g, "[Key Mapping] ESC: Menue ... +/-: game speed (" + ((int) (speedUp * 10)) / 10.0 + ") ... SPACE: " + pauseString
-					+ " ... 5: new combat ... 6: replay ... 7: switch planets");
+			rendering.drawControlInfo(g, "[Key Mapping] ESC: Menue ... +/-: game speed (" + ((int) (speedUp * 10)) / 10.0 + ") ... SPACE: "
+					+ pauseString + " ... 5: new combat ... 6: replay ... 7: switch planets");
 			rendering.drawSeed(g, universe.getSeed());
 		}
-		
-		if(pause && !universe.isGameOver()) {
+
+		if (pause && !universe.isGameOver()) {
 			rendering.drawInfo(g, "press SPACE to resume");
 		}
 	}
@@ -69,7 +70,8 @@ public class LiveGameMode extends GameMode {
 		}
 
 		if (arg0.getKeyCode() == KeyEvent.VK_5) {
-			universe = new Universe(random.nextLong(), getSelectedPlayers());
+			universe = new Universe(random.nextLong(), getSelectedPlayers(), this.getSelectedNumberOfPlanetsPerPlayer(),
+					this.getSelectedUniverseSizeFactor());
 		}
 
 		if (arg0.getKeyCode() == KeyEvent.VK_SPACE) {
@@ -77,11 +79,13 @@ public class LiveGameMode extends GameMode {
 		}
 
 		if (arg0.getKeyCode() == KeyEvent.VK_6) {
-			universe = new Universe(universe.getSeed(), universe.getPlayers());
+			universe = new Universe(universe.getSeed(), universe.getPlayers(), this.getSelectedNumberOfPlanetsPerPlayer(),
+					this.getSelectedUniverseSizeFactor());
 		}
 
 		if (arg0.getKeyCode() == KeyEvent.VK_7) {
-			universe = new Universe(universe.getSeed(), rotate(universe.getPlayers()));
+			universe = new Universe(universe.getSeed(), rotate(universe.getPlayers()), this.getSelectedNumberOfPlanetsPerPlayer(),
+					this.getSelectedUniverseSizeFactor());
 		}
 
 		if (arg0.getKeyCode() == KeyEvent.VK_PLUS) {
@@ -114,7 +118,7 @@ public class LiveGameMode extends GameMode {
 	@Override
 	protected void mouseReleasedGame(int x, int y) {
 	}
-	
+
 	@Override
 	protected void mousePressedGame(int x, int y) {
 	}
@@ -143,6 +147,7 @@ public class LiveGameMode extends GameMode {
 
 	@Override
 	public void reset() {
-		universe = new Universe(universe.getSeed(), this.getSelectedPlayers());
+		universe = new Universe(universe.getSeed(), this.getSelectedPlayers(), this.getSelectedNumberOfPlanetsPerPlayer(),
+				this.getSelectedUniverseSizeFactor());
 	}
 }
