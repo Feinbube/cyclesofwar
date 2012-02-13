@@ -37,7 +37,7 @@ public class Arena {
 		ArrayList<Player> result = new ArrayList<Player>();
 
 		result.add(new SpaceMenace()); // Theo
-		result.add(new Alai()); // Frank
+		result.add(new HanTzu()); // Frank
 		result.add(new Cratters()); // Martin
 		result.add(new AttackLargestPlayer()); // Robert
 		result.add(new DumbVirus()); // Peter		
