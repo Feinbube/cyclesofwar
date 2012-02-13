@@ -171,7 +171,10 @@ public class Universe {
 	}
 
 	public List<Fleet> getAllFleets() {
-		return new ArrayList<Fleet>(fleets);
+		List<Fleet> result = new ArrayList<Fleet>(fleets);
+		result.addAll(filterFleetsOf(newFleets, currentPlayer));
+		
+		return result;
 	}
 
 	List<Fleet> getFleetsOf(Player player) {

@@ -71,9 +71,9 @@ public class Target {
 
 			int fleetsToKeep = getFleetsToKeep(player, predictionAtArrivalTime, fleetsToConquer, origin.getTimeTo(targetPlanet));
 
-			if (!targetAlreadyHandled(player, targetPlanet, origin.getTimeTo(targetPlanet))) {
+			//if (!targetAlreadyHandled(player, targetPlanet, origin.getTimeTo(targetPlanet))) {
 				targets.add(new Target(player, fleetsToConquer, fleetsToKeep, targetPlanet, evaluator));
-			}
+			//}
 		}
 
 		targets = Target.removePlanetsThatAreFine(targets, player);
@@ -129,7 +129,7 @@ public class Target {
 	
 	private static boolean targetAlreadyHandled(Player player, Planet target, double arrivalTime) {
 		for (Fleet fleet : player.getFleets()) {
-			if (fleet.getTarget() == target && fleet.getTimeToTarget() > arrivalTime) {
+			if (fleet.getTarget() == target && fleet.getTimeToTarget() >= arrivalTime) {
 				return true;
 			}
 		}
