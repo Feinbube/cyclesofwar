@@ -153,14 +153,15 @@ public class Universe {
 	}
 
 	private Player bestPlayer() {
-		Collections.sort(players, new Comparator<Player>() {
+		List<Player> sortedPlayers = new ArrayList<Player>(players);
+		Collections.sort(sortedPlayers, new Comparator<Player>() {
 			@Override
 			public int compare(Player player1, Player player2) {
 				return (int) (player2.getFullForce() - player1.getFullForce());
 			}
 		});
 
-		return players.get(0);
+		return sortedPlayers.get(0);
 	}
 
 	// for Player
