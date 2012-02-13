@@ -6,12 +6,12 @@ to = "wimi-polze@hpi.uni-potsdam.de"
 records = [line.strip().split(",") for line in open('ranking.lms')]
 lms = ""
 for record in records:
-    lms += "%s. %s (%s won out of %s)\n" % tuple(record)
+    lms += "  %s. %s (%s won out of %s)\n" % tuple(record)
 
 records = [line.strip().split(",") for line in open('ranking.ooo')]
 ooo = ""
 for record in records:
-    ooo += "%s. %s (%s won out of %s)\n" % tuple(record)
+    ooo += "  %s. %s (%s won out of %s)\n" % tuple(record)
 
 msg = """From: %(from_)s
 To: %(to)s
