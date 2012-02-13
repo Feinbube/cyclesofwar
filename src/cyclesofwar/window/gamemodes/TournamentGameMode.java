@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import cyclesofwar.Arena;
 import cyclesofwar.Universe;
 import cyclesofwar.tournament.LastManStandingTournament;
 import cyclesofwar.tournament.TournamentRecord;
@@ -17,7 +18,7 @@ public class TournamentGameMode extends GameMode {
 	public TournamentGameMode(GamePanel gamePanel) {
 		super(gamePanel);
 
-		tournament = new LastManStandingTournament(this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
+		tournament = new LastManStandingTournament(Arena.tournamentSeed, this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
 				this.getSelectedNumberOfPlanetsPerPlayer(), this.getSelectedUniverseSizeFactor());
 		tournament.start();
 	}
@@ -94,7 +95,7 @@ public class TournamentGameMode extends GameMode {
 	@Override
 	public void reset() {
 		tournament.abort();
-		tournament = new LastManStandingTournament(this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
+		tournament = new LastManStandingTournament(Arena.tournamentSeed, this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
 				this.getSelectedNumberOfPlanetsPerPlayer(), this.getSelectedUniverseSizeFactor());
 		tournament.start();
 	}

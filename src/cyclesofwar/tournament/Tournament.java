@@ -8,7 +8,7 @@ import cyclesofwar.Player;
 import cyclesofwar.Universe;
 
 public abstract class Tournament {
-	Random random = new Random();
+	Random random;
 
 	List<Player> champions = new ArrayList<Player>();
 	List<Player> prioritized = new ArrayList<Player>();
@@ -27,7 +27,8 @@ public abstract class Tournament {
 	int planetsPerPlayer;
 	double universeSizeFactor;
 
-	public Tournament(int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
+	public Tournament(long randomSeed, int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
+		random = new Random(randomSeed);
 		this.champions = champions;
 
 		this.planetsPerPlayer = planetsPerPlayer;
