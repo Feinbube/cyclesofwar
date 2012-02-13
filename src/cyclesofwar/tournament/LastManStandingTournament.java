@@ -7,8 +7,8 @@ import cyclesofwar.Universe;
 
 public class LastManStandingTournament extends Tournament {
 
-	public LastManStandingTournament(int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
-		super(threads, champions, matches, planetsPerPlayer, universeSizeFactor);
+	public LastManStandingTournament(long randomSeed, int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
+		super(randomSeed, threads, champions, matches, planetsPerPlayer, universeSizeFactor);
 	}
 
 	private LastManStandingTournament(

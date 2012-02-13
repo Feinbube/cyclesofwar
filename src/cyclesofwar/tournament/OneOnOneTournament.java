@@ -8,8 +8,8 @@ import cyclesofwar.Universe;
 
 public class OneOnOneTournament extends Tournament {
 
-	public OneOnOneTournament(int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
-		super(threads, champions, matches, planetsPerPlayer, universeSizeFactor);
+	public OneOnOneTournament(long randomSeed, int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
+		super(randomSeed, threads, champions, matches, planetsPerPlayer, universeSizeFactor);
 	}
 
 	private OneOnOneTournament(OneOnOneTournament oneOnOneTournament) {

@@ -17,7 +17,7 @@ public class LastManStandingTournamentConsole extends Console {
 		int place = 0;
 		LastManStandingTournament tournament = null;
 		while (champions.size() > 1) {
-			tournament = new LastManStandingTournament(Runtime.getRuntime().availableProcessors(), champions,
+			tournament = new LastManStandingTournament(Arena.tournamentSeed, Runtime.getRuntime().availableProcessors(), champions,
 					Arena.matchesInLastManStandingTournamentPerRound, 10, 1.0);
 			tournament.runToCompletion();
 			Player winner = tournament.rankedPlayers().get(0);

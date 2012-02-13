@@ -16,6 +16,11 @@ import de.loewis.*;
 public class Arena {
 	
 	/*
+	 * seed for the random generators
+	 */
+	public static final long tournamentSeed = 3141592;
+	
+	/*
 	 * the number of matches per round for the daily tournament
 	 */
 	public static final int matchesInLastManStandingTournamentPerRound = 100;

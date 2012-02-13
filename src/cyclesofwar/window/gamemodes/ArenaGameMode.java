@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import cyclesofwar.Arena;
 import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.tournament.OneOnOneTournament;
@@ -18,7 +19,7 @@ public class ArenaGameMode extends GameMode {
 	public ArenaGameMode(GamePanel gamePanel) {
 		super(gamePanel);
 
-		tournament = new OneOnOneTournament(this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
+		tournament = new OneOnOneTournament(Arena.tournamentSeed, this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
 				this.getSelectedNumberOfPlanetsPerPlayer(), this.getSelectedUniverseSizeFactor());
 		tournament.start();
 	}
@@ -101,7 +102,7 @@ public class ArenaGameMode extends GameMode {
 	@Override
 	public void reset() {
 		tournament.abort();
-		tournament = new OneOnOneTournament(this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
+		tournament = new OneOnOneTournament(Arena.tournamentSeed, this.getThreadCount(), this.getSelectedPlayers(), this.getSelectedNumberOfRounds(),
 				this.getSelectedNumberOfPlanetsPerPlayer(), this.getSelectedUniverseSizeFactor());
 		tournament.start();
 	}

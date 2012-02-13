@@ -15,7 +15,7 @@ public class OneOnOneTournamentConsole extends Console {
 	private void run(String[] args) {
 		List<Player> champions = Arena.champions();
 
-		OneOnOneTournament tournament = new OneOnOneTournament(Runtime.getRuntime().availableProcessors(), champions,
+		OneOnOneTournament tournament = new OneOnOneTournament(Arena.tournamentSeed, Runtime.getRuntime().availableProcessors(), champions,
 				Arena.matchesInOneOnOneTournamentPerPlayer, 10, 1.0);
 		tournament.runToCompletion();
 		
