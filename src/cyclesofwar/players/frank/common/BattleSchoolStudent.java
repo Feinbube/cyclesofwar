@@ -25,16 +25,12 @@ public abstract class BattleSchoolStudent extends Player {
 		}
 	}
 
-	protected static TargetSelector Nearest;
-
 	protected class NearestOfMineTargetSelector implements TargetSelector {
 		@Override
 		public List<Planet> getTargets(Planet planet) {
 			return mineOnly(planet.getOthersByDistance());
 		}
 	}
-
-	protected static TargetSelector NearestOfMine;
 
 	protected class NearestEnemyTargetSelector implements TargetSelector {
 		@Override
@@ -43,16 +39,12 @@ public abstract class BattleSchoolStudent extends Player {
 		}
 	}
 
-	protected static TargetSelector NearestEnemy;
-
 	protected class NearestFreeTargetSelector implements TargetSelector {
 		@Override
 		public List<Planet> getTargets(Planet planet) {
 			return freeOnly(planet.getOthersByDistance());
 		}
 	}
-
-	protected static TargetSelector NearestFree;
 
 	// --------------------------------------------------------------------------------------------
 
@@ -81,28 +73,6 @@ public abstract class BattleSchoolStudent extends Player {
 
 			return result;
 		}
-	}
-
-	protected static PlanetSelector Hinterland;
-
-	protected class BorderPlanetSelector implements PlanetSelector {
-		@Override
-		public List<Planet> getPlanets(Player player) {
-			return null;
-		}
-	}
-
-	protected static PlanetSelector Border;
-
-	// ---------------------------------------------------------------------------------------------
-
-	BattleSchoolStudent() {
-		Nearest = new NearestTargetSelector();
-		NearestOfMine = new NearestOfMineTargetSelector();
-		NearestEnemy = new NearestEnemyTargetSelector();
-		NearestFree = new NearestFreeTargetSelector();
-		Hinterland = new HinterlandPlanetSelector();
-		Border = new BorderPlanetSelector();
 	}
 
 	// ---------------------------------------------------------------------------------------------
