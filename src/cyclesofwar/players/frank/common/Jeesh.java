@@ -39,7 +39,7 @@ public abstract class Jeesh extends BattleSchoolStudent {
 
 	protected void colonizeFree(PlanetSelector from) {
 		for (Planet planet : from.getPlanets(this)) {
-			for (Planet target : NearestFree.getTargets(planet)) {
+			for (Planet target : new NearestFreeTargetSelector().getTargets(planet)) {
 				if ((int) planet.getForces() > target.getForces() + 1) {
 					sendFleet(planet, (int) target.getForces() + 1, target);
 				}
@@ -51,7 +51,7 @@ public abstract class Jeesh extends BattleSchoolStudent {
 
 	protected void strategyRabbit(int count) {
 		strategyBraveRabbit(count); // jump around
-		evacutatePlanetsThatAreLost(NearestEnemy); // flee
+		evacutatePlanetsThatAreLost(new NearestEnemyTargetSelector()); // flee
 	}
 
 	protected void strategyBraveRabbit(int count) {
