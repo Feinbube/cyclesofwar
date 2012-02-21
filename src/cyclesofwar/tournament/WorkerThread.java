@@ -1,5 +1,6 @@
 package cyclesofwar.tournament;
 
+import cyclesofwar.PlayerDisqualifiedException;
 import cyclesofwar.Universe;
 
 public class WorkerThread implements Runnable {
@@ -30,7 +31,11 @@ public class WorkerThread implements Runnable {
 					sleep();
 				}
 
-				universe.update(Universe.getRoundDuration());
+				try {
+					universe.update(Universe.getRoundDuration());
+				} catch (PlayerDisqualifiedException ex) {
+					tournament.abort(ex.getResponsilbe());
+				}
 			}
 
 			if (!running) {

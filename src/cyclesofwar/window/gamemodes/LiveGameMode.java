@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cyclesofwar.Player;
+import cyclesofwar.PlayerDisqualifiedException;
 import cyclesofwar.Universe;
 import cyclesofwar.window.GameModes;
 import cyclesofwar.window.GamePanel;
@@ -30,13 +31,21 @@ public class LiveGameMode extends GameMode {
 		if (!pause) {
 			if (speedUp >= 1) {
 				for (int i = 0; i < speedUp; i++) {
-					universe.update(Universe.getRoundDuration());
+					try {
+						universe.update(Universe.getRoundDuration());
+					} catch (PlayerDisqualifiedException e) {
+						new RuntimeException(e);
+					}
 				}
 			} else {
 				speedUpCounter++;
 				if (speedUpCounter > 1 / speedUp) {
 					speedUpCounter = 0;
-					universe.update(Universe.getRoundDuration());
+					try {
+						universe.update(Universe.getRoundDuration());
+					} catch (PlayerDisqualifiedException e) {
+						new RuntimeException(e);
+					}
 				}
 			}
 		}
