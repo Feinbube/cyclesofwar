@@ -87,7 +87,7 @@ public class Universe {
 		}
 	}
 
-	public void update(double elapsedSeconds) {
+	public void update(double elapsedSeconds) throws PlayerDisqualifiedException {
 		if (gameOver) {
 			return;
 		}
@@ -122,7 +122,12 @@ public class Universe {
 
 		for (Player player : players) {
 			currentPlayer = player;
-			currentPlayer.think();
+			try {
+				currentPlayer.think();
+			} catch (Exception ex) {
+				throw new PlayerDisqualifiedException(currentPlayer);
+			}
+
 		}
 		currentPlayer = NonePlayer.NonePlayer;
 
@@ -173,7 +178,7 @@ public class Universe {
 	public List<Fleet> getAllFleets() {
 		List<Fleet> result = new ArrayList<Fleet>(fleets);
 		result.addAll(filterFleetsOf(newFleets, currentPlayer));
-		
+
 		return result;
 	}
 

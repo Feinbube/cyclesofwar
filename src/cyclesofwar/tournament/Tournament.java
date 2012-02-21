@@ -26,6 +26,9 @@ public abstract class Tournament {
 	
 	int planetsPerPlayer;
 	double universeSizeFactor;
+	
+	boolean wasAborted = false;
+	Player responsibleForAbort;
 
 	public Tournament(long randomSeed, int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
 		random = new Random(randomSeed);
@@ -163,6 +166,8 @@ public abstract class Tournament {
 		for (WorkerThread workerThread : workerThreads) {
 			workerThread.running = false;
 		}
+		
+		wasAborted = true;
 	}
 
 	public boolean isPaused() {
@@ -229,5 +234,18 @@ public abstract class Tournament {
 			gamesPlayedCount++;
 			gamesToPlayCount--;
 		}
+	}
+
+	public void abort(Player responsilbe) {
+		this.abort();
+		responsibleForAbort = responsilbe;
+	}
+	
+	public boolean wasAborted() {
+		return responsibleForAbort != null;
+	}
+	
+	public Player getPlayerResponsibleForAbort() {
+		return responsibleForAbort;
 	}
 }

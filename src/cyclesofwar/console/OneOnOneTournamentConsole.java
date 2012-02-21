@@ -1,5 +1,6 @@
 package cyclesofwar.console;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cyclesofwar.Arena;
@@ -14,14 +15,28 @@ public class OneOnOneTournamentConsole extends Console {
 
 	private void run(String[] args) {
 		List<Player> champions = Arena.champions();
+		List<Player> disqualifiedPlayers = new ArrayList<Player>();
 
-		OneOnOneTournament tournament = new OneOnOneTournament(Arena.tournamentSeed, Runtime.getRuntime().availableProcessors(), champions,
-				Arena.matchesInOneOnOneTournamentPerPlayer, 10, 1.0);
-		tournament.runToCompletion();
-		
+		OneOnOneTournament tournament;
+
+		do {
+			tournament = new OneOnOneTournament(Arena.tournamentSeed, Runtime.getRuntime().availableProcessors(), champions,
+					Arena.matchesInOneOnOneTournamentPerPlayer, 10, 1.0);
+			tournament.runToCompletion();
+
+			if (tournament.wasAborted()) {
+				Player disqualifiedPlayer = tournament.getPlayerResponsibleForAbort();
+				disqualifiedPlayers.add(disqualifiedPlayer);
+				champions.remove(disqualifiedPlayer);
+			}
+
+		} while (tournament.wasAborted());
+
 		int place = 0;
-		for(Ranking ranking : tournament.getRankings()) {
+		for (Ranking ranking : tournament.getRankings()) {
 			printPlayer(++place, tournament, ranking.getPlayer());
 		}
+		
+		printDisqualifiedPlayers(disqualifiedPlayers);
 	}
 }
