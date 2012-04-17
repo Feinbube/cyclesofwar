@@ -41,7 +41,8 @@ public class Arena {
 		result.add(new HanTzu()); // Frank
 		result.add(new Cratters()); // Martin
 		result.add(new AttackLargestPlayer()); // Robert
-		result.add(new DumbVirus()); // Peter		
+		result.add(new DumbVirus()); // Peter	
+		result.add(new FriendlyPirates()); // Jan
 		
 		return result;
 	}
@@ -89,6 +90,7 @@ public class Arena {
 		result.add(new DumbVirus());
 		result.add(new ViralForces());
 		
+		// Jan
 		result.add(new FriendlyPirates());
 
 		
