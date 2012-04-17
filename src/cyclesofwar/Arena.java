@@ -6,6 +6,7 @@ import java.util.List;
 import cyclesofwar.players.peter.*;
 import cyclesofwar.players.robert.*;
 import cyclesofwar.players.frank.*;
+import cyclesofwar.players.jan.FriendlyPirates;
 import cyclesofwar.players.theo.*;
 import cyclesofwar.players.training.*;
 import de.loewis.*;
@@ -87,6 +88,8 @@ public class Arena {
 		// Peter
 		result.add(new DumbVirus());
 		result.add(new ViralForces());
+		
+		result.add(new FriendlyPirates());
 
 		
 		return result;
