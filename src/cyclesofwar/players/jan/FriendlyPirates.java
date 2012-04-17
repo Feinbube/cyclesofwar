@@ -3,6 +3,7 @@ package cyclesofwar.players.jan;
 import java.awt.Color;
 
 import cyclesofwar.Fleet;
+import cyclesofwar.Fleet.Formation;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
@@ -59,7 +60,8 @@ public class FriendlyPirates extends Player {
 			if(neededDefense > 0) {
 				neededDefense += DEFENSE_FORCE_HELP_MARGIN;
 				int forcesSent = Math.min(neededDefense, availableForces);
-				sendFleetUpTo(currentPlanet, forcesSent, ally);
+				Fleet fleet = sendFleetUpTo(currentPlanet, forcesSent, ally);
+				fleet.setFormation(Formation.EYE);
 				return; //defend only one ally
 			}
 		}
@@ -74,7 +76,8 @@ public class FriendlyPirates extends Player {
 			if(target.getPlayer().equals(this))
 				continue;
 						
-			sendFleetUpTo(currentPlanet, availableForces, target);
+			Fleet fleet = sendFleetUpTo(currentPlanet, availableForces, target);
+			fleet.setFormation(Formation.V);
 			return;
 		}
 	}
