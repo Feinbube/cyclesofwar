@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.lang.reflect.Field;
 
 import cyclesofwar.Planet;
-import cyclesofwar.Player;
 
 public class Borg extends Player {
 
@@ -20,21 +19,6 @@ public class Borg extends Player {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public Color getPlayerBackColor() {
-		return Color.green.darker().darker();
-	}
-
-	@Override
-	public Color getPlayerForeColor() {
-		return Color.green;
-	}
-
-	@Override
-	public String getCreatorsName() {
-		return "Unknown";
 	}
 
 }

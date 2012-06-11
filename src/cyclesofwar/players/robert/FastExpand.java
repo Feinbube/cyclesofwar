@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import cyclesofwar.Planet;
-import cyclesofwar.Player;
 
 
 public class FastExpand extends Player {
@@ -24,18 +23,4 @@ public class FastExpand extends Player {
 		}
 	}
 
-	@Override
-	public Color getPlayerBackColor() {
-		return Color.red.darker().darker();
-	}
-
-	@Override
-	public Color getPlayerForeColor() {
-		return Color.orange.brighter();
-	}
-
-	@Override
-	public String getCreatorsName() {
-		return "Robert";
-	}
 }
