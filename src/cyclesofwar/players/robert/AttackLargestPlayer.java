@@ -4,13 +4,12 @@ import java.util.List;
 
 import cyclesofwar.Fleet;
 import cyclesofwar.Planet;
-import cyclesofwar.Player;
-
 
 public class AttackLargestPlayer extends Player {
-
+	
 	@Override
 	protected void think() {
+		
 		List<Planet> myPlanets = this.getPlanets();
 		Planet.sortByForceCount(myPlanets);
 		
@@ -46,21 +45,6 @@ public class AttackLargestPlayer extends Player {
 			result.remove(fleet.getTarget());
 		}
 		return result;
-	}
-
-	@Override
-	public Color getPlayerBackColor() {
-		return Color.red.darker().darker();
-	}
-
-	@Override
-	public Color getPlayerForeColor() {
-		return Color.orange.brighter();
-	}
-
-	@Override
-	public String getCreatorsName() {
-		return "Robert";
 	}
 
 }
