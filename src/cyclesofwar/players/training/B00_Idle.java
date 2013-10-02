@@ -3,8 +3,11 @@ import java.awt.Color;
 
 import cyclesofwar.Player;
 
-
-public class Idle extends Player {
+/*
+ * This bot does nothing at all. 
+ * Easy prey ;)
+ */
+public class B00_Idle extends Player {
 
 	@Override
 	public void think() {
@@ -23,6 +26,6 @@ public class Idle extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "Noob";
+		return "B";
 	}
 }

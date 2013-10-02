@@ -5,18 +5,24 @@ import java.awt.Color;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-public class Random extends Player {
+/*
+ * For each of it's planets, this bot fires fleets of 10 to random other planets.
+ */
+public class B04_Random extends Player {
 
 	@Override
 	public void think() {
+		
+		// for all of my planets
 		for (Planet planet : this.getPlanets()) {
-			if (planet.getForces() > 20)
-				sendFleet(planet, (int) (planet.getForces() / 2), getRandomTarget(planet));
+			
+			// if there are enough forces to attack
+			if (planet.getForces() > 20) {
+				
+				// send half the forces to some randomly chosen planet
+				sendFleet(planet, (int) (planet.getForces() / 2), this.randomOrNull(planet.getOthers()));
+			}
 		}
-	}
-
-	private Planet getRandomTarget(Planet planet) {
-		return planet.getOthers().get(getRandomInt(planet.getOthers().size()));
 	}
 	
 	@Override
@@ -31,6 +37,6 @@ public class Random extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "Noob";
+		return "B";
 	}
 }

@@ -30,5 +30,4 @@ public class NonePlayer extends Player {
 	public String getName(){
 		return "Nobody";
 	}
-
 }

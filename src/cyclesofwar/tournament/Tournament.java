@@ -10,18 +10,18 @@ import cyclesofwar.Universe;
 public abstract class Tournament {
 	Random random;
 
-	List<Player> champions = new ArrayList<Player>();
-	List<Player> prioritized = new ArrayList<Player>();
+	List<Player> champions = new ArrayList<>();
+	List<Player> prioritized = new ArrayList<>();
 
-	List<Universe> gamesToPlay = new ArrayList<Universe>();
-	List<Universe> gamesPlayed = new ArrayList<Universe>();
+	List<Universe> gamesToPlay = new ArrayList<>();
+	List<Universe> gamesPlayed = new ArrayList<>();
 
 	int gamesToPlayCount = 0;
 	int gamesPlayedCount = 0;
 
-	List<TournamentRecord> records = new ArrayList<TournamentRecord>();
+	List<TournamentRecord> records = new ArrayList<>();
 
-	List<WorkerThread> workerThreads = new ArrayList<WorkerThread>();
+	List<WorkerThread> workerThreads = new ArrayList<>();
 	boolean pause = true;
 	
 	int planetsPerPlayer;
@@ -110,7 +110,7 @@ public abstract class Tournament {
 	// Rankings
 
 	public List<Player> rankedPlayers() {
-		List<Player> result = new ArrayList<Player>();
+		List<Player> result = new ArrayList<>();
 
 		for (Ranking ranking : getRankings()) {
 			result.add(ranking.player);
@@ -121,7 +121,7 @@ public abstract class Tournament {
 
 	// TODO caching this function may be a very good idea!
 	public List<Ranking> getRankings() {
-		List<Ranking> result = new ArrayList<Ranking>();
+		List<Ranking> result = new ArrayList<>();
 		for (Player player : champions) {
 			result.add(new Ranking(player, wonBy(player).size(), participatedIn(player).size()));
 		}
@@ -191,7 +191,7 @@ public abstract class Tournament {
 	public Universe getUniverse() {
 		Universe result;
 		synchronized (gamesToPlay) {
-			if (gamesToPlay.size() == 0) {
+			if (gamesToPlay.isEmpty()) {
 				return null;
 			}
 
@@ -206,7 +206,7 @@ public abstract class Tournament {
 	}
 
 	private Universe getPrioritizedGame() {
-		List<Universe> prioritizedGames = new ArrayList<Universe>();
+		List<Universe> prioritizedGames = new ArrayList<>();
 		for (Universe universe : gamesToPlay) {
 			for (Player player : prioritized) {
 				if (universe.inhabitedByPlayer(player)) {

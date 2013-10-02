@@ -24,7 +24,7 @@ public class TournamentRecord {
 	}
 
 	TournamentRecord(TournamentRecord record) {
-		players = new ArrayList<Player>();
+		players = new ArrayList<>();
 		for (Player player : record.players) {
 			this.players.add(player);
 		}
@@ -40,7 +40,7 @@ public class TournamentRecord {
 	}
 
 	static List<TournamentRecord> clone(List<TournamentRecord> records) {
-		List<TournamentRecord> result = new ArrayList<TournamentRecord>();
+		List<TournamentRecord> result = new ArrayList<>();
 		for (TournamentRecord record : records) {
 			result.add(new TournamentRecord(record));
 		}
@@ -56,7 +56,7 @@ public class TournamentRecord {
 	}
 	
 	static List<TournamentRecord> participatedIn(List<TournamentRecord> records, Player competitor) {
-		List<TournamentRecord> result = new ArrayList<TournamentRecord>();
+		List<TournamentRecord> result = new ArrayList<>();
 
 		for (TournamentRecord record : records) {
 			if (record.containsPlayer(competitor)) {
@@ -68,7 +68,7 @@ public class TournamentRecord {
 	}
 
 	static List<TournamentRecord> wonBy(List<TournamentRecord> records, Player player) {
-		List<TournamentRecord> result = new ArrayList<TournamentRecord>();
+		List<TournamentRecord> result = new ArrayList<>();
 
 		for (TournamentRecord record : records) {
 			if (record.winnerIs(player)) {

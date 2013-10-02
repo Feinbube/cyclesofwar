@@ -10,7 +10,7 @@ import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
 public class Prediction {
-	private Planet planet;
+	private final Planet planet;
 	private Player player;
 	private double forces;
 	private double time;
@@ -89,11 +89,15 @@ public class Prediction {
 		});
 	}
 	
-	public static Prediction getPrediction(Jeesh player, Planet planet, double time) {
+	public static Prediction getPrediction(Player player, Planet planet) {
+		return getPrediction(player, planet, getlastFleetArrivalTime(player));
+	}
+	
+	public static Prediction getPrediction(Player player, Planet planet, double time) {
 		Prediction result = new Prediction(planet);
 
 		List<Fleet> fleets = player.getFleetsWithTarget(planet);
-		Fleet.sortByArrivalTime(fleets);
+		Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
 		for (Fleet fleet : fleets) {
 			if (fleet.getTimeToTarget() > time) {
 				break;
@@ -106,11 +110,15 @@ public class Prediction {
 		return result;
 	}
 	
-	public static List<Prediction> getAllPredictions(Jeesh player) {
-		return getAllPredictions(player, player.getlastFleetArrivalTime());
+	public static double getlastFleetArrivalTime(Player player) {
+		return player.getlastFleetArrivalTime();
 	}
 	
-	public static List<Prediction> getAllPredictions(Jeesh player, double time) {
+	public static List<Prediction> getAllPredictions(Player player) {
+		return getAllPredictions(player, getlastFleetArrivalTime(player));
+	}
+	
+	public static List<Prediction> getAllPredictions(Player player, double time) {
 		List<Prediction> result = new ArrayList<Prediction>();
 		for (Planet planet : player.getAllPlanets()) {
 			result.add(Prediction.getPrediction(player, planet, time));
@@ -120,12 +128,21 @@ public class Prediction {
 	}
 	
 	public static List<Prediction> enemyPlanetsOnly(List<Prediction> predictions, Player player) {
-		List<Prediction> result = new ArrayList<Prediction>();
+		List<Prediction> result = new ArrayList<>();
 		for (Prediction prediction : predictions) {
 			if (prediction.player != player) {
 				result.add(prediction);
 			}
 		}
 		return result;
+	}
+	
+	public double getBalance(Planet planet, Player player) {
+		Prediction prediction = Prediction.getPrediction(player, planet);
+		
+		if(prediction.getPlayer().equals(player))
+			return prediction.getForces();
+		else
+			return -prediction.getForces()-1;
 	}
 }

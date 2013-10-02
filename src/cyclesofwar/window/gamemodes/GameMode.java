@@ -15,9 +15,9 @@ import cyclesofwar.window.rendering.Rendering;
 
 public abstract class GameMode {
 
-	private GamePanel gamePanel;
+	private final GamePanel gamePanel;
 
-	private Object renderingLock = new Object();
+	private final Object renderingLock = new Object();
 
 	protected Random random = new Random();
 	protected Rendering rendering = new Rendering();

@@ -24,18 +24,18 @@ public class Arena {
 	/*
 	 * the number of matches per round for the daily tournament
 	 */
-	public static final int matchesInLastManStandingTournamentPerRound = 100;
+	public static final int matchesInLastManStandingTournamentPerRound = 10; // 100
 	
 	/*
 	 * the number of matches per player for the daily tournament
 	 */
-	public static final int matchesInOneOnOneTournamentPerPlayer = 100;
+	public static final int matchesInOneOnOneTournamentPerPlayer = 10; // 100
 	
 	/*
 	 * please register your champion here for the daily tournament
 	 */
 	public static List<Player> champions(){
-		ArrayList<Player> result = new ArrayList<Player>();
+		ArrayList<Player> result = new ArrayList<>();
 
 		result.add(new SpaceMenace()); // Theo
 		result.add(new HanTzu()); // Frank
@@ -51,20 +51,23 @@ public class Arena {
 	 * this list contains all known players. please register yours as well 
 	 */
 	public static List<Player> registeredPlayers(){
-		ArrayList<Player> result = new ArrayList<Player>();
+		ArrayList<Player> result = new ArrayList<>();
 		
 		// Training
-		result.add(new Idle());
-		result.add(new Sniper());
-		result.add(new Fair());
-		result.add(new Fugitive());
-		result.add(new Random());
-		result.add(new Gunner());
-		result.add(new Clone());
-		result.add(new Traveller());
-		result.add(new Collective());
-		result.add(new Rabbit());
-		result.add(new Borderline());
+		result.add(new B00_Idle());
+		result.add(new B01_ChaseMe());
+		result.add(new B02_Wave());
+		result.add(new B03_BigGun());
+		result.add(new B04_Random());
+		result.add(new B05_PowersOf2());
+		result.add(new B06_Sniper());
+		result.add(new B07_Worm());
+		result.add(new B08_CloseBond());
+		result.add(new B09_NewLeader());
+		result.add(new B10_Front());
+		result.add(new B11_Cells());
+		result.add(new B12_Rabbit());
+
 		
 		// Martin
 		result.add(new Cratters());
@@ -85,6 +88,7 @@ public class Arena {
 		result.add(new CrazyTom());
 		result.add(new Petra());
 		result.add(new HanTzu());
+		result.add(new Jane());
 
 		// Peter
 		result.add(new DumbVirus());
@@ -93,7 +97,6 @@ public class Arena {
 		// Jan
 		result.add(new FriendlyPirates());
 
-		
 		return result;
 	}
 }

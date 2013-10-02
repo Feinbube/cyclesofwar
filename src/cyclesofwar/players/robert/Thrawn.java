@@ -12,7 +12,7 @@ public class Thrawn extends Player {
 	protected void think() {
 		List<Planet> otherPlanets = getAllPlanetsButMine();	
 		List<Planet> otherPlanetsNotUnderAttack = notUnderAttack(otherPlanets);	
-		for (Planet target : Planet.sortedByProductivity(otherPlanetsNotUnderAttack)) {
+		for (Planet target : Planet.sortedBy(Planet.ProductivityComparator, otherPlanetsNotUnderAttack)) {
 			for (Planet origin : getPlanets()) {
 				double time = origin.getTimeTo(target);
 				double force = target.getForces() + target.getProductionRatePerSecond()*time;

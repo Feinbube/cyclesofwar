@@ -1,0 +1,78 @@
+Dear Cadet,
+
+welcome to the world of interstellar warfare. This is your brief mission briefing. :)
+
+
+Getting Started
+* Just start the game, select some of the generals and watch them going berserk in live mode. [see GUI]
+* There are 
+* Bots are ordered by difficulty: B00_Idle being the easiest one, B01_ChaseMe being slightly better.. and so on. 
+
+GUI
+* F1...Shows the key mapping
+* ESC...opens the menu
+* Try clicking everything in the menu. Usually something magical happens. ;)
+* Please be advised, that you can only increase the number of planets to large numbers,
+  if you increase the scale of the universe also. Sorry for the inconvenience.
+  
+Game Modes
+* LIVE MODE: shows you one game featuring the generals you selected.
+* TOURNAMENT MODE: same as live mode, but with more games and tabular visualization
+  + Games run faster this way and you get a better feeling of the actual strength of the players
+  + Click on one of the percentages to see one of the games producing that outcome
+* ARENA MODE: only two generals at a time. Each general plays against each other. 
+  + To make it fair, each map is played twice, starting positions are swapped.
+  + Games run faster this way and you get a better feeling of the actual strength of the players
+  + Click on one of the percentages to see one of the games producing that outcome 
+
+
+Rules Of The Game
+
+/* PLAYER
+ * the player is the shaper of the universe. he has a number of planets and can send fleets to conquer even more of them
+ * 
+ * a player starts with a single planet
+ * a player can only interact with the universe by sending fleets from planets he owns to other planets
+ * 
+ * get your opponents by using getOtherPlayers()
+ * get your planets by using getPlanets()
+ * get your fleets by using getFleets()
+ * send forces using sendFleet()
+ * 
+ * logic of the game per round:
+ * 		forces on all planets are increased
+ * 		fleets are moved
+ * 		fleets that have reached their destination land on it: (in the correct order)
+ * 			planet and fleet belong to the same player: fleet forces join planet forces
+ * 			planet and fleet belong to different players: planet forces are reduced by fleet forces. planet may change owner.
+ * 		if there is only one player left: he is the winner, game is over
+ * 		all players think. local changes to the universe (by sending fleets) can not be seen by player until next round
+ * 		if nobody has sent a fleet for 1.000 rounds: game is over, nobody wins
+ * 		if the game exceeds 100.000 rounds: game is over, nobody wins
+ * 		start next round
+ 
+ /* FLEET
+ * the only way to actively interact with the universe is sending fleets from planets you own to other planets
+ * 
+ * every fleet has a position in the 2-dimensional universe. (position can be acquired using getX() and getY())
+ * every fleet consists of a static number of troops. (use getForce() to see their number)
+ * every round a fleet is moved closer to the target. (numbers can be acquired using roundsToTarget())
+ * if a fleet arrives at a planet, the following happens to the forces at that planet:
+ * 		planet and fleet belong to the same player: fleet forces join planet forces
+ * 		planet and fleet belong to different players: planet forces are reduced by fleet forces. planet may change owner.
+ * the distance to the next planet is always so big that you need at least one round to send a fleet there
+ * 
+ * you can also chose between various formations (which is just a rendering gimmick and does not affect game logic at all)
+ */
+ 
+ /* ARENA
+ * here new players are registered and tournaments are configured
+ */
+ 
+ /* PLANET
+ * the game is all about planets. get as much as you can ;)
+ * 
+ * every planet has a position in the 2-dimensional universe. (position can be acquired using getX() and getY())
+ * every round a planet produces some troops for its owner. (numbers can be acquired using getForces() and getProductionRatePerRound())
+ * the distance to the next planet is always so big that you need at least one round to send a fleet there
+ */

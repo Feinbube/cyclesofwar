@@ -105,7 +105,7 @@ public class ConfigManager extends WindowAdapter {
 	}
 
 	public List<Player> getPlayers(List<Player> defaultResult, String s) {
-		List<Player> result = new ArrayList<Player>();
+		List<Player> result = new ArrayList<>();
 		if (properties == null) {
 			return defaultResult;
 		} else {

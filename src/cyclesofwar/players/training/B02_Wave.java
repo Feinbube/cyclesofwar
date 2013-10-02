@@ -1,23 +1,27 @@
 package cyclesofwar.players.training;
 
 import java.awt.Color;
-import java.util.List;
 
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-public class Fair extends Player {
+/*
+ * For each planet, this bot waits until it can effort to send one fleet to each other planet.
+ * Then it sends them :)
+ */
+public class B02_Wave extends Player {
 
 	@Override
 	public void think() {
-		List<Planet> targets = this.getAllPlanets();
+		
+		// for each of my planets
 		for (Planet planet : this.getPlanets()) {
-			if (planet.getForces() < targets.size()) {
-				continue;
-			}
-
-			for (Planet target : targets) {
-				if (target != planet) {
+			
+			// if I have enough inhabitants to send one to each other planet
+			if (planet.getForces() >= this.getAllPlanets().size()) {
+		
+				// send one ship to each other planet
+				for (Planet target : planet.getOthers()) {
 					sendFleet(planet, 1, target);
 				}
 			}
@@ -36,7 +40,6 @@ public class Fair extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "Noob";
+		return "B";
 	}
-
 }
