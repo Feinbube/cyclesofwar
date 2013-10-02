@@ -55,7 +55,7 @@ public abstract class BattleSchoolStudent extends Player {
 	protected class HinterlandPlanetSelector implements PlanetSelector {
 		@Override
 		public List<Planet> getPlanets(Player player) {
-			List<Planet> result = new ArrayList<Planet>();
+			List<Planet> result = new ArrayList<>();
 
 			for (Planet planet : player.getPlanets()) {
 				List<Planet> neighbors = getNeighbors(planet);
@@ -79,7 +79,7 @@ public abstract class BattleSchoolStudent extends Player {
 
 	protected int enemyForcesArrivingNextRound(Planet planet) {
 		int result = 0;
-		for (Fleet fleet : Fleet.sortedByArrivalTime(hostileOnly(getFleetsWithTarget(planet)))) {
+		for (Fleet fleet : Fleet.sortedBy(Fleet.ArrivalTimeComparator, hostileOnly(getFleetsWithTarget(planet)))) {
 			if (fleet.getRoundsToTarget() <= 1) {
 				result += fleet.getForce();
 			}
@@ -89,7 +89,7 @@ public abstract class BattleSchoolStudent extends Player {
 
 	protected int myForcesArrivingNextRound(Planet planet) {
 		int result = 0;
-		for (Fleet fleet : Fleet.sortedByArrivalTime(mineOnly((getFleetsWithTarget(planet))))) {
+		for (Fleet fleet : Fleet.sortedBy(Fleet.ArrivalTimeComparator, mineOnly((getFleetsWithTarget(planet))))) {
 			if (fleet.getRoundsToTarget() <= 1) {
 				result += fleet.getForce();
 			}
@@ -107,18 +107,9 @@ public abstract class BattleSchoolStudent extends Player {
 
 	// ---------------------------------------------------------------------------------------------
 
-	protected double getlastFleetArrivalTime() {
-		List<Fleet> fleets = getAllFleets();
-		if (fleets.isEmpty()) {
-			return 0;
-		}
-		Fleet.sortByArrivalTime(fleets);
-		return fleets.get(fleets.size() - 1).getTimeToTarget();
-	}
-
 	protected List<Planet> mostProductiveByDistance(Planet planet) {
 		List<Planet> targets = this.getAllPlanetsButMine();
-		List<Planet> result = new ArrayList<Planet>();
+		List<Planet> result = new ArrayList<>();
 
 		while (targets.size() > 0) {
 			List<Planet> next = mostProductive(targets);
@@ -136,10 +127,10 @@ public abstract class BattleSchoolStudent extends Player {
 	}
 
 	protected List<Planet> mostProductive(List<Planet> planets) {
-		Planet.sortByProductivity(planets);
+                Planet.sortBy(Planet.ProductivityComparator, planets);
 		double maxProductionRate = planets.get(0).getProductionRatePerSecond();
 
-		List<Planet> result = new ArrayList<Planet>();
+		List<Planet> result = new ArrayList<>();
 
 		for (Planet planet : planets) {
 			if (planet.getProductionRatePerSecond() < maxProductionRate) {
@@ -154,7 +145,7 @@ public abstract class BattleSchoolStudent extends Player {
 
 	protected List<Planet> leastDefendedByDistance(Planet planet) {
 		List<Planet> targets = this.getAllPlanetsButMine();
-		List<Planet> result = new ArrayList<Planet>();
+		List<Planet> result = new ArrayList<>();
 
 		while (targets.size() > 0) {
 			List<Planet> next = leastDefended(targets);
@@ -172,10 +163,10 @@ public abstract class BattleSchoolStudent extends Player {
 	}
 
 	protected List<Planet> leastDefended(List<Planet> planets) {
-		Planet.sortByForceCount(planets);
+		Planet.sortBy(Planet.ForceCountComparator, planets);
 		double maxForceCount = planets.get(0).getForces();
 
-		List<Planet> result = new ArrayList<Planet>();
+		List<Planet> result = new ArrayList<>();
 
 		for (Planet planet : planets) {
 			if (planet.getForces() < maxForceCount) {

@@ -1,5 +1,10 @@
 package cyclesofwar;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 public abstract class GameObject {
 
 	protected Universe universe;
@@ -42,4 +47,23 @@ public abstract class GameObject {
 	}
 
 	protected abstract void update(double elapsedSeconds);
+	
+	/*
+	 * sorts a list using a comparator
+         * e.g.: Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
+	 */
+	public static <T> void sortBy(Comparator<T> comparator, List<T> list) {
+		Collections.sort(list, comparator);
+	}
+	
+	/*
+	 * returns a new list with items sorted according to the comparator
+         * e.g.: List<Fleet> sortedFleets = Fleet.sortedBy(Fleet.ArrivalTimeComparator, fleets);
+	 */
+	public static <T> List<T> sortedBy(Comparator<T> comparator, List<T> list) {
+		List<T> result = new ArrayList<>();
+		result.addAll(list);
+		sortBy(comparator, list);
+		return result;
+	}
 }

@@ -49,13 +49,17 @@ public class PlayerSelectionGameMode extends GameMode {
 
 		String buttonCaption = rendering.getButtonCaption(x, y);
 		if (buttonCaption != null) {
-			if (buttonCaption.equals("Live Mode")) {
-				this.switchTo(GameModes.LIVE);
-			} else if (buttonCaption.equals("Tournament Mode")) {
-				this.switchTo(GameModes.TOURNAMENT);
-			} else if (buttonCaption.equals("Arena Mode")) {
-				this.switchTo(GameModes.ARENA);
-			}
+                    switch (buttonCaption) {
+                        case "Live Mode":
+                            this.switchTo(GameModes.LIVE);
+                            break;
+                        case "Tournament Mode":
+                            this.switchTo(GameModes.TOURNAMENT);
+                            break;
+                        case "Arena Mode":
+                            this.switchTo(GameModes.ARENA);
+                            break;
+                    }
 
 			for (Integer i : getPossibleNumbersOfRounds()) {
 				if (("rounds" + i).equals(buttonCaption)) {

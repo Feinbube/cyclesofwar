@@ -5,7 +5,7 @@ import cyclesofwar.Universe;
 
 public class WorkerThread implements Runnable {
 
-	private Tournament tournament;
+	private final Tournament tournament;
 
 	public boolean running = true;
 	public boolean pause = false;

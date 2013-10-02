@@ -31,7 +31,7 @@ public class Vulture extends Player {
 			List<Planet> myPlanets = getPlanetsOf(this);
 			List<Planet> otherPlanets = getAllPlanetsButMine();
 			if (!myPlanets.isEmpty() && !otherPlanets.isEmpty()) {
-				Planet.sortByForceCount(myPlanets);
+                                Planet.sortBy(Planet.ForceCountComparator, myPlanets);
 				Planet attacker = myPlanets.get(0);
 				Planet.sortByDistanceTo(otherPlanets, attacker);
 				Planet next = otherPlanets.get(0);

@@ -34,7 +34,7 @@ public class LiveGameMode extends GameMode {
 					try {
 						universe.update(Universe.getRoundDuration());
 					} catch (PlayerDisqualifiedException e) {
-						new RuntimeException(e);
+						throw new RuntimeException(e);
 					}
 				}
 			} else {
@@ -44,7 +44,7 @@ public class LiveGameMode extends GameMode {
 					try {
 						universe.update(Universe.getRoundDuration());
 					} catch (PlayerDisqualifiedException e) {
-						new RuntimeException(e);
+						throw new RuntimeException(e);
 					}
 				}
 			}
@@ -115,7 +115,7 @@ public class LiveGameMode extends GameMode {
 	}
 
 	private List<Player> rotate(List<Player> players) {
-		List<Player> result = new ArrayList<Player>();
+		List<Player> result = new ArrayList<>();
 		for (int i = 1; i < players.size(); i++) {
 			result.add(players.get(i));
 		}

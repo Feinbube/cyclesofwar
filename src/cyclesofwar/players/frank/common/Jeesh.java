@@ -329,17 +329,23 @@ public abstract class Jeesh extends BattleSchoolStudent {
 	}
 
 	protected void winArena(Player enemy) {
-		if (enemy.getCreatorsName().equals("Martin")) {
-			strategyCollective();
-		} else if (enemy.getCreatorsName().equals("Theo")) {
-			strategyAlwaysTheSecond();
-		} else if (enemy.getCreatorsName().equals("Robert")) {
-			strategyAlwaysTheSecond();
-		} else if (enemy.getCreatorsName().equals("Peter")) {
-			strategyHyperactive();
-		} else {
-			strategyAlwaysTheSecond();
-		}
+            switch (enemy.getCreatorsName()) {
+                case "Martin":
+                    strategyCollective();
+                    break;
+                case "Theo":
+                    strategyAlwaysTheSecond();
+                    break;
+                case "Robert":
+                    strategyAlwaysTheSecond();
+                    break;
+                case "Peter":
+                    strategyHyperactive();
+                    break;
+                default:
+                    strategyAlwaysTheSecond();
+                    break;
+            }
 	}
 
 	@Override

@@ -36,10 +36,10 @@ public class Rendering {
 	private double universeSize = 0.0;
 	private int borderSize = 20;
 
-	private List<Star> stars = new ArrayList<Star>();
+	private final List<Star> stars = new ArrayList<>();
 
-	private Random random = new Random();
-	private List<Tag> tags = new ArrayList<Tag>();
+	private final Random random = new Random();
+	private final List<Tag> tags = new ArrayList<>();
 
 	public Rendering() {
 		stars.clear();
@@ -438,6 +438,7 @@ public class Rendering {
 
 	private int drawRank(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
 		return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
+                        @Override
 			public String getString(Tournament tournament, int i) {
 				return (i + 1) + ".";
 			}
@@ -446,6 +447,7 @@ public class Rendering {
 
 	private int drawWins(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
 		return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
+                        @Override
 			public String getString(Tournament tournament, int i) {
 				return tournament.getRankings().get(i).getWins() + "/" + tournament.getRankings().get(i).getGames();
 			}
@@ -454,6 +456,7 @@ public class Rendering {
 
 	private int drawPerformance(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
 		return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
+                        @Override
 			public String getString(Tournament tournament, int i) {
 				return percentage(tournament.getRankings().get(i).getRatio());
 			}
@@ -462,6 +465,7 @@ public class Rendering {
 
 	private int drawNames(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
 		return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
+                        @Override
 			public String getString(Tournament tournament, int i) {
 				return tournament.getRankings().get(i).getPlayer().getName();
 			}

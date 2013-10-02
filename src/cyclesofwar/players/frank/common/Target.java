@@ -15,10 +15,10 @@ public class Target {
 		public double valueOf(Target target);
 	}
 	
-	private int forcesToConquer;
-	private int forcesToKeep;
-	private Planet planet;
-	private double value;
+	private final int forcesToConquer;
+	private final int forcesToKeep;
+	private final Planet planet;
+	private final double value;
 
 	public int getForcesToConquer() {
 		return forcesToConquer;
@@ -40,7 +40,7 @@ public class Target {
 	}
 
 	public static List<Target> removePlanetsThatAreFine(List<Target> targets, Player player) {
-		List<Target> result = new ArrayList<Target>();
+		List<Target> result = new ArrayList<>();
 		for (Target target : targets) {
 			if (target.forcesToConquer > 0 || target.forcesToKeep > 0) {
 				result.add(target);
@@ -60,7 +60,7 @@ public class Target {
 	}
 
 	public static List<Target> bestTargets(Jeesh player, List<Planet> targetPlanets, Planet origin, Evaluator evaluator) {
-		List<Target> targets = new ArrayList<Target>();
+		List<Target> targets = new ArrayList<>();
 		for (Planet targetPlanet : targetPlanets) {
 			Prediction predictionAtArrivalTime = Prediction.getPrediction(player, targetPlanet, origin.getTimeTo(targetPlanet));
 
@@ -87,7 +87,7 @@ public class Target {
 	}
 	
 	protected static List<Target> mostValueByDistance(Jeesh player, List<Target> targets, Planet planet, Evaluator evaluator) {
-		List<Target> result = new ArrayList<Target>();
+		List<Target> result = new ArrayList<>();
 
 		while (targets.size() > 0) {
 			List<Target> next = mostValued(player, targets, evaluator);
@@ -116,7 +116,7 @@ public class Target {
 		sortByValue(player, targets, evaluator);
 		double maxValue = targets.get(0).value;
 
-		List<Target> result = new ArrayList<Target>();
+		List<Target> result = new ArrayList<>();
 		for (Target target : targets) {
 			if (target.value < maxValue) {
 				break;
@@ -150,7 +150,7 @@ public class Target {
 		prediction.update(player, fleetsToConquer, time);
 
 		List<Fleet> fleets = player.getFleetsWithTarget(prediction.getPlanet());
-		Fleet.sortByArrivalTime(fleets);
+		Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
 
 		for (Fleet fleet : fleets) {
 			if (fleet.getTimeToTarget() < time) {

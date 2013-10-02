@@ -37,18 +37,18 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	private GameMode gameMode;
 
-	private TitleScreenGameMode titleScreen;
-	private LiveGameMode liveGame;
-	private ArenaGameMode arenaGame;
-	private TournamentGameMode tournamentGame;
-	private PlayerSelectionGameMode playerSelection;
+	private final TitleScreenGameMode titleScreen;
+	private final LiveGameMode liveGame;
+	private final ArenaGameMode arenaGame;
+	private final TournamentGameMode tournamentGame;
+	private final PlayerSelectionGameMode playerSelection;
 
-	private List<Player> allPlayers;
-	private List<Player> selectedPlayers;
+	private final List<Player> allPlayers;
+	private final List<Player> selectedPlayers;
 
-	private int threadCount;
+	private final int threadCount;
 
-	private Timer timer;
+	private final Timer timer;
 
 	private boolean showControls = false;
 

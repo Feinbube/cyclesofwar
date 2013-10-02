@@ -1,9 +1,6 @@
 package cyclesofwar;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 /*
  * the only way to actively interact with the universe is sending fleets from planets you own to other planets
@@ -11,7 +8,7 @@ import java.util.List;
  * every fleet has a position in the 2-dimensional universe. (position can be acquired using getX() and getY())
  * every fleet consists of a static number of troops. (use getForce() to see their number)
  * every round a fleet is moved closer to the target. (numbers can be acquired using roundsToTarget())
- * if a fleet arrives at a planet the forces at a planet the following happens:
+ * if a fleet arrives at a planet, the following happens to the forces at that planet:
  * 		planet and fleet belong to the same player: fleet forces join planet forces
  * 		planet and fleet belong to different players: planet forces are reduced by fleet forces. planet may change owner.
  * the distance to the next planet is always so big that you need at least one round to send a fleet there
@@ -28,8 +25,8 @@ public class Fleet extends GameObject {
 		SWARM, O, EYE, ARROW, V, SPIRAL
 	}
 
-	private Planet target;
-	private int force;
+	private final Planet target;
+	private final int force;
 
 	private double distanceToTarget;
 
@@ -48,7 +45,7 @@ public class Fleet extends GameObject {
 
 	private static int checkForce(Planet start, Planet target, int force) {
 		if (force < 1) {
-			throw new IllegalArgumentException("force must be greater than 0 but was " + force);
+			throw new IllegalArgumentException("force must be at least 1 but was " + force);
 		}
 
 		if (target == null) {
@@ -164,24 +161,15 @@ public class Fleet extends GameObject {
 	}
 
 	/*
-	 * sort fleets by arrival time (ascending)
+	 * used to sort fleets by arrival time. (ascending)
+	 * 
+	 * use Fleet.sortBy(fleets, ArrivalTimeComparator)
+	 * or Fleet.sortedBy(fleets, ArrivalTimeComparator)
 	 */
-	public static void sortByArrivalTime(List<Fleet> fleets) {
-		Collections.sort(fleets, new Comparator<Fleet>() {
-			@Override
-			public int compare(Fleet one, Fleet other) {
-				return Double.compare(one.getTimeToTarget(), other.getTimeToTarget());
-			}
-		});
-	}
-
-	/*
-	 * returns fleets by arrival time (ascending)
-	 */
-	public static List<Fleet> sortedByArrivalTime(List<Fleet> fleets) {
-		List<Fleet> result = new ArrayList<Fleet>();
-		result.addAll(fleets);
-		sortByArrivalTime(result);
-		return result;
-	}
+	public static Comparator<Fleet> ArrivalTimeComparator = new Comparator<Fleet>() {
+		@Override
+		public int compare(Fleet one, Fleet other) {
+			return Double.compare(one.getTimeToTarget(), other.getTimeToTarget());
+		}
+	};
 }

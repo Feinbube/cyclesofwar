@@ -62,11 +62,14 @@ public abstract class Player {
 	 */
 	public abstract String getCreatorsName();
 
+        private String name = null;
 	/*
 	 * the unique name of this player class
 	 */
 	public String getName() {
-		return getCreatorsName() + "'s " + this.getClass().getSimpleName();
+            if(name == null)
+                name = getCreatorsName() + "'s " + this.getClass().getSimpleName();
+            return name;
 	}
 
 	/*
@@ -84,8 +87,15 @@ public abstract class Player {
 
 	@Override
 	public boolean equals(Object other) {
-		return this.getName().equals(((Player) other).getName());
+            if(!(other instanceof Player))
+                return false;
+            return this.getName().equals(((Player) other).getName());
 	}
+
+        @Override
+        public int hashCode() {
+            return this.getName().hashCode();
+        }
 
 	// Universe
 
@@ -128,7 +138,7 @@ public abstract class Player {
 	 * extinct ones)
 	 */
 	public List<Player> getOtherAlivePlayers() {
-		List<Player> result = new ArrayList<Player>();
+		List<Player> result = new ArrayList<>();
 		for (Player player : universe.getPlayers()) {
 			if (player.isAlive()) {
 				result.add(player);
@@ -216,7 +226,7 @@ public abstract class Player {
 	 * returns all fleets targeting the specified planet
 	 */
 	public List<Fleet> getFleetsWithTarget(Planet target) {
-		List<Fleet> result = new ArrayList<Fleet>();
+		List<Fleet> result = new ArrayList<>();
 		for (Fleet fleet : this.getAllFleets()) {
 			if (fleet.getTarget() == target) {
 				result.add(fleet);
@@ -281,7 +291,7 @@ public abstract class Player {
 	 * !shallBelongTo: do not belong to player
 	 */
 	static <T extends GameObject> List<T> filter(List<T> list, Player player, boolean shallBelongTo) {
-		ArrayList<T> result = new ArrayList<T>();
+		ArrayList<T> result = new ArrayList<>();
 		for (T gameObject : list) {
 			if ((gameObject.getPlayer() == player) == shallBelongTo) {
 				result.add(gameObject);
@@ -331,6 +341,15 @@ public abstract class Player {
 	public static <T> T firstOrNull(List<T> list) {
 		return atIndexOrNull(list, 0);
 	}
+	
+	/*
+	 * returns a random element of list or null if list is empty
+	 */
+	public <T> T randomOrNull(List<T> list) {
+		if(list.isEmpty())
+			return null;
+		return list.get(universe.getRandomInt(list.size()));
+	}
 
 	/*
 	 * returns the first element of list or null if list does not have so many
@@ -348,7 +367,7 @@ public abstract class Player {
 	 * returns a new list that contains all elements that are in both lists
 	 */
 	public static <T> List<T> inBothLists(List<T> list1, List<T> list2) {
-		List<T> result = new ArrayList<T>();
+		List<T> result = new ArrayList<>();
 		for (T one : list1) {
 			if (list2.contains(one)) {
 				result.add(one);
@@ -361,7 +380,7 @@ public abstract class Player {
 	 * returns a list containing up to the specified number of elements of list, starting from the first one
 	 */
 	public static <T> List<T> firstElements(List<T> list, int numberOfElements) {
-		List<T> result = new ArrayList<T>();
+		List<T> result = new ArrayList<>();
 		for (int i = 0; i<Math.min(numberOfElements, list.size()); i++) {
 			result.add(list.get(i));
 		}
@@ -401,11 +420,11 @@ public abstract class Player {
 	}
 
 	/*
-	 * Deprecated. use Planet.sortByForceCount() instead
+	 * Deprecated. use Planet.sortBy(Planet.ForceCountComparator, planets) instead
 	 */
 	@Deprecated
 	public static void sortByForceCount(List<Planet> planets) {
-		Planet.sortByForceCount(planets);
+		Planet.sortBy(Planet.ForceCountComparator, planets);
 	}
 
 	/*
@@ -413,5 +432,26 @@ public abstract class Player {
 	 */
 	public boolean isAlive() {
 		return !this.getFleets().isEmpty() || !this.getPlanets().isEmpty();
+	}
+	
+	/*
+	 * get a prediction of the state of the planet at the given time
+	 * given no new fleet is created 
+	 */
+	public Prediction getPrediction(Planet planet, double time){
+		return new Prediction(universe, this, planet, time);
+	}
+	
+	/*
+	 * returns the time of the when the last existing fleet (by anyone) lands on its target
+	 * given no new fleet is created  
+	 */
+	public double getlastFleetArrivalTime() {
+		List<Fleet> fleets = this.getAllFleets();
+		if (fleets.isEmpty()) {
+			return 0;
+		}
+		Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
+		return fleets.get(fleets.size() - 1).getTimeToTarget();
 	}
 }

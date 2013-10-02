@@ -6,6 +6,6 @@ public class HanTzu extends Jeesh {
 
 	@Override
 	protected void thinkYourself() {
-		strategyAlwaysTheSecond3(15);
+		strategyAlwaysTheSecond3(9);
 	}
 }

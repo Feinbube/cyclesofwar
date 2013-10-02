@@ -10,267 +10,276 @@ import java.util.TreeMap;
 
 public class Universe {
 
-	private static final double speedOfLight = 0.05;
-	int planetCountPerPlayer = 10;
-	double universeSizeFactor = 1.0;
+    private static final double speedOfLight = 0.05;
+    int planetCountPerPlayer = 10;
+    double universeSizeFactor = 1.0;
 
-	private List<Planet> planets = new ArrayList<Planet>();
-	private List<Fleet> fleets = new ArrayList<Fleet>();
-	private List<Player> players = new ArrayList<Player>();
+    private final List<Planet> planets = new ArrayList<>();
+    private final List<Fleet> fleets = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
 
-	private Random random = new Random();
+    private final Random random = new Random();
 
-	private double now;
-	private double size;
+    private double now;
+    private final double size;
 
-	private long seed;
+    private final long seed;
 
-	private long currentRound = 0;
-	private int nothingHappenedCounter = 0;
+    private long currentRound = 0;
+    private int nothingHappenedCounter = 0;
 
-	private boolean gameOver = true;
-	private Player winner = null;
+    private boolean gameOver = true;
+    private Player winner = null;
 
-	private Player currentPlayer = Player.NonePlayer;
+    private Player currentPlayer = Player.NonePlayer;
 
-	private SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<Double, Fleet>();
-	private List<Fleet> newFleets = new ArrayList<Fleet>();
+    private final SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<>();
+    private final List<Fleet> newFleets = new ArrayList<>();
 
-	public Universe(long seed, List<Player> combatants, int planetCountPerPlayer, double universeSizeFactor) {
-		gameOver = true;
+    public Universe(long seed, List<Player> combatants, int planetCountPerPlayer, double universeSizeFactor) {
+        gameOver = true;
 
-		now = 0;
-		currentRound = 0;
-		nothingHappenedCounter = 0;
+        now = 0;
+        currentRound = 0;
+        nothingHappenedCounter = 0;
 
-		size = Math.sqrt(combatants.size()) * universeSizeFactor;
+        size = Math.sqrt(combatants.size()) * universeSizeFactor;
 
-		this.seed = seed;
-		random.setSeed(seed);
+        this.seed = seed;
+        random.setSeed(seed);
 
-		int planetId = 0;
-		planets.clear();
-		for (int i = 0; i < planetCountPerPlayer * combatants.size(); i++) {
-			planets.add(suiteablePlanet(planetId++, -1));
-		}
+        int planetId = 0;
+        planets.clear();
+        for (int i = 0; i < planetCountPerPlayer * combatants.size(); i++) {
+            planets.add(suiteablePlanet(planetId++, -1));
+        }
 
-		fleets.clear();
-		fleetsAtDestination.clear();
+        fleets.clear();
+        fleetsAtDestination.clear();
 
-		players.clear();
-		for (Player player : combatants) {
-			Player freshOne = player.freshOne();
-			freshOne.setUniverse(this);
-			createStarterPlanet(planetId++, freshOne);
-			players.add(freshOne);
-		}
+        players.clear();
+        for (Player player : combatants) {
+            Player freshOne = player.freshOne();
+            freshOne.setUniverse(this);
+            createStarterPlanet(planetId++, freshOne);
+            players.add(freshOne);
+        }
 
-		gameOver = false;
+        gameOver = false;
 
-		for (Planet planet : planets) {
-			planet.calculateDistances();
-		}
-	}
+        for (Planet planet : planets) {
+            planet.calculateDistances();
+        }
+    }
 
-	private Planet createStarterPlanet(int planetId, Player player) {
-		Planet planet = suiteablePlanet(planetId, 5);
-		planet.setPlayer(player);
-		planets.add(planet);
-		return planet;
-	}
+    private Planet createStarterPlanet(int planetId, Player player) {
+        Planet planet = suiteablePlanet(planetId, 5);
+        planet.setPlayer(player);
+        planets.add(planet);
+        return planet;
+    }
 
-	private Planet suiteablePlanet(int planetId, double productionRate) {
-		while (true) {
-			Planet planet = new Planet(planetId, this, random, getSize(), productionRate);
-			if (planet.fits(planets))
-				return planet;
-		}
-	}
+    private Planet suiteablePlanet(int planetId, double productionRate) {
+        while (true) {
+            Planet planet = new Planet(planetId, this, random, getSize(), productionRate);
+            if (planet.fits(planets)) {
+                return planet;
+            }
+        }
+    }
 
-	public void update(double elapsedSeconds) throws PlayerDisqualifiedException {
-		if (gameOver) {
-			return;
-		}
+    public void update(double elapsedSeconds) throws PlayerDisqualifiedException {
+        if (gameOver) {
+            return;
+        }
 
-		now += elapsedSeconds;
-		nothingHappenedCounter++;
-		currentRound++;
+        now += elapsedSeconds;
+        nothingHappenedCounter++;
+        currentRound++;
 
-		for (Planet planet : planets) {
-			planet.update(elapsedSeconds);
-		}
+        for (Planet planet : planets) {
+            planet.update(elapsedSeconds);
+        }
 
-		for (Fleet fleet : fleets) {
-			fleet.update(elapsedSeconds);
-		}
+        for (Fleet fleet : fleets) {
+            fleet.update(elapsedSeconds);
+        }
 
-		for (Fleet fleet : fleetsAtDestination.values()) {
-			fleet.land();
-			fleets.remove(fleet);
-		}
-		fleetsAtDestination.clear();
+        for (Fleet fleet : fleetsAtDestination.values()) {
+            fleet.land();
+            fleets.remove(fleet);
+        }
+        fleetsAtDestination.clear();
 
-		for (Planet planet : planets) {
-			planet.prepare();
-		}
+        for (Planet planet : planets) {
+            planet.prepare();
+        }
 
-		if (justOnePlayerLeft()) {
-			gameOver = true;
-			winner = bestPlayer();
-			return;
-		}
+        if (justOnePlayerLeft()) {
+            gameOver = true;
+            winner = bestPlayer();
+            return;
+        }
 
-		for (Player player : players) {
-			currentPlayer = player;
-			try {
-				currentPlayer.think();
-			} catch (Exception ex) {
-				throw new PlayerDisqualifiedException(currentPlayer);
-			}
+        for (Player player : players) {
+            currentPlayer = player;
+            try {
+                currentPlayer.think();
+            } catch (Exception ex) {
+                throw new PlayerDisqualifiedException(currentPlayer, ex);
+            }
 
-		}
-		currentPlayer = NonePlayer.NonePlayer;
+        }
+        currentPlayer = NonePlayer.NonePlayer;
 
-		if (nothingHappenedCounter > 1000 || currentRound > 100000) {
-			gameOver = true;
-			winner = NonePlayer.NonePlayer;
-			return;
-		}
+        if (nothingHappenedCounter > 1000 || currentRound > 100000) {
+            gameOver = true;
+            winner = NonePlayer.NonePlayer;
+            return;
+        }
 
-		for (Fleet newFleet : newFleets) {
-			fleets.add(newFleet);
-		}
-		newFleets.clear();
+        for (Fleet newFleet : newFleets) {
+            fleets.add(newFleet);
+        }
+        newFleets.clear();
 
-		for (Planet planet : planets) {
-			planet.commit();
-		}
-	}
+        for (Planet planet : planets) {
+            planet.commit();
+        }
+    }
 
-	private boolean justOnePlayerLeft() {
-		int playersAlive = 0;
-		for (Player player : players) {
-			if (player.isAlive()) {
-				playersAlive++;
-			}
-		}
+    private boolean justOnePlayerLeft() {
+        int playersAlive = 0;
+        for (Player player : players) {
+            if (player.isAlive()) {
+                playersAlive++;
+            }
+        }
 
-		return playersAlive <= 1;
-	}
+        return playersAlive <= 1;
+    }
 
-	private Player bestPlayer() {
-		List<Player> sortedPlayers = new ArrayList<Player>(players);
-		Collections.sort(sortedPlayers, new Comparator<Player>() {
-			@Override
-			public int compare(Player player1, Player player2) {
-				return (int) (player2.getFullForce() - player1.getFullForce());
-			}
-		});
+    private Player bestPlayer() {
+        List<Player> sortedPlayers = new ArrayList<>(players);
+        Collections.sort(sortedPlayers, new Comparator<Player>() {
+            @Override
+            public int compare(Player player1, Player player2) {
+                return (int) (player2.getFullForce() - player1.getFullForce());
+            }
+        });
 
-		return sortedPlayers.get(0);
-	}
+        return sortedPlayers.get(0);
+    }
 
-	// for Player
-	public List<Planet> getAllPlanets() {
-		return new ArrayList<Planet>(planets);
-	}
+    // for Player
+    public List<Planet> getAllPlanets() {
+        return new ArrayList<>(planets);
+    }
 
-	public List<Fleet> getAllFleets() {
-		List<Fleet> result = new ArrayList<Fleet>(fleets);
-		result.addAll(filterFleetsOf(newFleets, currentPlayer));
+    public List<Fleet> getAllFleets() {
+        List<Fleet> result = new ArrayList<>(fleets);
+        result.addAll(filterFleetsOf(newFleets, currentPlayer));
 
-		return result;
-	}
+        return result;
+    }
 
-	List<Fleet> getFleetsOf(Player player) {
-		List<Fleet> result = filterFleetsOf(fleets, player);
-		if (currentPlayer == player) {
-			result.addAll(filterFleetsOf(newFleets, player));
-		}
+    List<Fleet> getFleetsOf(Player player) {
+        List<Fleet> result = filterFleetsOf(fleets, player);
+        if (currentPlayer == player) {
+            result.addAll(filterFleetsOf(newFleets, player));
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	private List<Fleet> filterFleetsOf(List<Fleet> fleets, Player player) {
-		List<Fleet> result = new ArrayList<Fleet>();
-		for (Fleet fleet : fleets) {
-			if (fleet.getPlayer() == player) {
-				result.add(fleet);
-			}
-		}
-		return result;
-	}
+    private List<Fleet> filterFleetsOf(List<Fleet> fleets, Player player) {
+        List<Fleet> result = new ArrayList<>();
+        for (Fleet fleet : fleets) {
+            if (fleet.getPlayer() == player) {
+                result.add(fleet);
+            }
+        }
+        return result;
+    }
 
-	Fleet sendFleet(Planet origin, int force, Planet target) {
-		if (force > origin.getForces()) {
-			throw new IllegalArgumentException("fleet size exceeds planetary forces");
-		}
+    Fleet sendFleet(Planet origin, int force, Planet target) {
+        if (target == null) {
+            return null;
+        }
 
-		if (!currentPlayer.isMyPlanet(origin)) {
-			throw new IllegalArgumentException("fleet must be send from owned planet");
-		}
+        if (force > origin.getForces()) {
+            throw new IllegalArgumentException("fleet size (" + force + ") exceeds planetary forces (" + origin.getForces() + ")");
+        }
 
-		Fleet newFleet = new Fleet(this, currentPlayer, force, origin, target);
-		newFleets.add(newFleet);
-		origin.setNewForces(origin.getNewForces() - newFleet.getForce());
-		nothingHappenedCounter = 0;
+        if (force < 1) {
+            throw new IllegalArgumentException("fleet size must be at least 1");
+        }
 
-		return newFleet;
-	}
+        if (!currentPlayer.isMyPlanet(origin)) {
+            throw new IllegalArgumentException("fleet must be send from owned planet");
+        }
 
-	public double getRandomDouble() {
-		return random.nextDouble();
-	}
+        Fleet newFleet = new Fleet(this, currentPlayer, force, origin, target);
+        newFleets.add(newFleet);
+        origin.setNewForces(origin.getNewForces() - newFleet.getForce());
+        nothingHappenedCounter = 0;
 
-	public int getRandomInt(int max) {
-		return random.nextInt(max);
-	}
+        return newFleet;
+    }
 
-	void fleetArrived(Fleet fleet, double distance) {
-		fleetsAtDestination.put(distance, fleet);
-	}
+    public double getRandomDouble() {
+        return random.nextDouble();
+    }
 
-	public Player getWinner() {
-		return winner;
-	}
+    public int getRandomInt(int max) {
+        return random.nextInt(max);
+    }
 
-	public long getSeed() {
-		return seed;
-	}
+    void fleetArrived(Fleet fleet, double distance) {
+        fleetsAtDestination.put(distance, fleet);
+    }
 
-	public boolean isGameOver() {
-		return gameOver;
-	}
+    public Player getWinner() {
+        return winner;
+    }
 
-	public double getSize() {
-		return size;
-	}
+    public long getSeed() {
+        return seed;
+    }
 
-	public Player getCurrentPlayer() {
-		return currentPlayer;
-	}
+    public boolean isGameOver() {
+        return gameOver;
+    }
 
-	public double getNow() {
-		return now;
-	}
+    public double getSize() {
+        return size;
+    }
 
-	public List<Player> getPlayers() {
-		return new ArrayList<Player>(players);
-	}
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
 
-	public static double getFlightSpeed() {
-		return speedOfLight;
-	}
+    public double getNow() {
+        return now;
+    }
 
-	public static double getRoundDuration() {
-		return speedOfLight;
-	}
+    public List<Player> getPlayers() {
+        return new ArrayList<>(players);
+    }
 
-	public static double getRoundsPerSecond() {
-		return 1.0 / speedOfLight;
-	}
+    public static double getFlightSpeed() {
+        return speedOfLight;
+    }
 
-	public boolean inhabitedByPlayer(Player player) {
-		return players.contains(player);
-	}
+    public static double getRoundDuration() {
+        return speedOfLight;
+    }
+
+    public static double getRoundsPerSecond() {
+        return 1.0 / speedOfLight;
+    }
+
+    public boolean inhabitedByPlayer(Player player) {
+        return players.contains(player);
+    }
 }
