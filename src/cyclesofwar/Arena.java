@@ -24,12 +24,12 @@ public class Arena {
 	/*
 	 * the number of matches per round for the daily tournament
 	 */
-	public static final int matchesInLastManStandingTournamentPerRound = 10; // 100
+	public static final int matchesInLastManStandingTournamentPerRound = 100;
 	
 	/*
 	 * the number of matches per player for the daily tournament
 	 */
-	public static final int matchesInOneOnOneTournamentPerPlayer = 10; // 100
+	public static final int matchesInOneOnOneTournamentPerPlayer = 100;
 	
 	/*
 	 * please register your champion here for the daily tournament
