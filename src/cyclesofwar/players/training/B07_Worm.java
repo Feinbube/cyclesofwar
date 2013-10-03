@@ -11,46 +11,47 @@ import cyclesofwar.Player;
  * The head decides for new targets and the tails is just following the rest of the body. 
  */
 public class B07_Worm extends Player {
-	
-	@Override
-	public void think() {	
-		List<Planet> planets = this.getPlanets();
-		Planet.sortBy(Planet.OwnershipChangeTimeComparator, planets);
-		
-		// for each of my planets
-		for(Planet planet : planets) {
-			
-			// if a planet has enough forces to attack
-			if(planet.getForces() > 20) {
-				
-				// get its index to see if it is the head
-				int index = planets.indexOf(planet);
-				
-				// if it is the head
-				if(index == 0){
-					// attack the closest hostile planet
-					sendFleetUpTo(planet, 10, firstOrNull(hostileOnly(planet.getOthersByDistance())));
-				} else {
+
+    @Override
+    public void think() {
+
+        // sort my planets by latest ownership change (index=0 will be my oldest, index=size-1 my newest planet)
+        List<Planet> planets = Planet.sortedBy(Planet.OwnershipChangeTimeComparator, this.getPlanets());
+
+        // for each of my planets
+        for (Planet planet : planets) {
+
+            // if a planet has enough forces to attack
+            if (planet.getForces() > 20) {
+
+                // get its index to see if it is the head
+                int index = planets.indexOf(planet);
+
+                // if it is the head
+                if (index == 0) {
+                    // attack the closest hostile planet
+                    sendFleetUpTo(planet, 10, firstOrNull(hostileOnly(planet.getOthersByDistance())));
+                } else {
 					// if it is part of the tail, send troops to the next part of the tail
-					// that is closer to the head
-					sendFleetUpTo(planet, 10, planets.get(index-1));
-				}
-			}
-		}
-	}
+                    // that is closer to the head
+                    sendFleetUpTo(planet, 10, planets.get(index - 1));
+                }
+            }
+        }
+    }
 
-	@Override
-	public Color getPlayerBackColor() {
-		return Color.gray.darker();
-	}
+    @Override
+    public Color getPlayerBackColor() {
+        return Color.gray.darker();
+    }
 
-	@Override
-	public Color getPlayerForeColor() {
-		return Color.yellow;
-	}
+    @Override
+    public Color getPlayerForeColor() {
+        return Color.yellow;
+    }
 
-	@Override
-	public String getCreatorsName() {
-		return "B";
-	}
+    @Override
+    public String getCreatorsName() {
+        return "B";
+    }
 }
