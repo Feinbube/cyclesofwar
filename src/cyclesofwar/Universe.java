@@ -235,6 +235,10 @@ public class Universe {
         return random.nextInt(max);
     }
 
+    public <T> void shuffle(List<T> list){
+        Collections.shuffle(list, random);
+    }
+    
     void fleetArrived(Fleet fleet, double distance) {
         fleetsAtDestination.put(distance, fleet);
     }

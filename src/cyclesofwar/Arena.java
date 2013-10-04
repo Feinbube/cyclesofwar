@@ -6,6 +6,7 @@ import java.util.List;
 import cyclesofwar.players.peter.*;
 import cyclesofwar.players.robert.*;
 import cyclesofwar.players.frank.*;
+import cyclesofwar.players.frank.gene.training.*;
 import cyclesofwar.players.jan.FriendlyPirates;
 import cyclesofwar.players.theo.*;
 import cyclesofwar.players.training.*;
@@ -83,10 +84,6 @@ public class Arena {
 		result.add(new SpaceMenace());
 		
 		// Frank
-		result.add(new Alai());
-		result.add(new Bean());
-		result.add(new CrazyTom());
-		result.add(new Petra());
 		result.add(new HanTzu());
 		result.add(new Jane());
 
