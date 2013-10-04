@@ -13,21 +13,14 @@ import cyclesofwar.Player;
  */
 public class B03_BigGun extends Player {
 
-	// the home planet: target of the support of all colonies, root of all attacking forces
-	Planet homeplanet = null;
-	
 	@Override
 	public void think() {
 		
-		// if I have no planet, I have nothing to do (let's hope, I have some next round)
-		if (this.getPlanets().isEmpty())
+		// my homeplanet is the oldest one I got
+                Planet homeplanet = Player.lastOrNull(Planet.sortedBy(Planet.OwnershipChangeTimeComparator, this.getPlanets()));
+                if (homeplanet == null)
 			return;
-		
-		// if I lost my home planet, I need to chose a new one
-		if(homeplanet == null || homeplanet.getPlayer() != this){
-			homeplanet = this.getPlanets().get(0);
-		}
-		
+                
 		// if I have enough forces on the home planet
 		if(homeplanet.getForces() > 70) {
 			

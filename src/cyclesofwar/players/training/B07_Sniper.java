@@ -9,7 +9,7 @@ import cyclesofwar.Player;
  * Every time there this bot has no active fleet, each of it's planets shoot half their forces
  * onto a random planet. (All of the planets of this bot shoot at the same time.)
  */
-public class B06_Sniper extends Player {
+public class B07_Sniper extends Player {
 
 	@Override
 	public void think() {

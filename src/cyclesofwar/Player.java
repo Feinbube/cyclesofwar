@@ -341,6 +341,13 @@ public abstract class Player {
 	public static <T> T firstOrNull(List<T> list) {
 		return atIndexOrNull(list, 0);
 	}
+        
+        /*
+	 * returns the last element of list or null if list is empty
+	 */
+	public static <T> T lastOrNull(List<T> list) {
+		return atIndexOrNull(list, list.size()-1);
+	}
 	
 	/*
 	 * returns a random element of list or null if list is empty
@@ -356,7 +363,7 @@ public abstract class Player {
 	 * elements
 	 */
 	public static <T> T atIndexOrNull(List<T> list, int index) {
-		if (list.size() > index) {
+		if (list.size() > index && index >= 0) {
 			return list.get(index);
 		} else {
 			return null;
