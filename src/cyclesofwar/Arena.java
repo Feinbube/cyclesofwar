@@ -59,11 +59,11 @@ public class Arena {
 		result.add(new B02_Wave());
 		result.add(new B03_BigGun());
 		result.add(new B04_Random());
-		result.add(new B05_PowersOf2());
-		result.add(new B06_Sniper());
-		result.add(new B07_Worm());
-		result.add(new B08_CloseBond());
-		result.add(new B09_NewLeader());
+                result.add(new B05_Worm());
+		result.add(new B06_PowersOf2());
+		result.add(new B07_Sniper());
+		result.add(new B08_NewLeader());
+                result.add(new B09_CloseBond());
 		result.add(new B10_Front());
 		result.add(new B11_Cells());
 		result.add(new B12_Rabbit());

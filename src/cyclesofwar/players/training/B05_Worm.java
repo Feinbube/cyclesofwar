@@ -10,7 +10,7 @@ import cyclesofwar.Player;
  * This bot is winding itself through the galaxy like a worm.
  * The head decides for new targets and the tails is just following the rest of the body. 
  */
-public class B07_Worm extends Player {
+public class B05_Worm extends Player {
 
     @Override
     public void think() {

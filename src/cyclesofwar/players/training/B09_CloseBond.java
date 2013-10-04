@@ -9,7 +9,7 @@ import cyclesofwar.Player;
  * For each planet, this bot waits until he has 30 forces. Then he keeps 10. 
  * Sends 10 to its nearest hostile neighbor. And distributes 5 to each of it's two closest allies.
  */
-public class B08_CloseBond extends Player {
+public class B09_CloseBond extends Player {
 
 	@Override
 	public void think() {

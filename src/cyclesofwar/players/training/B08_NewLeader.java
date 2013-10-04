@@ -1,7 +1,6 @@
 package cyclesofwar.players.training;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.List;
 
 import cyclesofwar.Planet;
@@ -11,7 +10,7 @@ import cyclesofwar.Player;
  * This bot is very similar to the worm bot. It's winding through the galaxy as well,
  * but the tail planets also attack the target of the head instead of following the rest of the body.
  */
-public class B09_NewLeader extends Player {
+public class B08_NewLeader extends Player {
 
     @Override
     public void think() {

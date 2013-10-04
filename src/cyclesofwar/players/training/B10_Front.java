@@ -15,7 +15,7 @@ public class B10_Front extends Player {
 	@Override
 	public void think() {
 		// if there is no hostile planet, I pass
-		if(this.hostileOnly(this.getPlanets()).isEmpty())
+		if(this.getAllPlanetsButMine().isEmpty())
 			return;
 		
 		// for each of my planets

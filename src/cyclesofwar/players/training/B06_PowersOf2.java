@@ -9,7 +9,7 @@ import cyclesofwar.Player;
  * Then it sends fleets to the neighboring planets.
  * Fleet sizes are 32 for the closest planet. 16 for the second closest. 8 for the third one. And so on. 
  */
-public class B05_PowersOf2 extends Player {
+public class B06_PowersOf2 extends Player {
 
 	@Override
 	public void think() {
