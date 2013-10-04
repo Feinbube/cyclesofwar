@@ -18,7 +18,7 @@ public class B02_Wave extends Player {
 		for (Planet planet : this.getPlanets()) {
 			
 			// if I have enough inhabitants to send one to each other planet
-			if (planet.getForces() >= this.getAllPlanets().size()) {
+			if (planet.getForces() > this.getAllPlanets().size()) {
 		
 				// send one ship to each other planet
 				for (Planet target : planet.getOthers()) {

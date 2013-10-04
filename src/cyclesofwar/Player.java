@@ -283,6 +283,13 @@ public abstract class Player {
 	public int getRandomInt(int max) {
 		return universe.getRandomInt(max);
 	}
+        
+        /*
+         * shuffles a list
+         */
+        public <T> void shuffle(List<T> list){
+            universe.shuffle(list);
+        }
 
 	// filter functions
 
