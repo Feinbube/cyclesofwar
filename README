@@ -13,10 +13,8 @@ Getting Started
 
 Quick Start
 * Just start the game using the Main Window.
-* Choose two or more champions from the upper area of the screen and
-  click on LIVE MODE to watch them going berserk on each other.
-* You can always hit ESC to go back to the main menu and change
-  settings.
+* Watch the champions of the other players go berserk on each other.
+* You can always hit ESC to go to the main menu and change settings.
 
 Main Window
 * The start screen consists of three parts: a list of the champions,
@@ -27,29 +25,66 @@ Main Window
   chose for himself and this bot.
 * Some bots are created by "B". These are training bots that have
   very simple strategies and are intended to be used for the
-  development of your own champion. All the other bots are the
-  champions of other people participating in the game.
-* There are three settings you can modify: First of all you can
-  choose the number of matches that the champions have to play in 
-  TOURNAMENT MODE and ARENA MODE. You can also choose the number of
-  neutral planets that are to be added to the universe for each
-  champion. (20 additional planets with 2 champions means 42 planets
-  in the universe) Furthermore you can choose the size of the
-  universe. This is important to allow 25 and more planets in one map
-  since there is a rule that each planet has to have an approriate
-  distance to its next neighbor. (If you choose a small universe and
-  lots of planets, the planet placing algorithm might have a hard
-  time creating a suitable universe.)
+  development of your own champions. All the other bots are the
+  champions of other players participating in the game.
+* In the settings area above the launch buttons, there are three 
+  settings you can modify: First of all you can choose the number of 
+  matches that the champions have to play in TOURNAMENT MODE and 
+  ARENA MODE. You can also choose the number of neutral planets that 
+  are to be added to the universe for each champion. (20 additional 
+  planets with 2 champions means 42 planets in the universe) 
+  Furthermore you can choose the size of the universe. This is 
+  important to allow 25 and more planets in one map since there is a 
+  rule that each planet has to have an approriate distance to its 
+  next neighbor. (If you choose a small universe and lots of 
+  planets, the planet placing algorithm might have a hard time 
+  creating a suitable universe.)
 * The different game modes are described below.
 
 LIVE MODE
-*
+* Starting a game in LIVE MODE will show you one instance of a fight
+  of the champions that were selected in the Main Window.
+* The screen is filled with a view on the universe with planets and 
+  fleets of the warfaring champions. (For ease of identification, 
+  planets and fleets are depicted with the champions color.) 
+  In addition there is a summary at the top left corner of the 
+  screen. For each champion the current numbers of [P]lanets and 
+  [F]leets are depicted. (P[number of planets/accumulated amount of 
+  forces on planets])
+* The number on each planet shows the amount of forces that are 
+  currently residing on. This number will increase over time until
+  a fleet is sent. The size of the planets represents their 
+  respective force production rate. Larger planets produce forces 
+  faster than smaller ones. In the beginning, each champion gets one 
+  of the largest planets. All the other planets are neutral and will 
+  not produce additional forces until conquered by a champion. 
+* Fleets are rendered in different sizes, representing the actual
+  amount of forces they are representing. Large forces will also 
+  display this number directly. They can also fly in different
+  formations. Like colors, they can be chosen by the player and come
+  with no tactical benefits.
+* The F1 or 1 key will show you the key mappings for live mode: 
+  +/- change the speed of the simulation. SPACE pauses it. Key 5 will
+  generate a new universe and start a new combat. Key 6 will reset
+  and replay the current universe. Key 7 will reset the universe, put
+  the champions on different planets and start the simulation from 
+  there.
+* Fights can be replayed reliably because every simulation has a 
+  unique seed. It is shown in the top right corner after pressing the
+  F1 or 1 key.
 
 TOURNAMENT MODE
-*
+* This mode is like a summary of the outcomes of a number of LIVE
+  MODE combats. It ranks the players by their overall performance.
+* TOURNAMENT MODE will start paused. You have to hit the SPACE bar to
+  start the actual tournament. Hitting SPACE again will pause the
+  execution. Key 5 will generate a new tournament (also paused).
+* If a champion won at least one game you can view one of those games
+  by CLICKing on the percentage in front of his name.
 
 ARENA MODE
-*
+* ARENA MODE will start paused. You have to hit the SPACE bar to
+  start the actual tournament.
 
 
 

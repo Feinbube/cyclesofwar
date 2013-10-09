@@ -6,7 +6,7 @@ class Tag {
 	int y;
 	int w;
 	int h;
-	Object tag;
+	Object object;
 
 	Tag(int x, int y, int w, int h, Object tag) {
 		super();
@@ -14,7 +14,7 @@ class Tag {
 		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.tag = tag;
+		this.object = tag;
 	}
 
 	boolean intersects(int x, int y) {
