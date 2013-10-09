@@ -37,6 +37,6 @@ public class B04_Random extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "B";
+		return null;
 	}
 }

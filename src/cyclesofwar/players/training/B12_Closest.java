@@ -37,6 +37,6 @@ public class B12_Closest extends Player {
 
     @Override
     public String getCreatorsName() {
-        return "B";
+        return null;
     }
 }

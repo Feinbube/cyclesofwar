@@ -79,7 +79,7 @@ public class ArenaGameMode extends GameMode {
 			this.switchTo(GameModes.LIVE);
 		} else {
 			Player player = rendering.getPlayer(x, y); //, tournament);
-			if (player != null) {
+			if (player != null && !player.equals(Player.NonePlayer)) {
 				tournament.switchPriority(player);
 			}
 		}

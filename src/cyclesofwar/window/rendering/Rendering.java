@@ -585,7 +585,7 @@ public class Rendering {
         return x + w;
     }
 
-    public <T> T getT(Class c, int x, int y) {
+    public <T> T getTagAtPosition(Class c, int x, int y) {
         for (Tag tag : tags) {
             if (tag.intersects(x, y)) {
                 if (c.isAssignableFrom(tag.object.getClass())) {
@@ -598,14 +598,14 @@ public class Rendering {
     }
     
     public List<TournamentRecord> getFightRecords(int x, int y) {
-        return getT(List.class, x, y);
+        return getTagAtPosition(List.class, x, y);
     }
 
     public Player getPlayer(int x, int y) {
-        return (Player) getT(Player.class, x, y);
+        return (Player) getTagAtPosition(Player.class, x, y);
     }
 
     public String getButtonCaption(int x, int y) {
-        return getT(String.class, x, y);
+        return getTagAtPosition(String.class, x, y);
     }
 }

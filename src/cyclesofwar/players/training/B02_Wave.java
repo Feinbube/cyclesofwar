@@ -40,6 +40,6 @@ public class B02_Wave extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "B";
+		return null;
 	}
 }

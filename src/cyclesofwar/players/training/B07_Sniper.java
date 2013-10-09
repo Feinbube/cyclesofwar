@@ -49,6 +49,6 @@ public class B07_Sniper extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "B";
+		return null;
 	}
 }

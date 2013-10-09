@@ -26,6 +26,6 @@ public class B00_Idle extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "B";
+		return null;
 	}
 }
