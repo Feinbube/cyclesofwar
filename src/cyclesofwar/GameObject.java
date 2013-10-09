@@ -55,6 +55,22 @@ public abstract class GameObject {
 	public static <T> void sortBy(Comparator<T> comparator, List<T> list) {
 		Collections.sort(list, comparator);
 	}
+        
+        /*
+	 * returns the minimum of a list using a comparator
+         * e.g.: Fleet.min(Fleet.ArrivalTimeComparator, fleets);
+	 */
+        public static <T> T min(Comparator<T> comparator, List<T> list) {
+		return Collections.min(list, comparator);
+	}
+        
+        /*
+	 * returns the maximum of a list using a comparator
+         * e.g.: Fleet.max(Fleet.ArrivalTimeComparator, fleets);
+	 */
+        public static <T> T max(Comparator<T> comparator, List<T> list) {
+		return Collections.max(list, comparator);
+	}
 	
 	/*
 	 * returns a new list with items sorted according to the comparator

@@ -2,7 +2,6 @@ package cyclesofwar.players.training;
 
 import java.awt.Color;
 
-import cyclesofwar.Fleet;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
@@ -11,7 +10,7 @@ import cyclesofwar.Player;
  * If the planet is going to be attacked in the next round, it 'flees' with all the forces it's got.
  * The weird thing is, that it always flees towards the closest hostile planet. 
  */
-public class B12_Rabbit extends Player {
+public class B13_Rabbit extends Player {
 
 	@Override
 	public void think() {
@@ -32,30 +31,15 @@ public class B12_Rabbit extends Player {
 				sendFleet(planet, 31, target);
 			}
 
-			// if I am going to loose this planet next round
-			if (planet.getForces() + planet.getProductionRatePerRound() < forcesArrivingNextRound(planet)) {
+                        // if I am going to loose this planet next round
+                        double balance = this.getPrediction(planet, this.getRoundDuration()).getBalance();
+			if (balance < 0) {
 				// flee (towards the enemy... you could name that 'attacking' as well ;) )
 				sendFleetUpTo(planet, (int) planet.getForces(), target);
 			}
 		}
 	}
-	
-	private int forcesArrivingNextRound(Planet planet) {
-		int result = 0;
-		
-		// look at all hostile fleets heading towards this planet
-		for (Fleet fleet : this.hostileOnly(this.getFleetsWithTarget(planet))) {
-			
-			// if they arrive within the next round
-			if (fleet.getRoundsToTarget() <= 1) {
-				
-				// add up their force
-				result += fleet.getForce();
-			}
-		}
-		
-		return result;
-	}
+
 
 	@Override
 	public Color getPlayerBackColor() {

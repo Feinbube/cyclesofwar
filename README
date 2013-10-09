@@ -1,12 +1,57 @@
-Dear Cadet,
+_____________________________________________________________________
+  ___  _  _  ___  __    ____  ____     __  ____    _  _   __   ____ 
+ / __)( \/ )/ __)(  )  (  __)/ ___)   /  \(  __)  / )( \ / _\ (  _ \
+( (__  )  /( (__ / (_/\ ) _) \___ \  (  O )) _)   \ /\ //    \ )   /
+ \___)(__/  \___)\____/(____)(____/   \__/(__)    (_/\_)\_/\_/(__\_)
+_____________________________________________________________________
 
-welcome to the world of interstellar warfare. This is your brief mission briefing. :)
+         - Welcome to the world of interstellar warfare. -
 
 
 Getting Started
-* Just start the game, select some of the generals and watch them going berserk in live mode. [see GUI]
-* There are 
-* Bots are ordered by difficulty: B00_Idle being the easiest one, B01_ChaseMe being slightly better.. and so on. 
+///////////////
+
+Quick Start
+* Just start the game using the Main Window.
+* Choose two or more champions from the upper area of the screen and
+  click on LIVE MODE to watch them going berserk on each other.
+* You can always hit ESC to go back to the main menu and change
+  settings.
+
+Main Window
+* The start screen consists of three parts: a list of the champions,
+  an area for the game settings and three buttons to launch one of
+  the game modes: LIVE MODE, TOURNAMENT MODE and ARENA MODE.
+* In the upper area you can see the champions that are known to the
+  game. Each of them contains the name and colors that its creator
+  chose for himself and this bot.
+* Some bots are created by "B". These are training bots that have
+  very simple strategies and are intended to be used for the
+  development of your own champion. All the other bots are the
+  champions of other people participating in the game.
+* There are three settings you can modify: First of all you can
+  choose the number of matches that the champions have to play in 
+  TOURNAMENT MODE and ARENA MODE. You can also choose the number of
+  neutral planets that are to be added to the universe for each
+  champion. (20 additional planets with 2 champions means 42 planets
+  in the universe) Furthermore you can choose the size of the
+  universe. This is important to allow 25 and more planets in one map
+  since there is a rule that each planet has to have an approriate
+  distance to its next neighbor. (If you choose a small universe and
+  lots of planets, the planet placing algorithm might have a hard
+  time creating a suitable universe.)
+* The different game modes are described below.
+
+LIVE MODE
+*
+
+TOURNAMENT MODE
+*
+
+ARENA MODE
+*
+
+
 
 GUI
 * F1...Shows the key mapping
@@ -25,6 +70,17 @@ Game Modes
   + Games run faster this way and you get a better feeling of the actual strength of the players
   + Click on one of the percentages to see one of the games producing that outcome 
 
+
+Getting Involved
+////////////////
+
+Dedicated 1-On-1, Tournament with Arena rules
+100 10 1.0
+100 10 1.0 iterative
+
+
+* Bots are ordered by difficulty: B00_Idle being the easiest one,
+  B01_ChaseMe being slightly better.. and so on. 
 
 Rules Of The Game
 

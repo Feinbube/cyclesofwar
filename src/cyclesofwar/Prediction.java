@@ -1,5 +1,6 @@
 package cyclesofwar;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -88,22 +89,38 @@ public class Prediction extends GameObject {
 
         List<Fleet> fleets = player.getFleetsWithTarget(planet);
         Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
-        for (Fleet fleet : fleets) {
-            if (fleet.getTimeToTarget() > elapsedSeconds) {
-                break;
-            }
-            this.updateFleet(fleet);
+
+        while (time < elapsedSeconds) {
+            updatePlanet();
+            updateFleets(fleets, time);
+
+            time += Universe.getRoundDuration();
         }
 
-        this.updateTime(elapsedSeconds);
+        updateFleets(fleets, time + Universe.getRoundDuration());
     }
 
-    private void updateFleet(Fleet fleet) {
-        update(fleet.getPlayer(), fleet.getForce(), fleet.getTimeToTarget());
+    private void updatePlanet() {
+        if (planetOwner != Player.NonePlayer) {
+            this.forces += this.planet.getProductionRatePerRound();
+        }
     }
 
-    private void update(Player player, int force, double timeToTarget) {
-        updateTime(timeToTarget);
+    private void updateFleets(List<Fleet> fleets, double time) {
+        List<Fleet> activeFleets = new ArrayList<>();
+        for (Fleet fleet : fleets) {
+            if (fleet.getTimeToTarget() <= time) {
+                activeFleets.add(fleet);
+            }
+        }
+
+        for (Fleet fleet : activeFleets) {
+            this.updateFleet(fleet.getPlayer(), fleet.getForce(), fleet.getTimeToTarget());
+            fleets.remove(fleet);
+        }
+    }
+
+    private void updateFleet(Player player, int force, double timeToTarget) {
 
         if (this.planetOwner == player) {
             this.forces += force;
@@ -116,19 +133,6 @@ public class Prediction extends GameObject {
         }
 
         time = timeToTarget;
-    }
-
-    private void updateTime(double timeToTarget) {
-        double late = timeToTarget - time;
-        this.forces += producedForces(late);
-    }
-
-    private double producedForces(double duration) {
-        if (planetOwner == Player.NonePlayer) {
-            return 0;
-        } else {
-            return duration * this.planet.getProductionRatePerSecond();
-        }
     }
 
     /*

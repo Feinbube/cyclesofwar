@@ -291,8 +291,30 @@ public abstract class Player {
             universe.shuffle(list);
         }
 
+        // checking functions
+        
+        /*
+	 * returns true if a planet/fleet in list that shallBelongTo: belong to player
+	 * !shallBelongTo: do not belong to player
+	 */
+        static <T extends GameObject> boolean containsItemOf(List<T> list, Player player, boolean shallBelongTo) {
+            for (T gameObject : list) {
+                    if ((gameObject.getPlayer() == player) == shallBelongTo) {
+                            return true;
+                    }
+            }
+            return false;
+	}
+        
+        /*
+	 * return true if at least one planet/fleet in list that does not belong to this player
+	 */
+	public <T extends GameObject> boolean containsHostileItem(List<T> list) {
+		return containsItemOf(list, this, false);
+	}
+        
 	// filter functions
-
+        
 	/*
 	 * returns all planets/fleets in list that shallBelongTo: belong to player
 	 * !shallBelongTo: do not belong to player
@@ -447,15 +469,30 @@ public abstract class Player {
 	public boolean isAlive() {
 		return !this.getFleets().isEmpty() || !this.getPlanets().isEmpty();
 	}
-	
+        
 	/*
 	 * get a prediction of the state of the planet at the given time
 	 * given no new fleet is created 
 	 */
 	public Prediction getPrediction(Planet planet, double time){
-		return new Prediction(universe, this, planet, time);
+            return universe.getPrediction(planet, time);
 	}
-	
+        
+        /*
+	 * get an advise how to keep a planet till the point in time
+	 */
+	public Advise getAdvise(Planet planet, double time){
+		return this.getAdvise(planet, 0.0, time);
+	}
+        
+        /*
+	 * get an advise how to keep a planet till the point in time (endTime)
+         * given it has been acquired before (at startTime)
+	 */
+	public Advise getAdvise(Planet planet, double startTime, double endTime){
+            return universe.getAdvise(planet, startTime, endTime);
+	}
+
 	/*
 	 * returns the time of the when the last existing fleet (by anyone) lands on its target
 	 * given no new fleet is created  
