@@ -33,7 +33,7 @@ public abstract class Tournament {
 	public Tournament(long randomSeed, int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
 		random = new Random(randomSeed);
 		this.champions = champions;
-
+                
 		this.planetsPerPlayer = planetsPerPlayer;
 		this.universeSizeFactor = universeSizeFactor;
 		
@@ -127,6 +127,8 @@ public abstract class Tournament {
 		}
 
 		Ranking.sort(result);
+                
+                result.add(new Ranking(Player.NonePlayer, wonBy(Player.NonePlayer).size(), participatedIn(Player.NonePlayer).size()));
 		return result;
 	}
 

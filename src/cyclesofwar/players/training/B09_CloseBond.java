@@ -42,6 +42,6 @@ public class B09_CloseBond extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "B";
+		return null;
 	}
 }

@@ -48,7 +48,10 @@ public class TournamentRecord {
 	}
 
 	boolean containsPlayer(Player competitor) {
-		return players.contains(competitor);
+            if(competitor.equals(Player.NonePlayer))
+                return true;
+            
+            return players.contains(competitor);
 	}
 
 	boolean winnerIs(Player player) {
@@ -57,7 +60,7 @@ public class TournamentRecord {
 	
 	static List<TournamentRecord> participatedIn(List<TournamentRecord> records, Player competitor) {
 		List<TournamentRecord> result = new ArrayList<>();
-
+                
 		for (TournamentRecord record : records) {
 			if (record.containsPlayer(competitor)) {
 				result.add(record);

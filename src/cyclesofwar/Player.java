@@ -68,7 +68,11 @@ public abstract class Player {
 	 */
 	public String getName() {
             if(name == null)
-                name = getCreatorsName() + "'s " + this.getClass().getSimpleName();
+                if(getCreatorsName() != null) {
+                    name = getCreatorsName() + "'s " + this.getClass().getSimpleName();
+                } else {
+                    name = this.getClass().getSimpleName();    
+                }
             return name;
 	}
 

@@ -42,6 +42,6 @@ public class B08_NewLeader extends Player {
 
     @Override
     public String getCreatorsName() {
-        return "B";
+        return null;
     }
 }

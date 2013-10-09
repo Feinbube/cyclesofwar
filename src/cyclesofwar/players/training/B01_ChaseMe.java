@@ -64,6 +64,6 @@ public class B01_ChaseMe extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "B";
+		return null;
 	}
 }

@@ -52,6 +52,6 @@ public class B05_Worm extends Player {
 
     @Override
     public String getCreatorsName() {
-        return "B";
+        return null;
     }
 }

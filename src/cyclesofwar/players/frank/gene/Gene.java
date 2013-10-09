@@ -62,6 +62,6 @@ public abstract class Gene extends Player {
 
     @Override
     public String getCreatorsName() {
-        return "G";
+        return null;
     }
 }

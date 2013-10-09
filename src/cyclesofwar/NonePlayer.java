@@ -23,7 +23,7 @@ public class NonePlayer extends Player {
 
 	@Override
 	public String getCreatorsName() {
-		return "Frank";
+		return null;
 	}
 	
 	@Override
