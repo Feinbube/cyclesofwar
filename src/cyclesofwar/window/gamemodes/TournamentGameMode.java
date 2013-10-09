@@ -29,7 +29,7 @@ public class TournamentGameMode extends GameMode {
 
 	@Override
 	protected void paintGame(Graphics g) {
-		rendering.drawStatistics(g, tournament, "Last Man Standing Tournament");
+		rendering.drawStatistics(g, tournament, "Last Man Standing Tournament", false);
 	}
 
 	@Override

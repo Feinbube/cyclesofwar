@@ -30,7 +30,7 @@ public class ArenaGameMode extends GameMode {
 
 	@Override
 	protected void paintGame(Graphics g) {
-		rendering.drawStatistics(g, tournament, "1-On-1 Tournament");
+		rendering.drawStatistics(g, tournament, "1-On-1 Tournament", true);
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class ArenaGameMode extends GameMode {
 
 			this.switchTo(GameModes.LIVE);
 		} else {
-			Player player = rendering.getPlayer(x, y, tournament);
+			Player player = rendering.getPlayer(x, y); //, tournament);
 			if (player != null) {
 				tournament.switchPriority(player);
 			}
