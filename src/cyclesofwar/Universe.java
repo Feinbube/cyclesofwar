@@ -1,12 +1,6 @@
 package cyclesofwar;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Universe {
 
@@ -123,11 +117,11 @@ public class Universe {
 
         for (Player player : players) {
             currentPlayer = player;
-            try {
-                currentPlayer.think();
-            } catch (Exception ex) {
-                throw new PlayerDisqualifiedException(currentPlayer, ex);
-            }
+//            try {
+            currentPlayer.think();
+//            } catch (Exception ex) {
+//                throw new PlayerDisqualifiedException(currentPlayer, ex);
+//            }
 
         }
         currentPlayer = NonePlayer.NonePlayer;
@@ -235,10 +229,10 @@ public class Universe {
         return random.nextInt(max);
     }
 
-    public <T> void shuffle(List<T> list){
+    public <T> void shuffle(List<T> list) {
         Collections.shuffle(list, random);
     }
-    
+
     void fleetArrived(Fleet fleet, double distance) {
         fleetsAtDestination.put(distance, fleet);
     }
@@ -285,5 +279,13 @@ public class Universe {
 
     public boolean inhabitedByPlayer(Player player) {
         return players.contains(player);
+    }
+
+    public Prediction getPrediction(Planet planet, double time) {
+        return new Prediction(this, currentPlayer, planet, time);
+    }
+
+    public Advise getAdvise(Planet planet, double startTime, double endTime) {
+        return new Advise(this, currentPlayer, planet, startTime, endTime);
     }
 }

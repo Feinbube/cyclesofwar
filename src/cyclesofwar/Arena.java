@@ -39,7 +39,7 @@ public class Arena {
 		ArrayList<Player> result = new ArrayList<>();
 
 		result.add(new SpaceMenace()); // Theo
-		result.add(new HanTzu()); // Frank
+		result.add(new Jane()); // Frank
 		result.add(new Cratters()); // Martin
 		result.add(new AttackLargestPlayer()); // Robert
 		result.add(new DumbVirus()); // Peter	
@@ -66,8 +66,10 @@ public class Arena {
 		result.add(new B08_NewLeader());
                 result.add(new B09_CloseBond());
 		result.add(new B10_Front());
-		result.add(new B11_Cells());
-		result.add(new B12_Rabbit());
+		result.add(new B11_Cells());       
+                result.add(new B12_Closest());                
+		result.add(new B13_Rabbit());
+                result.add(new B14_BraveRabbit());
 
 		
 		// Martin
@@ -84,8 +86,16 @@ public class Arena {
 		result.add(new SpaceMenace());
 		
 		// Frank
+		result.add(new Alai());
+		result.add(new Bean());
+		result.add(new CrazyTom());
+		result.add(new Petra());
 		result.add(new HanTzu());
 		result.add(new Jane());
+                
+                // Gene
+                result.add(new G02_Wave());
+                result.add(new G04_Random());
 
 		// Peter
 		result.add(new DumbVirus());
