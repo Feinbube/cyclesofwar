@@ -8,8 +8,8 @@ _____________________________________________________________________
          - Welcome to the world of interstellar warfare. -
 
 
-Getting Started
-///////////////
+Getting Started: the Graphical User Interface
+/////////////////////////////////////////////
 
 Quick Start
 * Just start the game using the Main Window.
@@ -75,95 +75,148 @@ LIVE MODE
 
 TOURNAMENT MODE
 * This mode is like a summary of the outcomes of a number of LIVE
-  MODE combats. It ranks the players by their overall performance.
+  MODE combats. It ranks the champions by their overall performance.
+  Games run way faster than in LIVE MODE and you get a better 
+  feeling of the actual strength of the champions.
 * TOURNAMENT MODE will start paused. You have to hit the SPACE bar to
   start the actual tournament. Hitting SPACE again will pause the
   execution. Key 5 will generate a new tournament (also paused).
-* If a champion won at least one game you can view one of those games
-  by CLICKing on the percentage in front of his name.
+* If a champion has won at least one game you can view one of those
+  games in LIVE MODE by CLICKing on the percentage in front of his
+  name.
+* The last line counts the numbers of matches that nobody has won.
+  You can also view those matches by CLICKing on the percentage.
 
 ARENA MODE
+* This mode is like the summary of the outcomes of a number of LIVE
+  MODE combats with only two combatants at a time. Each champion is
+  playing the same number of games against each other champion. To
+  control for fortunate starting positions, each map is played twice
+  and starting positions are swapped for the second combat. The 
+  table orders champions by their overall performance. In addition 
+  the individual performances against the other champions are listed.
+  (A percentage of 33% means that the champion in the row has won 
+  33% of all games against the champion in the column.) Games run 
+  way faster than in LIVE MODE and you get a better feeling of the 
+  actual strength of the champions.
 * ARENA MODE will start paused. You have to hit the SPACE bar to
-  start the actual tournament.
+  start the actual tournament. Hitting SPACE again will pause the
+  execution. Key 5 will generate a new tournament (also paused). If
+  you are primarily interested in the performance of some particular
+  champions you can mark them by CLICKing on their names. The fights
+  of those champions will then be scheduled first, allowing you to
+  get a faster insight into their performance.
+* You can see all the fights by CLICKing on the respective 
+  percentage. (Due to the nature of the layout the champion that
+  owns the row you CLICK on will win the game if the percentage
+  is more than 0%.)
+* The last line counts the numbers of matches that nobody has won.
+  You can also view those matches by CLICKing on the percentage.
 
 
+Getting Involved: shaping your own personal champion
+////////////////////////////////////////////////////
 
-GUI
-* F1...Shows the key mapping
-* ESC...opens the menu
-* Try clicking everything in the menu. Usually something magical happens. ;)
-* Please be advised, that you can only increase the number of planets to large numbers,
-  if you increase the scale of the universe also. Sorry for the inconvenience.
+Rules Of The Game
+* The PLAYER is the shaper of the universe. he has a number of 
+  planets and can send fleets to conquer even more of them. Each 
+  player starts with a single planet. In addition to the planets of 
+  the champions there is a number of neutral planets in the universe 
+  as well. A player can only interact with the universe by sending 
+  fleets from planets he owns to other planets. /*sendFleet()*/ The 
+  game is simulated in rounds. In each round the player knows 
+  everything about the universe except the current moves of his 
+  opponents in this round. He can acquire all this information by 
+  using his API /*getOtherPlayers(), getPlanets(), getFleets()*/.
+* The logic of each simulation rounds is as follows: First, the 
+  forces on all planets are increased by the production rate of that
+  planet. Then, the fleets are moved by the global constant flight
+  speed of the universe. Fleets that have reached their destination
+  land on it - in the correct order. If the planet and the fleet 
+  belong to the same player, the fleet forces are added to the planet
+  forces. If planet and fleet belong to differen players, the planet
+  forces are reduced by the fleet forces. If forces of the fleet are
+  larger than the ones of the planet, the player owning the fleet 
+  will own the planet after the encounter. If there is only one 
+  player left, he is the declared the winner and the game is over.
+  Otherwise all players get time to think /*think()*/ and change the
+  the state of the universe by sending fleets. These changes can 
+  only be seen in the next round. If nobody has send a fleet for 1000
+  rounds or the game runs into its 100000th round without beeing won,
+  the game is over and nobody wins. The next simulation round is 
+  started.
+* The game is all about PLANETs. Get as much as you can ;) Every 
+  planet has a position in the 2-dimensional universe that can be 
+  acquired using /*getX()*/ and/*getY()*/ Every round a planet
+  produces some troops for its owner. The numbers can be acquired 
+  using /*getForces()*/ and /*getProductionRatePerRound()*/ The 
+  distance to the next planet is always so big that you need at 
+  least one round to send a fleet there. The actual number of 
+  distance can be acquired using /*getDistanceTo()*/
+* The only way to actively interact with the universe is by sending 
+  FLEETs from planets you own to other planets. Every fleet has a 
+  position in the 2-dimensional universe, that can be acquired using 
+  /*getX()*/ and/*getY()*/, and a static amount of troops that can 
+  be acquired using /*getForce()*/. Every round each fleet is moved 
+  closer to the target. /*roundsToTarget()*/ The distance between 
+  two planets is always so big that it takes more than a round to 
+  send a fleet there. You can also choose between various formations.
+  Though this is just a rendering gimmick and does not affect game 
+  logic at all, it can be helpful to use different formations to 
+  visualize the different purposes of the fleet. (e.g. O-Formation 
+  for supporting fleets and V-Formations for attacking fleets.)
+* Every player known to the game is registered in the ARENA. Each 
+  human is allowed to appoint one of his players to fight as his 
+  champion in the nightly arena tournaments. Two kind of tournaments 
+  will be held: The 1-ON-1-TOURNAMENT is a series 
+  The LAST-MAN-STANDING-TOURNAMENT
+
+  Every 
+  night a 
+
+#Every player must be registered in the ARENA to be available in the
+  GUI. Every night there is a tournament 
+New champions are registered in the ARENA. The nightly tournaments
+  are configured here as well.
+
+Train Your Champion
+* You can download the current version of the game from:
+  .\\\   svn://code.hpi.uni-potsdam.de/cyclesofwar   ///.
+* Please add your bot as a new class into your own package: 
+  e.g. /*public class CptAwesome extends Player { }*/ in /*cyclesofwar.players.john*/
+
+* PLAYER interface
+* getCreatorsName() getPlayerForeColor() getPlayerBackColor() think()
+* The only thing that is interesting: cyclesofwar Player, Fleet, Planet, Arena, Prediction, Advise, GameObject
+* add to registeredPlayers in Arena
+* 14 Training bots
   
-Game Modes
-* LIVE MODE: shows you one game featuring the generals you selected.
-* TOURNAMENT MODE: same as live mode, but with more games and tabular visualization
-  + Games run faster this way and you get a better feeling of the actual strength of the players
-  + Click on one of the percentages to see one of the games producing that outcome
-* ARENA MODE: only two generals at a time. Each general plays against each other. 
-  + To make it fair, each map is played twice, starting positions are swapped.
-  + Games run faster this way and you get a better feeling of the actual strength of the players
-  + Click on one of the percentages to see one of the games producing that outcome 
+
+Register Your Champion for the Nightly Arena
+* In order to submit a bot for the nightly arena, please contact:
+  Frank@Feinbube.de
 
 
-Getting Involved
-////////////////
+
+
+
+
 
 Dedicated 1-On-1, Tournament with Arena rules
 100 10 1.0
 100 10 1.0 iterative
 
+terminates after 10000 rounds or 1000 rounds without a new fleet
+
 
 * Bots are ordered by difficulty: B00_Idle being the easiest one,
   B01_ChaseMe being slightly better.. and so on. 
 
-Rules Of The Game
 
-/* PLAYER
- * the player is the shaper of the universe. he has a number of planets and can send fleets to conquer even more of them
- * 
- * a player starts with a single planet
- * a player can only interact with the universe by sending fleets from planets he owns to other planets
- * 
- * get your opponents by using getOtherPlayers()
- * get your planets by using getPlanets()
- * get your fleets by using getFleets()
- * send forces using sendFleet()
- * 
- * logic of the game per round:
- * 		forces on all planets are increased
- * 		fleets are moved
- * 		fleets that have reached their destination land on it: (in the correct order)
- * 			planet and fleet belong to the same player: fleet forces join planet forces
- * 			planet and fleet belong to different players: planet forces are reduced by fleet forces. planet may change owner.
- * 		if there is only one player left: he is the winner, game is over
- * 		all players think. local changes to the universe (by sending fleets) can not be seen by player until next round
- * 		if nobody has sent a fleet for 1.000 rounds: game is over, nobody wins
- * 		if the game exceeds 100.000 rounds: game is over, nobody wins
- * 		start next round
+
  
- /* FLEET
- * the only way to actively interact with the universe is sending fleets from planets you own to other planets
- * 
- * every fleet has a position in the 2-dimensional universe. (position can be acquired using getX() and getY())
- * every fleet consists of a static number of troops. (use getForce() to see their number)
- * every round a fleet is moved closer to the target. (numbers can be acquired using roundsToTarget())
- * if a fleet arrives at a planet, the following happens to the forces at that planet:
- * 		planet and fleet belong to the same player: fleet forces join planet forces
- * 		planet and fleet belong to different players: planet forces are reduced by fleet forces. planet may change owner.
- * the distance to the next planet is always so big that you need at least one round to send a fleet there
- * 
- * you can also chose between various formations (which is just a rendering gimmick and does not affect game logic at all)
- */
  
- /* ARENA
- * here new players are registered and tournaments are configured
- */
  
- /* PLANET
- * the game is all about planets. get as much as you can ;)
- * 
- * every planet has a position in the 2-dimensional universe. (position can be acquired using getX() and getY())
- * every round a planet produces some troops for its owner. (numbers can be acquired using getForces() and getProductionRatePerRound())
- * the distance to the next planet is always so big that you need at least one round to send a fleet there
- */
+
+ 
+ 
