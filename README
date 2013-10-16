@@ -207,7 +207,6 @@ Dedicated 1-On-1, Tournament with Arena rules
 
 terminates after 10000 rounds or 1000 rounds without a new fleet
 
-
 * Bots are ordered by difficulty: B00_Idle being the easiest one,
   B01_ChaseMe being slightly better.. and so on. 
 
