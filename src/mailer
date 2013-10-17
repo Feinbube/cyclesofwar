@@ -1,45 +1,47 @@
 #!/usr/bin/python
 import sys, smtplib
-from_ = "martin.vonloewis@hpi.uni-potsdam.de"
-to = "wimi-polze@hpi.uni-potsdam.de"
+from_ = "frank.feinbube@hpi.uni-potsdam.de"
+to = "cow2013@hpi.uni-potsdam.de"
 
 records = [line.strip().split(",") for line in open('ranking.lms')]
 lms = ""
 for record in records:
     lms += "  %s. %s (%s won out of %s)\n" % tuple(record)
+lmstime = open('ranking.lms.time', 'r').read().rstrip()
 
 records = [line.strip().split(",") for line in open('ranking.ooo')]
 ooo = ""
 for record in records:
     ooo += "  %s. %s (%s won out of %s)\n" % tuple(record)
+oootime = open('ranking.ooo.time', 'r').read().rstrip()
 
 msg = """From: %(from_)s
 To: %(to)s
-Subject: New cyclesofwar ranking
+Subject: [COW] new rankings
 
-We have a new ranking in the cyclesofwar arena.
+Again, a cycle of war has thrilled the universe. Tremendous champions have fought tantalizing battles in the nightly tournaments. Here are the results:
 
 Last Man Standing Tournament
 ----------------------------
 
 %(lms)s
 
-For each position in this ranking, a series of matches are
-made involving all unranked champions. The player with the
-highest win rate is ranked; all others compete for the next
-rank.
+For each position in this ranking, a series of matches are made involving all unranked champions. The player with the highest win rate is ranked; all others compete for the next rank. (The battles took %(lmstime)s.)
+
 
 One On One Tournament
 ---------------------
 
 %(ooo)s
 
-In this ranking, each player plays against each other a
-number of times. The ranking is defined by the total
-number of games won.
+In this ranking, each player plays against each other a number of times. The ranking is defined by the total number of games won. (The battles took %(oootime)s.)
 
-Each developer can contribute one champion, by adding it
-to cyclesofwar.Arena.champions().
+
+Each developer can contribute one champion, by adding it to cyclesofwar.Arena.champions. More details are provided in the README file of the repository:
+
+svn://code.hpi.uni-potsdam.de/cyclesofwar
+
+See you in the Arena ;)
 
 """
 

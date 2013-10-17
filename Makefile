@@ -9,19 +9,27 @@ nogui:
 
 
 clean:
-	rm -f src/cyclesofwar/*.class src/cyclesofwar/*/*.class src/cyclesofwar/*/*/*.class src/cyclesofwar/*/*/*/*.class
+	rm -f src/cyclesofwar/*.class src/cyclesofwar/*/*.class src/cyclesofwar/*/*/*.class src/cyclesofwar/*/*/*/*.class *.time *.ooo *.lms ranking.new
 
 
 ranking.update:
-	svn --config-option config:tunnels:ssh='ssh -i cyclesofwar' up -q
+	svn --config-option config:tunnels:ssh='ssh -i cyclesofwar' up -q; \
+        svn info > revision.new
 
-ranking:	ranking.update clean all ranking.new
-	if cmp -s ranking ranking.new; \
+ranking:	ranking.update clean all
+	if cmp -s revision revision.new; \
 	then \
-		rm ranking.new; \
+		rm revision.new; \
 	else \
-		mv ranking.new ranking; \
-		src/mailer; \
+		mv revision.new revision; \
+                make ranking.new; \
+                if cmp -s ranking ranking.new; \
+                then \
+                   rm ranking.new; \
+                else \
+                   mv ranking.new ranking; \
+		   src/mailer; \
+                fi \
 	fi
 
 ranking.new:	ranking.lms ranking.ooo
@@ -30,8 +38,8 @@ ranking.new:	ranking.lms ranking.ooo
 .PHONY:	ranking.lms ranking.ooo
 
 ranking.lms:
-	java -cp src:lib/loewis.jar:lib/theo.jar -Djava.security.manager -Djava.security.policy=cow.policy cyclesofwar.console.LastManStandingTournamentConsole > ranking.lms
+	/usr/bin/time -f "%E" -o ranking.lms.time java -cp src:lib/loewis.jar:lib/theo.jar -Djava.security.manager -Djava.security.policy=cow.policy cyclesofwar.console.LastManStandingTournamentConsole > ranking.lms
 
 ranking.ooo:
-	java -cp src:lib/loewis.jar:lib/theo.jar -Djava.security.manager -Djava.security.policy=cow.policy cyclesofwar.console.OneOnOneTournamentConsole > ranking.ooo
+	/usr/bin/time -f "%E" -o ranking.ooo.time java -cp src:lib/loewis.jar:lib/theo.jar -Djava.security.manager -Djava.security.policy=cow.policy cyclesofwar.console.OneOnOneTournamentConsole > ranking.ooo
 
