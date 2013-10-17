@@ -20,9 +20,9 @@ public class OneOnOneTournament extends Tournament {
 	protected void setupGames(int matches) {
 		int count = champions.size();
 		for (int match = 0; match < matches/2; match++) {
+                        long seed = random.nextLong();
 			for (int i = 0; i < count - 1; i++) {
-				for (int j = i + 1; j < count; j++) {
-					long seed = random.nextLong();
+				for (int j = i + 1; j < count; j++) {		
 					gamesToPlay.add(new Universe(seed, getChampions(i, j), planetsPerPlayer, universeSizeFactor));
 					gamesToPlay.add(new Universe(seed, getChampions(j, i), planetsPerPlayer, universeSizeFactor));
 				}
