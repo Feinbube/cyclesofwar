@@ -115,7 +115,10 @@ public class Universe {
             return;
         }
 
+        long roundSeed = this.random.nextLong();
+        
         for (Player player : players) {
+            this.random.setSeed(roundSeed);
             currentPlayer = player;
 //            try {
             currentPlayer.think();
@@ -124,6 +127,8 @@ public class Universe {
 //            }
 
         }
+        
+        this.random.setSeed(roundSeed);
         currentPlayer = NonePlayer.NonePlayer;
 
         if (nothingHappenedCounter > 1000 || currentRound > 100000) {
