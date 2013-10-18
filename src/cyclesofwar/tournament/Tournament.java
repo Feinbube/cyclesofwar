@@ -7,35 +7,26 @@ import java.util.Random;
 import cyclesofwar.Player;
 import cyclesofwar.Universe;
 
-public abstract class Tournament {
+public abstract class Tournament extends TournamentBook{
 	Random random;
 
-	List<Player> champions = new ArrayList<>();
 	List<Player> prioritized = new ArrayList<>();
 
 	List<Universe> gamesToPlay = new ArrayList<>();
-	List<Universe> gamesPlayed = new ArrayList<>();
 
 	int gamesToPlayCount = 0;
 	int gamesPlayedCount = 0;
 
-	List<TournamentRecord> records = new ArrayList<>();
-
 	List<WorkerThread> workerThreads = new ArrayList<>();
 	boolean pause = true;
-	
-	int planetsPerPlayer;
-	double universeSizeFactor;
 	
 	boolean wasAborted = false;
 	Player responsibleForAbort;
 
 	public Tournament(long randomSeed, int threads, List<Player> champions, int matches, int planetsPerPlayer, double universeSizeFactor) {
+            super(champions, planetsPerPlayer, universeSizeFactor);
+            
 		random = new Random(randomSeed);
-		this.champions = champions;
-                
-		this.planetsPerPlayer = planetsPerPlayer;
-		this.universeSizeFactor = universeSizeFactor;
 		
 		setupGames(matches);
 		gamesToPlayCount = gamesToPlay.size();
@@ -47,25 +38,28 @@ public abstract class Tournament {
 
 	// Lightweight Clone for Rendering
 	protected Tournament(Tournament other) {
-		for (Player player : other.champions) {
-			this.champions.add(player);
-		}
+            super(null, other.planetsPerPlayer, other.universeSizeFactor);
+            
+            this.champions = new ArrayList<>();
+            for (Player player : other.champions) {
+                    this.champions.add(player);
+            }
 
-		synchronized (other.records) {
-			for (TournamentRecord record : other.records) {
-				this.records.add(record);
-			}
-		}
+            synchronized (other.records) {
+                    for (TournamentRecord record : other.records) {
+                            this.records.add(record);
+                    }
+            }
 
-		for (Player player : other.prioritized) {
-			this.prioritized.add(player);
-		}
+            for (Player player : other.prioritized) {
+                    this.prioritized.add(player);
+            }
 
-		this.gamesPlayedCount = other.gamesPlayedCount;
-		this.gamesToPlayCount = other.gamesToPlayCount;
+            this.gamesPlayedCount = other.gamesPlayedCount;
+            this.gamesToPlayCount = other.gamesToPlayCount;
 	}
-
-	public abstract Tournament lightWeightClone();
+        
+        public abstract TournamentBook lightWeightClone();
 
 	public void runToCompletion() {
 		if (isPaused()) {
@@ -81,14 +75,12 @@ public abstract class Tournament {
 
 	// getters
 
-	public List<Player> getChampions() {
-		return champions;
-	}
-
+        @Override
 	public int getGamesToPlayCount() {
 		return gamesToPlayCount;
 	}
 
+        @Override
 	public int getGamesPlayedCount() {
 		return gamesPlayedCount;
 	}
@@ -103,49 +95,9 @@ public abstract class Tournament {
 		}
 	}
 
+        @Override
 	public boolean hasPriority(Player player) {
 		return prioritized.contains(player);
-	}
-
-	// Rankings
-
-	public List<Player> rankedPlayers() {
-		List<Player> result = new ArrayList<>();
-
-		for (Ranking ranking : getRankings()) {
-			result.add(ranking.player);
-		}
-
-		return result;
-	}
-
-	// TODO caching this function may be a very good idea!
-	public List<Ranking> getRankings() {
-		List<Ranking> result = new ArrayList<>();
-		for (Player player : champions) {
-			result.add(new Ranking(player, wonBy(player).size(), participatedIn(player).size()));
-		}
-
-		Ranking.sort(result);
-                
-                result.add(new Ranking(Player.NonePlayer, wonBy(Player.NonePlayer).size(), participatedIn(Player.NonePlayer).size()));
-		return result;
-	}
-
-	public List<TournamentRecord> winsOver(Player player, Player competitor) {
-		return TournamentRecord.participatedIn(wonBy(player), competitor);
-	}
-
-	public List<TournamentRecord> wonBy(Player player) {
-		return TournamentRecord.wonBy(records, player);
-	}
-
-	public List<TournamentRecord> fightsAgainst(Player player, Player competitor) {
-		return TournamentRecord.participatedIn(participatedIn(player), competitor);
-	}
-
-	public List<TournamentRecord> participatedIn(Player player) {
-		return TournamentRecord.participatedIn(records, player);
 	}
 
 	// workerthreads
@@ -225,17 +177,13 @@ public abstract class Tournament {
 		}
 	}
 
-	public void gameOver(Universe universe) {
-		synchronized (gamesPlayed) {
-			gamesPlayed.add(universe);
-
-			synchronized (records) {
-				records.add(new TournamentRecord(universe));
-			}
-
-			gamesPlayedCount++;
-			gamesToPlayCount--;
-		}
+        @Override
+	public void addFinishedGame(Universe universe) {
+            super.addFinishedGame(universe);
+            synchronized (gamesPlayed) {
+                gamesPlayedCount++;
+                gamesToPlayCount--;
+            }
 	}
 
 	public void abort(Player responsilbe) {

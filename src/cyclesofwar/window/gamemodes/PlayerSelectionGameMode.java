@@ -30,6 +30,9 @@ public class PlayerSelectionGameMode extends GameMode {
 
 	@Override
 	protected void keyPressedGame(KeyEvent arg0) {
+            if (arg0.getKeyCode() == KeyEvent.VK_D) {
+                this.switchTo(GameModes.DEMO);
+            }
 	}
 
 	@Override
@@ -58,6 +61,9 @@ public class PlayerSelectionGameMode extends GameMode {
                             break;
                         case "Arena Mode":
                             this.switchTo(GameModes.ARENA);
+                            break;
+                        case "Demo Mode":
+                            this.switchTo(GameModes.DEMO);
                             break;
                     }
 

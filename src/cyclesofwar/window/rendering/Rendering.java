@@ -13,6 +13,7 @@ import cyclesofwar.Planet;
 import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.tournament.Tournament;
+import cyclesofwar.tournament.TournamentBook;
 import cyclesofwar.tournament.TournamentRecord;
 
 public class Rendering {
@@ -22,9 +23,9 @@ public class Rendering {
 
     abstract class DrawContentProvider {
 
-        abstract String getString(Tournament tournament, int i);
+        abstract String getString(TournamentBook tournament, int i);
 
-        Object getTag(Tournament tournament, int i) {
+        Object getTag(TournamentBook tournament, int i) {
             return null;
         }
     }
@@ -317,8 +318,9 @@ public class Rendering {
         drawText(g, marginLeft, size.height - marginTop - 80, "chose game mode:", Color.yellow, null, f);
 
         drawButton(g, "Live Mode", "Live Mode", 15 + marginLeft, size.height - marginTop, HAlign.LEFT, 22, 20, Color.yellow);
-        drawButton(g, "Tournament Mode", "Tournament Mode", size.width / 2, size.height - marginTop, HAlign.CENTER, 22, 20, Color.yellow);
-        drawButton(g, "Arena Mode", "Arena Mode", 15 + marginLeft, size.height - marginTop, HAlign.RIGHT, 22, 20, Color.yellow);
+        drawButton(g, "Tournament Mode", "Tournament", size.width / 3, size.height - marginTop, HAlign.LEFT, 22, 20, Color.yellow);
+        drawButton(g, "Arena Mode", "Arena", size.width / 3, size.height - marginTop, HAlign.RIGHT, 22, 20, Color.yellow);
+        drawButton(g, "Demo Mode", "Demo Mode", 15 + marginLeft, size.height - marginTop, HAlign.RIGHT, 22, 20, Color.yellow);
     }
 
     private <T> void drawSelection(Graphics g, String id, List<T> possibleValues, T selectedValue, int marginLeft, int marginTop, int left) {
@@ -392,7 +394,7 @@ public class Rendering {
         g.drawRect(posX - 1 - 1, posY - 1 + 7, w + 2, h + 2 - 6);
     }
 
-    public void drawStatistics(Graphics g, Tournament tournament, String s, boolean showDetails) {
+    public void drawStatistics(Graphics g, TournamentBook tournament, String s, boolean showDetails) {
         drawBackground(g);
 
         Font f = getFont(Font.PLAIN, 14);
@@ -427,16 +429,18 @@ public class Rendering {
             }
         }
 
-        drawText(g, size.width - marginLeft, marginTop + (h + 2) * (tournament.getRankings().size() + 1), tournament.getGamesToPlayCount()
-                + " games left, " + tournament.getGamesPlayedCount() + " games played.", Color.white, Color.black, HAlign.RIGHT,
-                VAlign.BOTTOM, f);
+        String text = tournament.getGamesPlayedCount() + " games played.";
+        if (tournament.getGamesToPlayCount() > 0) {
+            text = tournament.getGamesToPlayCount() + " games left, " + text;
+        }
+        drawText(g, size.width - marginLeft, marginTop + (h + 2) * (tournament.getRankings().size() + 1), text, Color.white, Color.black, HAlign.RIGHT, VAlign.BOTTOM, f);
     }
 
     private String percentage(double value) {
         return (int) (value * 100) + "%";
     }
 
-    private void drawLines(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
+    private void drawLines(Graphics g, TournamentBook tournament, Font f, int marginLeft, int marginTop) {
         int h = g.getFontMetrics(f).getHeight();
         for (int i = 0; i < tournament.getRankings().size(); i++) {
             Player player = tournament.getRankings().get(i).getPlayer();
@@ -446,60 +450,60 @@ public class Rendering {
         }
     }
 
-    private int drawRank(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
+    private int drawRank(Graphics g, TournamentBook tournament, Font f, int marginLeft, int marginTop) {
         return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
             @Override
-            public String getString(Tournament tournament, int i) {
+            public String getString(TournamentBook tournament, int i) {
                 return (i + 1) + ".";
             }
         });
     }
 
-    private int drawWins(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
+    private int drawWins(Graphics g, TournamentBook tournament, Font f, int marginLeft, int marginTop) {
         return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
             @Override
-            public String getString(Tournament tournament, int i) {
+            public String getString(TournamentBook tournament, int i) {
                 return tournament.getRankings().get(i).getWins() + "/" + tournament.getRankings().get(i).getGames();
             }
-            
+
             @Override
-            public Object getTag(Tournament tournament, int i) {
+            public Object getTag(TournamentBook tournament, int i) {
                 return tournament.wonBy(tournament.getRankings().get(i).getPlayer());
             }
         });
     }
 
-    private int drawPerformance(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
+    private int drawPerformance(Graphics g, TournamentBook tournament, Font f, int marginLeft, int marginTop) {
         return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
             @Override
-            public String getString(Tournament tournament, int i) {
+            public String getString(TournamentBook tournament, int i) {
                 return percentage(tournament.getRankings().get(i).getRatio());
             }
-            
+
             @Override
-            public Object getTag(Tournament tournament, int i) {
+            public Object getTag(TournamentBook tournament, int i) {
                 return tournament.wonBy(tournament.getRankings().get(i).getPlayer());
             }
         });
     }
 
-    private int drawNames(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop) {
+    private int drawNames(Graphics g, TournamentBook tournament, Font f, int marginLeft, int marginTop) {
         return drawContent(g, tournament, f, marginLeft, marginTop, new DrawContentProvider() {
             @Override
-            public String getString(Tournament tournament, int i) {
+            public String getString(TournamentBook tournament, int i) {
                 return tournament.getRankings().get(i).getPlayer().getName();
             }
         });
     }
 
-    private int drawPerformanceAgainst(Graphics g, Tournament tournament, int rank, Font f, int marginLeft, int marginTop) {
+    private int drawPerformanceAgainst(Graphics g, TournamentBook tournament, int rank, Font f, int marginLeft, int marginTop) {
         final Player competitor = tournament.getRankings().get(rank).getPlayer();
         int maxPos = drawText(g, marginLeft, marginTop, (rank + 1) + ".", competitor.getPlayerForeColor(), competitor.getPlayerBackColor(), f);
 
         return drawContent(g, tournament, f, marginLeft, marginTop, maxPos, new DrawContentProvider() {
 
             @Override
-            public String getString(Tournament tournament, int i) {
+            public String getString(TournamentBook tournament, int i) {
                 Player player = tournament.getRankings().get(i).getPlayer();
 
                 if (player != competitor) {
@@ -508,9 +512,9 @@ public class Rendering {
                     return "--";
                 }
             }
-            
+
             @Override
-            public Object getTag(Tournament tournament, int i) {
+            public Object getTag(TournamentBook tournament, int i) {
                 Player player = tournament.getRankings().get(i).getPlayer();
 
                 if (player != competitor) {
@@ -526,11 +530,11 @@ public class Rendering {
         tags.add(0, new Tag(x, y, w, h, tag));
     }
 
-    private int drawContent(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop, DrawContentProvider drawContentProvider) {
+    private int drawContent(Graphics g, TournamentBook tournament, Font f, int marginLeft, int marginTop, DrawContentProvider drawContentProvider) {
         return drawContent(g, tournament, f, marginLeft, marginTop, 0, drawContentProvider);
     }
 
-    private int drawContent(Graphics g, Tournament tournament, Font f, int marginLeft, int marginTop, int maxpos, DrawContentProvider drawContentProvider) {
+    private int drawContent(Graphics g, TournamentBook tournament, Font f, int marginLeft, int marginTop, int maxpos, DrawContentProvider drawContentProvider) {
         int maxPos = maxpos;
         int h = g.getFontMetrics(f).getHeight();
         for (int i = 0; i < tournament.getRankings().size(); i++) {
@@ -596,7 +600,7 @@ public class Rendering {
 
         return null;
     }
-    
+
     public List<TournamentRecord> getFightRecords(int x, int y) {
         return getTagAtPosition(List.class, x, y);
     }

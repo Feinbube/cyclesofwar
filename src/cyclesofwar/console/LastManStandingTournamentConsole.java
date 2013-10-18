@@ -14,13 +14,13 @@ public class LastManStandingTournamentConsole extends Console {
 
 	private void run(String[] args) {
 		List<Player> champions = Arena.champions();
-		List<Player> disqualifiedPlayers = new ArrayList<Player>();
+		List<Player> disqualifiedPlayers = new ArrayList<>();
 
 		int place = 0;
 		LastManStandingTournament tournament = null;
 		while (champions.size() > 1) {
 			tournament = new LastManStandingTournament(Arena.tournamentSeed, Runtime.getRuntime().availableProcessors(), champions,
-					Arena.matchesInLastManStandingTournamentPerRound, 10, 1.0);
+					Arena.matchesInLastManStandingTournamentPerRound, Arena.planetsPerPlayer, Arena.universeSizeFactor);
 			tournament.runToCompletion();
 			if (!tournament.wasAborted()) {
 				Player winner = tournament.rankedPlayers().get(0);
