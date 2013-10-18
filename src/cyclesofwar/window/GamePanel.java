@@ -16,12 +16,7 @@ import javax.swing.event.MouseInputListener;
 
 import cyclesofwar.Player;
 import cyclesofwar.Universe;
-import cyclesofwar.window.gamemodes.ArenaGameMode;
-import cyclesofwar.window.gamemodes.GameMode;
-import cyclesofwar.window.gamemodes.LiveGameMode;
-import cyclesofwar.window.gamemodes.PlayerSelectionGameMode;
-import cyclesofwar.window.gamemodes.TitleScreenGameMode;
-import cyclesofwar.window.gamemodes.TournamentGameMode;
+import cyclesofwar.window.gamemodes.*;
 
 public class GamePanel extends JPanel implements KeyListener, MouseInputListener, ActionListener {
 
@@ -42,6 +37,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	private final ArenaGameMode arenaGame;
 	private final TournamentGameMode tournamentGame;
 	private final PlayerSelectionGameMode playerSelection;
+        private final DemoGameMode demo;
 
 	private final List<Player> allPlayers;
 	private final List<Player> selectedPlayers;
@@ -67,8 +63,9 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 		arenaGame = new ArenaGameMode(this);
 		tournamentGame = new TournamentGameMode(this);
 		playerSelection = new PlayerSelectionGameMode(this);
+                demo = new DemoGameMode(this);
 
-		gameMode = titleScreen;
+		gameMode = liveGame;
 		liveGame.resume();
 
 		timer = new Timer(20, this);
@@ -86,6 +83,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 			this.gameMode = tournamentGame;
 		} else if (gameMode == GameModes.PLAYERSELECTION) {
 			this.gameMode = playerSelection;
+		} else if (gameMode == GameModes.DEMO) {
+			this.gameMode = demo;
 		}
 	}
 

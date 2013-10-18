@@ -21,7 +21,7 @@ public class OneOnOneTournamentConsole extends Console {
 
 		do {
 			tournament = new OneOnOneTournament(Arena.tournamentSeed, Runtime.getRuntime().availableProcessors(), champions,
-					Arena.matchesInOneOnOneTournamentPerPlayer, 10, 1.0);
+					Arena.matchesInOneOnOneTournamentPerPlayer, Arena.planetsPerPlayer, Arena.universeSizeFactor);
 			tournament.runToCompletion();
 
 			if (tournament.wasAborted()) {

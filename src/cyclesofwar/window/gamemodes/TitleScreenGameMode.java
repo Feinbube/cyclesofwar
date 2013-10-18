@@ -8,7 +8,7 @@ import cyclesofwar.window.GamePanel;
 
 public class TitleScreenGameMode extends GameMode {
 
-	private int count = 0;
+	private int timecounter = 0;
 	
 	public TitleScreenGameMode(GamePanel gamePanel) {
 		super(gamePanel);
@@ -16,7 +16,7 @@ public class TitleScreenGameMode extends GameMode {
 
 	@Override
 	protected void updateGame() {
-		if(count++ > 50){
+		if(timecounter++ > 50){
 			switchTo(GameModes.LIVE);
 		}
 	}

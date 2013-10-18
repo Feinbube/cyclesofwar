@@ -1,5 +1,5 @@
 package cyclesofwar.window;
 
 public enum GameModes {
-	TITLE, LIVE, ARENA, TOURNAMENT, PLAYERSELECTION
+	TITLE, LIVE, ARENA, TOURNAMENT, PLAYERSELECTION, DEMO
 }

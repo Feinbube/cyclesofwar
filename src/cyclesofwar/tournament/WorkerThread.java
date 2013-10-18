@@ -42,7 +42,7 @@ public class WorkerThread implements Runnable {
 				break;
 			}
 
-			tournament.gameOver(universe);
+			tournament.addFinishedGame(universe);
 		}
 	}
 

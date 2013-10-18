@@ -23,14 +23,24 @@ public class Arena {
 	public static final long tournamentSeed = 3141592;
 	
 	/*
-	 * the number of matches per round for the daily tournament
+	 * the number of matches per round for the daily last-man-standing tournament
 	 */
 	public static final int matchesInLastManStandingTournamentPerRound = 100;
 	
 	/*
-	 * the number of matches per player for the daily tournament
+	 * the number of matches per player for the daily one-on-one tournament
 	 */
 	public static final int matchesInOneOnOneTournamentPerPlayer = 100;
+        
+        /*
+	 * the number of planets per player for the daily tournaments
+	 */
+        public static final int planetsPerPlayer = 10;
+        
+        /*
+	 * the universe size factor for the daily tournaments
+	 */
+        public static final double universeSizeFactor = 1.0;
 	
 	/*
 	 * please register your champion here for the daily tournament
@@ -38,13 +48,13 @@ public class Arena {
 	public static List<Player> champions(){
 		ArrayList<Player> result = new ArrayList<>();
 
-		result.add(new SpaceMenace()); // Theo
-		result.add(new Jane()); // Frank
-		result.add(new Cratters()); // Martin
 		result.add(new AttackLargestPlayer()); // Robert
-		result.add(new DumbVirus()); // Peter	
-		result.add(new FriendlyPirates()); // Jan
-		
+                result.add(new DumbVirus()); // Peter	
+                result.add(new Jane()); // Frank
+                result.add(new FriendlyPirates()); // Jan
+		result.add(new Cratters()); // Martin
+		result.add(new SpaceMenace()); // Theo
+
 		return result;
 	}
 	

@@ -86,7 +86,7 @@ public class ConfigManager extends WindowAdapter {
 	
 	public int getNumberOfPlanetsPerPlayer() {
 		if (properties == null || !properties.containsKey("planetsperplayer")) {
-			return 10;
+			return Arena.planetsPerPlayer;
 		} else {
 			return new Integer(properties.getProperty("planetsperplayer"));
 		}
@@ -94,7 +94,7 @@ public class ConfigManager extends WindowAdapter {
 
 	public double getUniverseSizeFactor() {
 		if (properties == null || !properties.containsKey("universesizefactor")) {
-			return 1.0;
+			return Arena.universeSizeFactor;
 		} else {
 			return new Double(properties.getProperty("universesizefactor"));
 		}
