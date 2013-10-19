@@ -9,7 +9,7 @@ import cyclesofwar.Player;
 
 public class FriendlyPirates extends Player {
 	private static final int MAXIMUM_SELF_DEFENSE = 1000; //effectively disabled
-	private static final int MINIMUM_FLEET_SIZE = 10;
+	private static final int MINIMUM_FLEET_SIZE = 5;
 	
 	private static final int DEFENSE_FORCE_MARGIN = 1;
 	private static final int DEFENSE_FORCE_HELP_MARGIN = 5;
