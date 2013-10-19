@@ -13,6 +13,8 @@ public class FriendlyPirates extends Player {
 	
 	private static final int DEFENSE_FORCE_MARGIN = 1;
 	private static final int DEFENSE_FORCE_HELP_MARGIN = 5;
+	
+	private static final int NEUTRAL_CAPTURE_MARGIN = 1;
 
 	@Override
 	protected void think() {
@@ -27,22 +29,22 @@ public class FriendlyPirates extends Player {
 	}
 
 	private int calculateDefense(Planet currentPlanet) {
-		int attackingForces = getAttackingForces(currentPlanet);
+		int attackingForces = getEnemyForces(currentPlanet);
 		return Math.min(MAXIMUM_SELF_DEFENSE, attackingForces + DEFENSE_FORCE_MARGIN);
 	}
 	
-	private int getAttackingForces(Planet p) {
+	private int getEnemyForces(Planet p) {
 		int incomingForces = 0;
 		for(Fleet f : getFleetsWithTarget(p))
-			if(!f.getPlayer().equals(p.getPlayer()))
+			if(!f.getPlayer().equals(this))
 				incomingForces += f.getForce();
 		return incomingForces;
 	}
 	
-	private int getDefendingForces(Planet p) {
+	private int getAlliedForces(Planet p) {
 		int incomingForces = 0;
 		for(Fleet f : getFleetsWithTarget(p))
-			if(f.getPlayer().equals(p.getPlayer()))
+			if(f.getPlayer().equals(this))
 				incomingForces += f.getForce();
 		return incomingForces;
 	}
@@ -56,7 +58,7 @@ public class FriendlyPirates extends Player {
 			if(!ally.getPlayer().equals(this))
 				continue;
 			
-			int neededDefense = getAttackingForces(ally) - ((int)ally.getForces() + getDefendingForces(ally));
+			int neededDefense = getEnemyForces(ally) - ((int)ally.getForces() + getAlliedForces(ally));
 			if(neededDefense > 0) {
 				neededDefense += DEFENSE_FORCE_HELP_MARGIN;
 				int forcesSent = Math.min(neededDefense, availableForces);
@@ -67,19 +69,34 @@ public class FriendlyPirates extends Player {
 		}
 	}
 
-	private void performAttack(Planet currentPlanet, int minimumSelfDefense) {
-		int availableForces = (int)currentPlanet.getForces() - minimumSelfDefense;
-		if(availableForces <= MINIMUM_FLEET_SIZE)
-			return;
-		
+	private void performAttack(Planet currentPlanet, int minimumSelfDefense) {		
 		for(Planet target : currentPlanet.getOthersByDistance()) {
 			if(target.getPlayer().equals(this))
 				continue;
+			
+			int availableForces = (int)currentPlanet.getForces() - minimumSelfDefense;
+			if(availableForces <= MINIMUM_FLEET_SIZE)
+				return;
 						
-			Fleet fleet = sendFleetUpTo(currentPlanet, availableForces, target);
-			fleet.setFormation(Formation.V);
-			return;
+			if(target.getPlayer().equals(NonePlayer))
+				captureNeutralPlanet(currentPlanet, target, availableForces);
+			else
+				attackOtherPlayer(currentPlanet, target, availableForces);
 		}
+	}
+
+	private void captureNeutralPlanet(Planet currentPlanet, Planet target, int availableForces) {
+		int required = (int)(target.getForces() + NEUTRAL_CAPTURE_MARGIN) - getAlliedForces(target);
+		if(required > 0) {
+			int sent = Math.min(required, availableForces);
+			Fleet fleet = sendFleetUpTo(currentPlanet, sent, target);
+			fleet.setFormation(Formation.SWARM);
+		}
+	}
+
+	private void attackOtherPlayer(Planet currentPlanet, Planet target, int availableForces) {
+		Fleet fleet = sendFleetUpTo(currentPlanet, availableForces, target);
+		fleet.setFormation(Formation.V);
 	}
 
 	@Override
