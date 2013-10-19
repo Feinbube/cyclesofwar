@@ -95,8 +95,12 @@ public class FriendlyPirates extends Player {
 	}
 
 	private void attackOtherPlayer(Planet currentPlanet, Planet target, int availableForces) {
-		Fleet fleet = sendFleetUpTo(currentPlanet, availableForces, target);
-		fleet.setFormation(Formation.V);
+		int required = (int)-getPrediction(target, currentPlanet.getTimeTo(target)).getBalance();
+		if(required > 0) {
+			int sent = Math.min(required, availableForces);
+			Fleet fleet = sendFleetUpTo(currentPlanet, sent, target);
+			fleet.setFormation(Formation.V);
+		}
 	}
 
 	@Override
