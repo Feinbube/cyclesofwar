@@ -8,7 +8,6 @@ import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
 public class FriendlyPirates extends Player {
-	private static final int MAXIMUM_SELF_DEFENSE = 1000; //effectively disabled
 	private static final int MINIMUM_FLEET_SIZE = 5;
 	
 	private static final int DEFENSE_FORCE_MARGIN = 1;
@@ -23,14 +22,17 @@ public class FriendlyPirates extends Player {
 	}
 
 	private void planetaryThink(Planet currentPlanet) {
-		int minimumSelfDefense = calculateDefense(currentPlanet);
+		int minimumSelfDefense = calculateSelfDefense(currentPlanet);
 		defendAllies(currentPlanet, minimumSelfDefense);
 		performAttack(currentPlanet, minimumSelfDefense);
 	}
 
-	private int calculateDefense(Planet currentPlanet) {
+	private int calculateSelfDefense(Planet currentPlanet) {
 		int attackingForces = getEnemyForces(currentPlanet);
-		return Math.min(MAXIMUM_SELF_DEFENSE, attackingForces + DEFENSE_FORCE_MARGIN);
+		if(attackingForces > 0)
+			attackingForces += DEFENSE_FORCE_MARGIN;
+
+		return attackingForces;
 	}
 	
 	private int getEnemyForces(Planet p) {
