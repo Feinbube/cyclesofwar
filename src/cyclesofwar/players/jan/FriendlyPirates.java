@@ -21,9 +21,9 @@ public class FriendlyPirates extends Player {
 	}
 
 	private void planetaryThink(Planet currentPlanet) {
-		int minimumDefensiveForces = calculateDefense(currentPlanet);
-		defendAllies(currentPlanet, minimumDefensiveForces);
-		performAttack(currentPlanet, minimumDefensiveForces);
+		int minimumSelfDefense = calculateDefense(currentPlanet);
+		defendAllies(currentPlanet, minimumSelfDefense);
+		performAttack(currentPlanet, minimumSelfDefense);
 	}
 
 	private int calculateDefense(Planet currentPlanet) {
