@@ -12,11 +12,6 @@ import java.lang.reflect.Method;
 public class MainWindow {
 
     public static void main(String[] args) {
-
-        if (isMacOSX()) {
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Cycles of War");
-        }
-
         JFrame f = new JFrame("Cycles of War");
 
         ConfigManager configManager = new ConfigManager();
