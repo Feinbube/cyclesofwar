@@ -95,7 +95,11 @@ public class Rendering {
     }
 
     public void drawControlInfo(Graphics g, String s) {
-        drawText(g, size.width - 5, size.height - 5, s, Color.yellow, null, HAlign.RIGHT, VAlign.TOP, 12);
+        drawControlInfo(g, s, 12);
+    }
+    
+    public void drawControlInfo(Graphics g, String s, int fontsize) {
+        drawText(g, size.width - fontsize/2, size.height - fontsize/2, s, Color.yellow, null, HAlign.RIGHT, VAlign.TOP, fontsize);
     }
 
     public void drawInfo(Graphics g, String s) {
