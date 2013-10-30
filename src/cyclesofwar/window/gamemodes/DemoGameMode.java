@@ -100,6 +100,7 @@ public class DemoGameMode extends GameMode {
 
     @Override
     protected void paintGame(Graphics g) {
+        
         if (state == DemoStates.TITLETOARENA) {
             rendering.drawTitleScreen(g);
         } else if (state == DemoStates.ARENA) {
@@ -113,6 +114,8 @@ public class DemoGameMode extends GameMode {
         } else if (state == DemoStates.TOURNAMENTSTATS) {
             rendering.drawStatistics(g, lastManStandingTournament, "Last Man Standing Tournament", false);
         }
+        
+        rendering.drawControlInfo(g, "svn://code.hpi.uni-potsdam.de/cyclesofwar", 18);
     }
 
     @Override

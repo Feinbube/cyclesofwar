@@ -6,29 +6,60 @@ import java.awt.event.*;
 import javax.swing.JFrame;
 
 import cyclesofwar.Arena;
+import java.awt.Window;
+import java.lang.reflect.Method;
 
 public class MainWindow {
 
-	public static void main(String[] args) {
-		JFrame f = new JFrame("Cycles of War");
+    public static void main(String[] args) {
 
-		ConfigManager configManager = new ConfigManager();
-		f.addWindowListener(configManager);
+        if (isMacOSX()) {
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Cycles of War");
+        }
 
-		GamePanel panel = new GamePanel(Runtime.getRuntime().availableProcessors() - 1, configManager.getSelectedPlayers(),
-				Arena.registeredPlayers(), configManager.getNumberOfRounds(), configManager.getNumberOfPlanetsPerPlayer(),
-				configManager.getUniverseSizeFactor());
-		configManager.setGamePanel(panel);
+        JFrame f = new JFrame("Cycles of War");
 
-		f.getContentPane().add(panel, BorderLayout.CENTER);
+        ConfigManager configManager = new ConfigManager();
+        f.addWindowListener(configManager);
 
-		f.addKeyListener((KeyListener) panel);
-		f.setFocusTraversalKeysEnabled(false);
-		panel.setFocusTraversalKeysEnabled(false);
+        GamePanel panel = new GamePanel(Runtime.getRuntime().availableProcessors() - 1, configManager.getSelectedPlayers(),
+                Arena.registeredPlayers(), configManager.getNumberOfRounds(), configManager.getNumberOfPlanetsPerPlayer(),
+                configManager.getUniverseSizeFactor());
+        configManager.setGamePanel(panel);
 
-		f.addMouseListener((MouseListener) panel);
+        f.getContentPane().add(panel, BorderLayout.CENTER);
 
-		f.setBounds(configManager.getX(), configManager.getY(), configManager.getWidth(), configManager.getHeight());
-		f.setVisible(true);
-	}
+        f.addKeyListener((KeyListener) panel);
+        f.setFocusTraversalKeysEnabled(false);
+        panel.setFocusTraversalKeysEnabled(false);
+
+        f.addMouseListener((MouseListener) panel);
+
+        f.setBounds(configManager.getX(), configManager.getY(), configManager.getWidth(), configManager.getHeight());
+
+        if (isMacOSX()) {
+            enableFullScreenMode(f);
+        }
+
+        f.setVisible(true);
+    }
+
+    private static boolean isMacOSX() {
+        return System.getProperty("os.name").indexOf("Mac OS") >= 0;
+    }
+
+    public static void enableFullScreenMode(Window window) {
+        String className = "com.apple.eawt.FullScreenUtilities";
+        String methodName = "setWindowCanFullScreen";
+
+        try {
+            Class<?> clazz = Class.forName(className);
+            Method method = clazz.getMethod(methodName, new Class<?>[]{
+                Window.class, boolean.class});
+            method.invoke(null, window, true);
+        } catch (Throwable t) {
+            System.err.println("Full screen mode is not supported");
+            t.printStackTrace();
+        }
+    }
 }
