@@ -12,7 +12,6 @@ import cyclesofwar.Fleet;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 import cyclesofwar.Universe;
-import cyclesofwar.tournament.Tournament;
 import cyclesofwar.tournament.TournamentBook;
 import cyclesofwar.tournament.TournamentRecord;
 
@@ -97,9 +96,9 @@ public class Rendering {
     public void drawControlInfo(Graphics g, String s) {
         drawControlInfo(g, s, 12);
     }
-    
+
     public void drawControlInfo(Graphics g, String s, int fontsize) {
-        drawText(g, size.width - fontsize/2, size.height - fontsize/2, s, Color.yellow, null, HAlign.RIGHT, VAlign.TOP, fontsize);
+        drawText(g, size.width - fontsize / 2, size.height - fontsize / 2, s, Color.yellow, null, HAlign.RIGHT, VAlign.TOP, fontsize);
     }
 
     public void drawInfo(Graphics g, String s) {
@@ -268,20 +267,33 @@ public class Rendering {
     private void drawPlayers(Graphics g, List<Player> players) {
         int h = g.getFontMetrics().getHeight();
 
+        players = Player.sortedBy(Player.PlanetCountComparator, players);
+        int row = 0;
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
+            if(!player.isAlive())
+                continue;
 
-            drawText(g, 5, i * (h + 4) + 5, shortInfo(player), player.getPlayerForeColor(), player.getPlayerBackColor(), HAlign.LEFT,
+            drawText(g, 5, row * (h + 4) + 5, shortInfo(player), player.getPlayerForeColor(), player.getPlayerBackColor(), HAlign.LEFT,
                     VAlign.CENTER, 12);
+            row++;
         }
     }
 
     private String shortInfo(Player player) {
-        String result = "";
+        String result = player.getName();
 
-        result += player.getName();
-        result += " P[" + player.getPlanets().size() + "/" + ((int) player.getGroundForce()) + "]";
-        result += " F[" + player.getFleets().size() + "/" + player.getSpaceForce() + "]";
+        int planets = player.getPlanets().size();
+        int planetForces = (int) player.getGroundForce();
+        if (planets > 0) {
+            result += " P[" + planets + "/" + planetForces + "]";
+        }
+
+        int fleets = player.getFleets().size();
+        int fleetForces = player.getSpaceForce();
+        if (fleets > 0) {
+            result += " F[" + fleets + "/" + fleetForces + "]";
+        }
 
         return result;
     }
