@@ -2,6 +2,7 @@ package cyclesofwar;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /*
@@ -27,7 +28,7 @@ import java.util.List;
  * 		if the game exceeds 100.000 rounds: game is over, nobody wins
  * 		start next round
  */
-public abstract class Player {
+public abstract class Player extends Sortable {
 
 	/*
 	 * this player means "no player". it is the Null-Object that is assigned to
@@ -509,4 +510,17 @@ public abstract class Player {
 		Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
 		return fleets.get(fleets.size() - 1).getTimeToTarget();
 	}
+        
+        /*
+         * used to sort players by planet count (descending)
+         * 
+         * use Player.sortBy(PlanetCountComparator, players, )
+         * or Player.sortedBy(PlanetCountComparator, players, )
+         */
+        public static Comparator<Player> PlanetCountComparator = new Comparator<Player>() {
+            @Override
+            public int compare(Player player1, Player player2) {
+                return Double.compare(player2.getPlanets().size(), player1.getPlanets().size());
+            }
+        };
 }
