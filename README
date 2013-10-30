@@ -168,53 +168,49 @@ Rules Of The Game
 * Every player known to the game is registered in the ARENA. Each 
   human is allowed to appoint one of his players to fight as his 
   champion in the nightly arena tournaments. Two kind of tournaments 
-  will be held: The 1-ON-1-TOURNAMENT is a series 
-  The LAST-MAN-STANDING-TOURNAMENT
-
-  Every night a 
-
-#Every player must be registered in the ARENA to be available in the
-  GUI. Every night there is a tournament 
-New champions are registered in the ARENA. The nightly tournaments
-  are configured here as well.
+  will be held: For the 1-ON-1-TOURNAMENT a number of universes with 
+  space for only two players is generated. Each champion fights two 
+  matches against each other champion in those. In the second of 
+  these matches the starting positions are swapped. The champions 
+  are ranked by the total amount of matches that they've won. The 
+  LAST-MAN-STANDING-TOURNAMENT composes of a series of matches that 
+  involve all unranked champions. The player with the highest win 
+  rate is ranked; all others compete for the next rank in the same
+  way.
 
 Train Your Champion
 * You can download the current version of the game from:
-  .\\\   svn://code.hpi.uni-potsdam.de/cyclesofwar   ///.
+         svn://code.hpi.uni-potsdam.de/cyclesofwar
 * Please add your bot as a new class into your own package: 
-  e.g. /*public class CptAwesome extends Player { }*/ in /*cyclesofwar.players.john*/
-
-* PLAYER interface
-* getCreatorsName() getPlayerForeColor() getPlayerBackColor() think()
-* The only thing that is interesting: cyclesofwar Player, Fleet, Planet, Arena, Prediction, Advise, GameObject
-* add to registeredPlayers in Arena
-* 14 Training bots
-  
+  e.g. /*public class CptAwesome extends Player { }*/ 
+  in /*cyclesofwar.players.john*/. You will have to implement the
+  PLAYER interface by providing your name, choosing your colors and
+  implementing the method /*think()*/. In this method all your
+  interactions with the universe will take place. Use /*this*/ to 
+  acquire information and /*sendFleet()*/ unleash your forces.
+* If you want to get more information about the framework have a
+  look at the following classes in the cyclesofwar package: 
+  Player, Fleet, Planet, Arena, Prediction, Advise, GameObject.
+* Have a look at the various training bots that are implementing
+  a diverse set of strategies and demonstrate the usage of the game
+  API. The bots are ordered by difficulty: B00_Idle being the
+  easiest one, B01_ChaseMe being slightly better.. and so on. 
+* If you can beat all the training bots it's time to register your 
+  champion in the arena for the nightly tournaments.
 
 Register Your Champion for the Nightly Arena
 * In order to submit a bot for the nightly arena, please contact:
   Frank@Feinbube.de
 
 
-
-
-
-
-
-Dedicated 1-On-1, Tournament with Arena rules
-100 10 1.0
-100 10 1.0 iterative
-
-terminates after 10000 rounds or 1000 rounds without a new fleet
-
-* Bots are ordered by difficulty: B00_Idle being the easiest one,
-  B01_ChaseMe being slightly better.. and so on. 
-
-
-
- 
- 
- 
-
- 
- 
+Now, it's up to you to:
+_____________________________________________________________________
+ __ _  __ _   __   _  _       ____  _  _  __  __ _  __ _            
+(  / )(  ( \ /  \ / )( \ _   (_  _)/ )( \(  )(  ( \(  / ) _         
+ )  ( /    /(  O )\ /\ /( )    )(  ) __ ( )( /    / )  ( ( )        
+(__\_)\_)__) \__/ (_/\_)(/    (__) \_)(_/(__)\_)__)(__\_)(/         
+              ____  ____  ___  __  ____  ____        __    ___  ____
+             (    \(  __)/ __)(  )(    \(  __) _    / _\  / __)(_  _)
+              ) D ( ) _)( (__  )(  ) D ( ) _) ( )  /    \( (__   )(
+             (____/(____)\___)(__)(____/(____)(/   \_/\_/ \___) (__)
+_____________________________________________________________________
