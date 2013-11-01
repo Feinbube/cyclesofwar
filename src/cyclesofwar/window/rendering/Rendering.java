@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.MultipleGradientPaint.CycleMethod;
+import java.awt.RadialGradientPaint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -47,18 +50,24 @@ public class Rendering {
 
     private final Random random = new Random();
     private final List<Tag> tags = new ArrayList<>();
+    
+    private Background background;
 
     public Rendering() {
         stars.clear();
         for (int i = 0; i < StarCount; i++) {
             stars.add(new Star(random));
         }
+        this.background = new Background(size.width, size.height);
     }
 
     public void setSize(Dimension size) {
         if (!this.size.equals(size)) {
             this.size = size;
             this.borderSize = planetSize(size.width, 5.0) / 2;
+        }
+        if (this.background.getWidth() != size.width || this.background.getHeight() != size.height) {
+            this.background = new Background(size.width, size.height);	
         }
     }
 
@@ -83,10 +92,12 @@ public class Rendering {
     }
 
     private void drawBackground(Graphics g) {
-        g.setColor(Color.black);
-        g.fillRect(0, 0, size.width, size.height);
-
-        drawStars(g);
+//        g.setColor(Color.black);
+//        g.fillRect(0, 0, size.width, size.height);
+//
+//        drawStars(g);
+        
+        g.drawImage(this.background.getImage(), 0, 0, null);
     }
 
     public void drawSeed(Graphics g, long seed) {
@@ -132,12 +143,15 @@ public class Rendering {
 
     private void drawPlanets(Graphics g, List<Planet> planets) {
         for (Planet planet : planets) {
-            g.setColor(planet.getPlayer().getPlayerBackColor());
+            final int x = (int) getX(g, planet.getX());
+            final int y = (int) getY(g, planet.getY());
+            final int planetSize = planetSize(g, planet.getProductionRatePerSecond());
+            
+            final int uX = x - (planetSize >> 1);
+            final int uY = y - (planetSize >> 1);
 
-            int x = (int) getX(g, planet.getX());
-            int y = (int) getY(g, planet.getY());
-            int planetSize = planetSize(g, planet.getProductionRatePerSecond());
-            g.fillOval(x - planetSize / 2, y - planetSize / 2, planetSize, planetSize);
+            g.setColor(planet.getPlayer().getPlayerBackColor());
+            g.fillOval(uX, uY, planetSize, planetSize);
 
             drawText(g, x, y, ((int) planet.getForces()) + "", planet.getPlayer().getPlayerForeColor(), null, HAlign.CENTER, VAlign.CENTER,
                     10);

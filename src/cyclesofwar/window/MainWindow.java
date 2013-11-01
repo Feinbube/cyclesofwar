@@ -1,8 +1,12 @@
 package cyclesofwar.window;
 
 import java.awt.BorderLayout;
-import java.awt.event.*;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import cyclesofwar.Arena;
