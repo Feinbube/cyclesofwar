@@ -56,6 +56,14 @@ public class Planet extends GameObject {
     public double getProductionRatePerRound() {
         return productionRatePerSecond * Universe.getRoundDuration();
     }
+    
+    public double getActualProductionPerSecond() {
+    	return this.getPlayer().equals(Player.NonePlayer) ? 0.0 : this.getProductionRatePerSecond();
+    }
+    
+    public double getActualProductionPerRound() {
+    	return this.getActualProductionPerSecond() * Universe.getRoundDuration();
+    }
 
     /*
      * gets the latest point in time when the ownership of that planet was changed
