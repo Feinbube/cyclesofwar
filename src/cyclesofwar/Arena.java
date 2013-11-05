@@ -9,6 +9,7 @@ import cyclesofwar.players.frank.*;
 import cyclesofwar.players.frank.gene.training.*;
 import cyclesofwar.players.jan.FriendlyPirates;
 import cyclesofwar.players.theo.*;
+import cyclesofwar.players.lena.*;
 import cyclesofwar.players.training.*;
 import de.loewis.*;
 
@@ -49,9 +50,10 @@ public class Arena {
 		ArrayList<Player> result = new ArrayList<>();
 
 		result.add(new AttackLargestPlayer()); // Robert
-                result.add(new DumbVirus()); // Peter	
-                result.add(new Jane()); // Frank
-                result.add(new FriendlyPirates()); // Jan
+        result.add(new DumbVirus()); // Peter	
+        result.add(new Jane()); // Frank
+        result.add(new FriendlyPirates()); // Jan
+        result.add(new Turambar()); // Lena
 		result.add(new Cratters()); // Martin
 		result.add(new SpaceMenace()); // Theo
 
@@ -103,9 +105,9 @@ public class Arena {
 		result.add(new HanTzu());
 		result.add(new Jane());
                 
-                // Gene
-                result.add(new G02_Wave());
-                result.add(new G04_Random());
+       // Gene
+        result.add(new G02_Wave());
+        result.add(new G04_Random());
 
 		// Peter
 		result.add(new DumbVirus());
@@ -114,6 +116,8 @@ public class Arena {
 		// Jan
 		result.add(new FriendlyPirates());
 
+		// Lena
+		result.add(new Turambar());
 		return result;
 	}
 }
