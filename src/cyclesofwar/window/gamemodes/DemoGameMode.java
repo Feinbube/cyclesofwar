@@ -15,8 +15,8 @@ import java.util.List;
 public class DemoGameMode extends GameMode {
 
     private final int speed = 3;
-    private final int titleBlendingTime = 80;
-    private final int statisticsBlendingTime = 300;
+    private final int titleBlendingTime = 70;
+    private final int statisticsBlendingTime = 200;
     
     private DemoStates state = DemoStates.TITLETOARENA;    
     
