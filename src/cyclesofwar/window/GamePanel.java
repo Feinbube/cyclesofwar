@@ -65,7 +65,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 		playerSelection = new PlayerSelectionGameMode(this);
                 demo = new DemoGameMode(this);
 
-		gameMode = liveGame;
+		gameMode = demo;
 		liveGame.resume();
 
 		timer = new Timer(20, this);
