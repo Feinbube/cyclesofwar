@@ -53,7 +53,6 @@ public class Arena {
         result.add(new DumbVirus()); // Peter	
         result.add(new Jane()); // Frank
         result.add(new FriendlyPirates()); // Jan
-        result.add(new Turambar()); // Lena
 		result.add(new Cratters()); // Martin
 		result.add(new SpaceMenace()); // Theo
 
@@ -115,9 +114,6 @@ public class Arena {
 		
 		// Jan
 		result.add(new FriendlyPirates());
-
-		// Lena
-		result.add(new Turambar());
 		return result;
 	}
 }
