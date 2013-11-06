@@ -96,8 +96,7 @@ public class Prediction {
 	public static Prediction getPrediction(Player player, Planet planet, double time) {
 		Prediction result = new Prediction(planet);
 
-		List<Fleet> fleets = player.getFleetsWithTarget(planet);
-		Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
+		List<Fleet> fleets = player.getFleetsWithTargetSortedByArrivalTime(planet);
 		for (Fleet fleet : fleets) {
 			if (fleet.getTimeToTarget() > time) {
 				break;

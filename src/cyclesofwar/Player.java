@@ -226,18 +226,20 @@ public abstract class Player extends Sortable {
 	public List<Fleet> getAllEnemyFleets() {
 		return hostileOnly(getAllFleets(), this);
 	}
-
+        
+        /*
+	 * Deprecated! use getFleetsWithTargetSortedByArrivalTime(Planet target) instead!
+	 */
+        @Deprecated
+	public List<Fleet> getFleetsWithTarget(Planet target) {
+		return universe.getFleetsWithTargetSortedByArrivalTime(target);
+	}
+        
 	/*
 	 * returns all fleets targeting the specified planet
 	 */
-	public List<Fleet> getFleetsWithTarget(Planet target) {
-		List<Fleet> result = new ArrayList<>();
-		for (Fleet fleet : this.getAllFleets()) {
-			if (fleet.getTarget() == target) {
-				result.add(fleet);
-			}
-		}
-		return result;
+	public List<Fleet> getFleetsWithTargetSortedByArrivalTime(Planet target) {
+		return universe.getFleetsWithTargetSortedByArrivalTime(target);
 	}
 
 	/*
@@ -503,12 +505,7 @@ public abstract class Player extends Sortable {
 	 * given no new fleet is created  
 	 */
 	public double getlastFleetArrivalTime() {
-		List<Fleet> fleets = this.getAllFleets();
-		if (fleets.isEmpty()) {
-			return 0;
-		}
-		Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
-		return fleets.get(fleets.size() - 1).getTimeToTarget();
+		return universe.getlastFleetArrivalTime();
 	}
         
         /*
