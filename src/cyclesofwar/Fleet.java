@@ -29,6 +29,7 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 	private final int force;
 
 	private double distanceToTarget;
+        private double timeToTarget;
 
 	private Formation formation = Formation.SWARM;
 
@@ -41,6 +42,7 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 		double yDiff = target.getY() - this.y;
 
 		distanceToTarget = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+                timeToTarget = distanceToTarget / getFlightSpeed();
 	}
 
 	private static int checkForce(Planet start, Planet target, int force) {
@@ -81,6 +83,7 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 		double sqrt = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
 		distanceToTarget = sqrt;
+                timeToTarget = distanceToTarget / getFlightSpeed();
 
 		if (sqrt < getFlightSpeed() * elapsedSeconds)
 			hit(sqrt);
@@ -127,7 +130,8 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 	 * time till the fleet arrives at the target planet in seconds
 	 */
 	public double getTimeToTarget() {
-		return getDistanceToTarget() / getFlightSpeed();
+		// return getDistanceToTarget() / getFlightSpeed();
+            return timeToTarget;
 	}
 
 	/*
