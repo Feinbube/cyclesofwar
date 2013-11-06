@@ -16,6 +16,7 @@ public class Planet extends GameObject {
     private double forces;
     private double newForces;
     private final double productionRatePerSecond;
+    private final double productionRatePerRound;
 
     private double[] distances;
 
@@ -54,7 +55,7 @@ public class Planet extends GameObject {
      * gets the amount of forces that are added to the planet by round
      */
     public double getProductionRatePerRound() {
-        return productionRatePerSecond * Universe.getRoundDuration();
+        return productionRatePerRound;
     }
     
     public double getActualProductionPerSecond() {
@@ -90,6 +91,8 @@ public class Planet extends GameObject {
         }
 
         this.productionRatePerSecond = productionRatePerSecond;
+        this.productionRatePerRound = productionRatePerSecond * Universe.getRoundDuration();
+        
         forces = productionRatePerSecond * 10;
         newForces = forces;
         lastTimeOwnershipChanged = universe.getNow();
