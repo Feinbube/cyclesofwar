@@ -79,7 +79,7 @@ public abstract class BattleSchoolStudent extends Player {
 
 	protected int enemyForcesArrivingNextRound(Planet planet) {
 		int result = 0;
-		for (Fleet fleet : Fleet.sortedBy(Fleet.ArrivalTimeComparator, hostileOnly(getFleetsWithTarget(planet)))) {
+		for (Fleet fleet : hostileOnly(getFleetsWithTargetSortedByArrivalTime(planet))) {
 			if (fleet.getRoundsToTarget() <= 1) {
 				result += fleet.getForce();
 			}
@@ -89,7 +89,7 @@ public abstract class BattleSchoolStudent extends Player {
 
 	protected int myForcesArrivingNextRound(Planet planet) {
 		int result = 0;
-		for (Fleet fleet : Fleet.sortedBy(Fleet.ArrivalTimeComparator, mineOnly((getFleetsWithTarget(planet))))) {
+		for (Fleet fleet : mineOnly((getFleetsWithTargetSortedByArrivalTime(planet)))) {
 			if (fleet.getRoundsToTarget() <= 1) {
 				result += fleet.getForce();
 			}

@@ -180,7 +180,7 @@ public class Planet extends GameObject {
             getOthersByDistanceCache = getOthers();
             sortByDistanceTo(getOthersByDistanceCache, this);
         }
-        return getOthersByDistanceCache;
+        return new ArrayList<>(getOthersByDistanceCache);
     }
 
     /*

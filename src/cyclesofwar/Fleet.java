@@ -15,7 +15,7 @@ import java.util.Comparator;
  * 
  * you can also chose between various formations (which is just a rendering gimmick and does not affect game logic at all)
  */
-public class Fleet extends GameObject {
+public class Fleet extends GameObject implements Comparable<Fleet> {
 
 	/*
 	 * chose a formation to make your fleet look unique just for rendering. does
@@ -172,4 +172,9 @@ public class Fleet extends GameObject {
 			return Double.compare(one.getTimeToTarget(), other.getTimeToTarget());
 		}
 	};
+        
+        @Override
+        public int compareTo(Fleet other) {
+            return ArrivalTimeComparator.compare(this, other);
+        }
 }

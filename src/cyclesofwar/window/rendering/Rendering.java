@@ -4,9 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.MultipleGradientPaint.CycleMethod;
-import java.awt.RadialGradientPaint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -345,12 +342,14 @@ public class Rendering {
         drawSelection(g, "planets", possiblePlanetsPerPlayer, selectedNumberOfPlanetsPerPlayer, marginLeft, marginTop + 150, left);
         drawSelection(g, "sizefactors", possibleUniverseSizes, selectedUniverseSize, marginLeft, marginTop + 110, left);
 
-        drawText(g, marginLeft, size.height - marginTop - 80, "chose game mode:", Color.yellow, null, f);
+        drawText(g, marginLeft, size.height - marginTop - 100, "chose game mode:", Color.yellow, null, f);
 
-        drawButton(g, "Live Mode", "Live Mode", 15 + marginLeft, size.height - marginTop, HAlign.LEFT, 22, 20, Color.yellow);
-        drawButton(g, "Tournament Mode", "Tournament", size.width / 3, size.height - marginTop, HAlign.LEFT, 22, 20, Color.yellow);
-        drawButton(g, "Arena Mode", "Arena", size.width / 3, size.height - marginTop, HAlign.RIGHT, 22, 20, Color.yellow);
-        drawButton(g, "Demo Mode", "Demo Mode", 15 + marginLeft, size.height - marginTop, HAlign.RIGHT, 22, 20, Color.yellow);
+        int wSteps = (size.width-marginLeft*2) / 5;
+        int w = (int)(wSteps * 0.7);
+        drawFancyButton(g, "Live Mode", "LIVE", marginLeft + wSteps, size.height - marginTop, w, 60, HAlign.CENTER, 22, 5, Color.blue.brighter(), Color.cyan);
+        drawFancyButton(g, "Tournament Mode", "TOURNAMENT", marginLeft + wSteps*2, size.height - marginTop, w, 60, HAlign.CENTER, 20, 5, Color.blue.brighter(), Color.cyan);
+        drawFancyButton(g, "Arena Mode", "ARENA",  marginLeft + wSteps*3, size.height - marginTop, w, 60, HAlign.CENTER, 22, 5, Color.blue.brighter(), Color.cyan);
+        drawFancyButton(g, "Demo Mode","DEMO", marginLeft + wSteps*4, size.height - marginTop, w, 60, HAlign.CENTER, 22, 5, Color.blue.brighter(), Color.cyan);
     }
 
     private <T> void drawSelection(Graphics g, String id, List<T> possibleValues, T selectedValue, int marginLeft, int marginTop, int left) {
@@ -396,13 +395,7 @@ public class Rendering {
         int w = g.getFontMetrics(f).stringWidth(caption);
         int h = g.getFontMetrics(f).getHeight();
 
-        if (hAlign == HAlign.RIGHT) {
-            x = size.width - w - x;
-        } else {
-            if (hAlign == HAlign.CENTER) {
-                x = x - w / 2;
-            }
-        }
+        x = alignHorizontally(hAlign, x, w);
 
         float[] hsv = new float[3];
         Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), hsv);
@@ -413,6 +406,44 @@ public class Rendering {
             g.setColor(Color.getHSBColor(hsv[0], hsv[1], (float) ((2.0 * buttonBorderSize) / (i + buttonBorderSize))));
             g.drawRect(x - i - 2, y - i + 4 - h, w + 2 * i + 2, h + 2 * i - 1);
         }
+    }
+    
+    private void drawFancyButton(Graphics g, String id, String caption, int x, int y, int w, int h, HAlign hAlign, int fontSize, int buttonBorderSize, Color bc, Color fc) {
+        Font f = getFont(Font.BOLD, fontSize);
+
+        if (hAlign == HAlign.RIGHT) {
+            x = size.width - w - x;
+        } else {
+            if (hAlign == HAlign.CENTER) {
+                x = x - w / 2;
+            }
+        }
+
+        bc = new Color(bc.getRed(), bc.getGreen(), bc.getBlue(), 32);
+        
+        g.setColor(bc);
+        g.fillRect(x, y-h, w, h);
+        
+        fc = new Color(fc.getRed(), fc.getGreen(), fc.getBlue(), 128);
+        g.setColor(fc);
+        
+        g.fillRect(x, y-h, w, buttonBorderSize);
+        g.fillRect(x, y-buttonBorderSize, w, buttonBorderSize);
+        g.fillRect(x, y-h+buttonBorderSize, buttonBorderSize, h-buttonBorderSize*2);
+        g.fillRect(x+w-buttonBorderSize, y-h+buttonBorderSize, buttonBorderSize, h-buttonBorderSize*2);
+        
+        g.fillPolygon(
+                new int[]{x+buttonBorderSize, x+buttonBorderSize+buttonBorderSize*4+buttonBorderSize*3, x+buttonBorderSize+buttonBorderSize*4, x+buttonBorderSize}, 
+                new int[]{y-h+buttonBorderSize, y-h+buttonBorderSize, y-h+buttonBorderSize+buttonBorderSize*2, y-h+buttonBorderSize+buttonBorderSize*2}, 4);
+        
+        g.fillPolygon(
+                new int[]{x+w-buttonBorderSize, x+w-buttonBorderSize-buttonBorderSize*4-buttonBorderSize*3, x+w-buttonBorderSize-buttonBorderSize*4, x+w-buttonBorderSize}, 
+                new int[]{y-buttonBorderSize, y-buttonBorderSize, y-buttonBorderSize-buttonBorderSize*2, y-buttonBorderSize-buttonBorderSize*2}, 4);
+        
+        fc = new Color(fc.getRed(), fc.getGreen(), fc.getBlue(), 255);
+        drawText(g, x+w/2, y-h/2, caption, fc, null, HAlign.CENTER, VAlign.CENTER, f);
+        
+        remember(x, y - h, w, h, id);
     }
 
     private void drawBorder(Graphics g, int posX, int posY, int w, int h) {
@@ -593,20 +624,11 @@ public class Rendering {
     private int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, Font font) {
         g.setFont(font);
 
-        int w = g.getFontMetrics().stringWidth(s);
-        int h = g.getFontMetrics().getHeight();
-
-        if (hAlgin == HAlign.CENTER) {
-            x -= w / 2;
-        } else if (hAlgin == HAlign.RIGHT) {
-            x -= w;
-        }
-
-        if (vAlign == VAlign.CENTER) {
-            y -= h / 2;
-        } else if (vAlign == VAlign.TOP) {
-            y -= h;
-        }
+        int w = g.getFontMetrics(font).stringWidth(s);
+        int h = g.getFontMetrics(font).getHeight();
+        
+        x = alignHorizontally(hAlgin, x, w);
+        y = alignVertically(vAlign, y, h);
 
         if (bc != null) {
             g.setColor(bc);
@@ -617,6 +639,24 @@ public class Rendering {
         g.drawString(s, x, y + h);
 
         return x + w;
+    }
+
+    private int alignHorizontally(HAlign hAlgin, int x, int w) {
+        if (hAlgin == HAlign.CENTER) {
+            x -= w / 2;
+        } else if (hAlgin == HAlign.RIGHT) {
+            x -= w;
+        }
+        return x;
+    }
+    
+    private int alignVertically(VAlign vAlign, int y, int h) {
+        if (vAlign == VAlign.CENTER) {
+            y -= h / 2;
+        } else if (vAlign == VAlign.TOP) {
+            y -= h;
+        }
+        return y;
     }
 
     public <T> T getTagAtPosition(Class c, int x, int y) {
