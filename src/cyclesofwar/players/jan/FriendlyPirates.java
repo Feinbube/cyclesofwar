@@ -37,7 +37,7 @@ public class FriendlyPirates extends Player {
 	
 	private int getEnemyForces(Planet p) {
 		int incomingForces = 0;
-		for(Fleet f : getFleetsWithTargetSortedByArrivalTime(p))
+		for(Fleet f : getFleetsWithTarget(p))
 			if(!f.getPlayer().equals(this))
 				incomingForces += f.getForce();
 		return incomingForces;
@@ -45,7 +45,7 @@ public class FriendlyPirates extends Player {
 	
 	private int getAlliedForces(Planet p) {
 		int incomingForces = 0;
-		for(Fleet f : getFleetsWithTargetSortedByArrivalTime(p))
+		for(Fleet f : getFleetsWithTarget(p))
 			if(f.getPlayer().equals(this))
 				incomingForces += f.getForce();
 		return incomingForces;

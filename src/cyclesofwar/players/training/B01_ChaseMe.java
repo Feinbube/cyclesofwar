@@ -39,7 +39,7 @@ public class B01_ChaseMe extends Player {
 		int result = 0;
 		
 		// look at all hostile fleets heading towards this planet
-		for (Fleet fleet : this.hostileOnly(this.getFleetsWithTargetSortedByArrivalTime(planet))) {
+		for (Fleet fleet : this.hostileOnly(this.getFleetsWithTarget(planet))) {
 			
 			// if they arrive within the next round
 			if (fleet.getRoundsToTarget() <= 1) {

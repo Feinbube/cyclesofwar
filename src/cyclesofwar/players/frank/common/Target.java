@@ -149,7 +149,8 @@ public class Target {
 	private static int getFleetsToKeep(Jeesh player, Prediction prediction, int fleetsToConquer, double time) {
 		prediction.update(player, fleetsToConquer, time);
 
-		List<Fleet> fleets = player.getFleetsWithTargetSortedByArrivalTime(prediction.getPlanet());
+		List<Fleet> fleets = player.getFleetsWithTarget(prediction.getPlanet());
+		Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
 
 		for (Fleet fleet : fleets) {
 			if (fleet.getTimeToTarget() < time) {

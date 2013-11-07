@@ -87,10 +87,10 @@ public class Prediction extends GameObject {
     protected void update(double elapsedSeconds) {
         reset();
 
+        List<Fleet> fleets = player.getFleetsWithTarget(planet);
+        Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
+
         double roundDuration = Universe.getRoundDuration();
-        
-        List<Fleet> fleets = player.getFleetsWithTargetSortedByArrivalTime(planet);
-        
         while (time < elapsedSeconds) {
             updatePlanet();
             updateFleets(fleets, time);

@@ -29,11 +29,9 @@ public class Universe {
 
     private final SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<>();
     private final List<Fleet> newFleets = new ArrayList<>();
-    
-    // caches for better performance
-    private final Map<Planet, SortedSet<Fleet>> fleetsWithTargetCache = new HashMap<>();
-    private double lastFleetArrivalTime = 0;
 
+    private double lastFleetArrivalTime = 0.0;
+    
     public Universe(long seed, List<Player> combatants, int planetCountPerPlayer, double universeSizeFactor) {
         gameOver = true;
 
@@ -54,10 +52,9 @@ public class Universe {
 
         fleets.clear();
         fleetsAtDestination.clear();
-        
-        fleetsWithTargetCache.clear();
-        lastFleetArrivalTime = 0;
 
+        lastFleetArrivalTime = 0.0;
+        
         players.clear();
         for (Player player : combatants) {
             Player freshOne = player.freshOne();
@@ -70,7 +67,6 @@ public class Universe {
 
         for (Planet planet : planets) {
             planet.calculateDistances();
-            fleetsWithTargetCache.put(planet, new TreeSet<Fleet>());
         }
     }
 
@@ -110,7 +106,6 @@ public class Universe {
         for (Fleet fleet : fleetsAtDestination.values()) {
             fleet.land();
             fleets.remove(fleet);
-            fleetsWithTargetCache.get(fleet.getTarget()).remove(fleet);
         }
         fleetsAtDestination.clear();
 
@@ -150,7 +145,6 @@ public class Universe {
 
         for (Fleet newFleet : newFleets) {
             fleets.add(newFleet);
-            fleetsWithTargetCache.get(newFleet.getTarget()).add(newFleet);
         }
         newFleets.clear();
 
@@ -304,22 +298,6 @@ public class Universe {
 
     public Advise getAdvise(Planet planet, double startTime, double endTime) {
         return new Advise(this, currentPlayer, planet, startTime, endTime);
-    }
-
-    public List<Fleet> getFleetsWithTargetSortedByArrivalTime(Planet target) {        
-        SortedSet<Fleet> result = new TreeSet<>(fleetsWithTargetCache.get(target));
-        result.addAll(fleetsWithTarget(filterFleetsOf(newFleets, currentPlayer), target));
-        return new ArrayList<>(result);
-    }
-    
-    private List<Fleet> fleetsWithTarget(List<Fleet> fleets, Planet target) {
-        List<Fleet> result = new ArrayList<>();
-        for (Fleet fleet : fleets) {
-                if (fleet.getTarget() == target) {
-                        result.add(fleet);
-                }
-        }
-        return result;
     }
 
     public double getlastFleetArrivalTime() {

@@ -41,7 +41,7 @@ public class Turambar extends Player {
 					
 					int required = (int)f.getForce()+1;
 					if ((int)mine - this.getAdvise(p, p.getTimeTo(f.getTarget())).getForcesToKeep() > required) {
-						this.sendFleet(p, required, f.getTarget());
+						this.sendFleetUpTo(p, required, f.getTarget());
 						mine -= required;
 					}
 				}
@@ -69,9 +69,9 @@ public class Turambar extends Player {
 		if (mine <= 1) return mine;
 		
 		int required 	= (int)-getPrediction(foreign, p.getTimeTo(foreign)).getBalance();
-		int available 	= (int)(mine - this.getAdvise(p, p.getTimeTo(foreign)).getForcesToKeep());
+		int available 	= (int)(mine - this.getAdvise(p, p.getTimeTo(foreign)).getForcesToKeep());               
 		if (required > 0 && available > required) {
-			this.sendFleet(p, available > required ? required+1 : required, foreign);
+			this.sendFleetUpTo(p, available > required ? required+1 : required, foreign);
 			mine -= required;
 		}
 		return mine;
