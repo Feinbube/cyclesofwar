@@ -16,7 +16,7 @@ import java.util.Comparator;
  * you can also chose between various formations (which is just a rendering gimmick and does not affect game logic at all)
  */
 public class Fleet extends GameObject implements Comparable<Fleet> {
-
+    
 	/*
 	 * chose a formation to make your fleet look unique just for rendering. does
 	 * not affect game logic at all
@@ -30,6 +30,8 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 
 	private double distanceToTarget;
         private double timeToTarget;
+        
+        private final double flightSpeed;
 
 	private Formation formation = Formation.SWARM;
 
@@ -41,8 +43,10 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 		double xDiff = target.getX() - this.x;
 		double yDiff = target.getY() - this.y;
 
+                flightSpeed = getFlightSpeed();
+                
 		distanceToTarget = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-                timeToTarget = distanceToTarget / getFlightSpeed();
+                timeToTarget = distanceToTarget / flightSpeed;
 	}
 
 	private static int checkForce(Planet start, Planet target, int force) {
@@ -83,16 +87,16 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 		double sqrt = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
 		distanceToTarget = sqrt;
-                timeToTarget = distanceToTarget / getFlightSpeed();
+                timeToTarget = distanceToTarget / flightSpeed;
 
-		if (sqrt < getFlightSpeed() * elapsedSeconds)
+		if (sqrt < flightSpeed * elapsedSeconds)
 			hit(sqrt);
 
 		xDiff = xDiff / sqrt;
 		yDiff = yDiff / sqrt;
 
-		x -= getFlightSpeed() * elapsedSeconds * xDiff;
-		y -= getFlightSpeed() * elapsedSeconds * yDiff;
+		x -= flightSpeed * elapsedSeconds * xDiff;
+		y -= flightSpeed * elapsedSeconds * yDiff;
 	}
 
 	private void hit(double distance) {
@@ -130,8 +134,7 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 	 * time till the fleet arrives at the target planet in seconds
 	 */
 	public double getTimeToTarget() {
-		// return getDistanceToTarget() / getFlightSpeed();
-            return timeToTarget;
+		return timeToTarget;
 	}
 
 	/*

@@ -73,12 +73,14 @@ public class Advise extends GameObject {
     protected void update(double elapsedSeconds) {
         reset();
 
-        double roundDuration = Universe.getRoundDuration();
-        List<Fleet> fleets = removeEarlyFleets(player.getFleetsWithTargetSortedByArrivalTime(planet), this.startTime);
+        List<Fleet> fleets = removeEarlyFleets(player.getFleetsWithTarget(planet), this.startTime);
         
         if(!this.player.containsHostileItem(fleets))
             return;
+        
+        Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
 
+        double roundDuration = Universe.getRoundDuration();
         while (time < elapsedSeconds) {
             updatePlanet();
             updateFleets(fleets, time);
