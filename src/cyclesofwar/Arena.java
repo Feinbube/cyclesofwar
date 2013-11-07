@@ -9,7 +9,6 @@ import cyclesofwar.players.frank.*;
 import cyclesofwar.players.frank.gene.training.*;
 import cyclesofwar.players.jan.FriendlyPirates;
 import cyclesofwar.players.theo.*;
-import cyclesofwar.players.lena.*;
 import cyclesofwar.players.training.*;
 import de.loewis.*;
 
