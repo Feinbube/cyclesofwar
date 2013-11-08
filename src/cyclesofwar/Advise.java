@@ -13,6 +13,7 @@ public class Advise extends GameObject {
     private double forcesToKeep;
     
     private final Planet planet;
+    private final double productionRate;
     
     private double startTime;
     private double endTime;
@@ -54,6 +55,7 @@ public class Advise extends GameObject {
     Advise(Universe universe, Player player, Planet planet, double startTime, double endTime) {
         super(universe, player, planet.getX(), planet.getY());
         this.planet = planet;
+        this.productionRate = this.planet.getProductionRatePerRound();
         this.startTime = startTime;
 
         update(endTime);
@@ -93,7 +95,7 @@ public class Advise extends GameObject {
 
     private void updatePlanet() {
         if (this.planet.getPlayer() != Player.NonePlayer) {
-            this.forces += this.planet.getProductionRatePerRound();
+            this.forces += this.productionRate;
         }
     }
 
@@ -111,9 +113,10 @@ public class Advise extends GameObject {
     private void updateFleets(List<Fleet> fleets, double time) {
         List<Fleet> activeFleets = new ArrayList<>();
         for (Fleet fleet : fleets) {
-            if (fleet.getTimeToTarget() <= time) {
-                activeFleets.add(fleet);
-            }
+            if (fleet.getTimeToTarget() > time) {
+                break;
+            }    
+            activeFleets.add(fleet);
         }
 
         for (Fleet fleet : activeFleets) {

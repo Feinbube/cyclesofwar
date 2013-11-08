@@ -217,7 +217,7 @@ public class Universe {
         }
 
         if (force < 1) {
-            throw new IllegalArgumentException("fleet size must be at least 1");
+            throw new IllegalArgumentException("fleet size must be at least 1, was: " + force);
         }
 
         if (!currentPlayer.isMyPlanet(origin)) {
