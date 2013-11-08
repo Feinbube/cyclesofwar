@@ -118,12 +118,11 @@ public class Planet extends GameObject {
             forces += fleet.getForce();
         } else {
             forces -= fleet.getForce();
-        }
-
-        if (forces < 0) {
-            forces = -forces;
-            this.player = fleet.getPlayer();
-            lastTimeOwnershipChanged = universe.getNow();
+            if (forces < 0) {
+                forces = -forces;
+                this.player = fleet.getPlayer();
+                lastTimeOwnershipChanged = universe.getNow();
+            }
         }
     }
 
