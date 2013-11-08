@@ -116,12 +116,12 @@ public class Prediction extends GameObject {
         }
 
         for (Fleet fleet : activeFleets) {
-            this.updateFleet(fleet.getPlayer(), fleet.getForce(), fleet.getTimeToTarget());
+            this.updateFleet(fleet.getPlayer(), fleet.getForce());
             fleets.remove(fleet);
         }
     }
 
-    private void updateFleet(Player player, int force, double timeToTarget) {
+    private void updateFleet(Player player, int force) {
 
         if (this.planetOwner == player) {
             this.forces += force;
