@@ -13,6 +13,8 @@ import java.util.List;
 public class Prediction extends GameObject {
 
     private final Planet planet;
+    private final double productionRate;
+    
     private Player planetOwner;
     private double forces;
     private double lastTimeOwnershipChanged;
@@ -73,6 +75,7 @@ public class Prediction extends GameObject {
     Prediction(Universe universe, Player player, Planet planet, double time) {
         super(universe, player, planet.getX(), planet.getY());
         this.planet = planet;
+        this.productionRate = planet.getProductionRatePerRound();
 
         update(time);
     }
@@ -103,16 +106,17 @@ public class Prediction extends GameObject {
 
     private void updatePlanet() {
         if (planetOwner != Player.NonePlayer) {
-            this.forces += this.planet.getProductionRatePerRound();
+            this.forces += this.productionRate;
         }
     }
 
     private void updateFleets(List<Fleet> fleets, double time) {
         List<Fleet> activeFleets = new ArrayList<>();
         for (Fleet fleet : fleets) {
-            if (fleet.getTimeToTarget() <= time) {
-                activeFleets.add(fleet);
+            if (fleet.getTimeToTarget() > time) {
+                break;                
             }
+            activeFleets.add(fleet);
         }
 
         for (Fleet fleet : activeFleets) {
