@@ -133,7 +133,5 @@ public class Advise extends GameObject {
                 this.forces = 0;
             }
         }
-
-        time = timeToTarget;
     }
 }

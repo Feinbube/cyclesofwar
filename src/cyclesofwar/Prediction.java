@@ -129,11 +129,9 @@ public class Prediction extends GameObject {
             this.forces -= force;
             if (this.forces < 0) {
                 this.planetOwner = player;
-                this.forces *= -1;
+                this.forces = -this.forces;
             }
         }
-
-        time = timeToTarget;
     }
 
     /*
