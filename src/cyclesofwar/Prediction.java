@@ -90,10 +90,10 @@ public class Prediction extends GameObject {
     protected void update(double elapsedSeconds) {
         reset();
 
-        List<Fleet> fleets = player.getFleetsWithTarget(planet);
+        double roundDuration = Universe.getRoundDuration();
+        List<Fleet> fleets = arrivingBefore(player.getFleetsWithTarget(planet), elapsedSeconds + roundDuration);
         Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
 
-        double roundDuration = Universe.getRoundDuration();
         while (time < elapsedSeconds) {
             updatePlanet();
             updateFleets(fleets, time);
@@ -111,6 +111,13 @@ public class Prediction extends GameObject {
     }
 
     private void updateFleets(List<Fleet> fleets, double time) {
+        for (Fleet fleet : arrivingBefore(fleets, time)) {
+            this.updateFleet(fleet.getPlayer(), fleet.getForce());
+            fleets.remove(fleet);
+        }
+    }
+
+    private List<Fleet> arrivingBefore(List<Fleet> fleets, double time) {
         List<Fleet> activeFleets = new ArrayList<>();
         for (Fleet fleet : fleets) {
             if (fleet.getTimeToTarget() > time) {
@@ -118,13 +125,9 @@ public class Prediction extends GameObject {
             }
             activeFleets.add(fleet);
         }
-
-        for (Fleet fleet : activeFleets) {
-            this.updateFleet(fleet.getPlayer(), fleet.getForce());
-            fleets.remove(fleet);
-        }
+        return activeFleets;
     }
-
+    
     private void updateFleet(Player player, int force) {
 
         if (this.planetOwner == player) {
