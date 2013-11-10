@@ -14,13 +14,14 @@ public class Advise extends GameObject {
     
     private final Planet planet;
     private final double productionRate;
+    private final Player planetOwner;
     
     private double startTime;
     private double endTime;
     
     private double forces;
     private double time;
-
+   
     /* 
      * the planet this prediction is foretelling
      */
@@ -57,6 +58,7 @@ public class Advise extends GameObject {
         this.planet = planet;
         this.productionRate = this.planet.getProductionRatePerRound();
         this.startTime = startTime;
+        this.planetOwner = planet.getPlayer();
 
         update(endTime);
     }
@@ -75,18 +77,18 @@ public class Advise extends GameObject {
     protected void update(double elapsedSeconds) {
         reset();
 
-        List<Fleet> fleets = removeEarlyFleets(player.getFleetsWithTarget(planet), this.startTime);
+        double roundDuration = Universe.getRoundDuration();
+        List<Fleet> fleets = removeEarlyFleets(arrivingBefore(player.getFleetsWithTarget(planet), elapsedSeconds + roundDuration), this.startTime);
         
         if(!this.player.containsHostileItem(fleets))
             return;
         
         Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
 
-        double roundDuration = Universe.getRoundDuration();
         while (time < elapsedSeconds) {
             updatePlanet();
             updateFleets(fleets, time);
-
+    
             time += roundDuration;
         }
 
@@ -94,7 +96,7 @@ public class Advise extends GameObject {
     }
 
     private void updatePlanet() {
-        if (this.planet.getPlayer() != Player.NonePlayer) {
+        if (planetOwner != Player.NonePlayer) {
             this.forces += this.productionRate;
         }
     }
@@ -106,23 +108,25 @@ public class Advise extends GameObject {
                 result.add(fleet);
             }
         }
-        
         return result;
     }
     
     private void updateFleets(List<Fleet> fleets, double time) {
-        List<Fleet> activeFleets = new ArrayList<>();
-        for (Fleet fleet : fleets) {
-            if (fleet.getTimeToTarget() > time) {
-                break;
-            }    
-            activeFleets.add(fleet);
-        }
-
-        for (Fleet fleet : activeFleets) {
+        for (Fleet fleet : arrivingBefore(fleets, time)) {
             this.updateFleet(fleet.getPlayer(), fleet.getForce());
             fleets.remove(fleet);
         }
+    }
+
+    private List<Fleet> arrivingBefore(List<Fleet> fleets, double time) {
+        List<Fleet> activeFleets = new ArrayList<>();
+        for (Fleet fleet : fleets) {
+            if (fleet.getTimeToTarget() > time) {
+                break;                
+            }
+            activeFleets.add(fleet);
+        }
+        return activeFleets;
     }
 
     private void updateFleet(Player player, int force) {

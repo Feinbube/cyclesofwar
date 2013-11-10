@@ -19,6 +19,7 @@ public class Planet extends GameObject {
     private final double productionRatePerRound;
 
     private double[] distances;
+    private double[] times;
 
     private double lastTimeOwnershipChanged;
 
@@ -153,7 +154,7 @@ public class Planet extends GameObject {
      * time needed to go from this planet to the other planet in seconds
      */
     public double getTimeTo(Planet other) {
-        return getDistanceTo(other) / Fleet.getFlightSpeed();
+        return times[other.getId()];                
     }
 
     /*
@@ -253,14 +254,16 @@ public class Planet extends GameObject {
         return player == Player.NonePlayer;
     }
 
-    void calculateDistances() {
+    void calculateDistancesAndTimes() {
         List<Planet> planets = universe.getAllPlanets();
         distances = new double[planets.size()];
+        times = new double[planets.size()];
         for (int i = 0; i < planets.size(); i++) {
             if (i != planets.get(i).getId()) {
                 throw new IllegalStateException();
             }
             distances[i] = calculateDistance(planets.get(i));
+            times[i] = distances[i] / Fleet.getFlightSpeed();
         }
     }
 
