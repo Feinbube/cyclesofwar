@@ -66,7 +66,7 @@ public class Universe {
         gameOver = false;
 
         for (Planet planet : planets) {
-            planet.calculateDistances();
+            planet.calculateDistancesAndTimes();
         }
     }
 
