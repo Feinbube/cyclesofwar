@@ -14,6 +14,8 @@ import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.tournament.TournamentBook;
 import cyclesofwar.tournament.TournamentRecord;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Rendering {
 
@@ -48,24 +50,30 @@ public class Rendering {
     private final Random random = new Random();
     private final List<Tag> tags = new ArrayList<>();
     
-    private Background background;
+    private final Map<Integer, Background> backgrounds = new TreeMap<>();
 
     public Rendering() {
         stars.clear();
         for (int i = 0; i < StarCount; i++) {
             stars.add(new Star(random));
         }
-        this.background = new Background(size.width, size.height);
     }
 
+    private Background getBackground(long universeSeed) {
+        Integer index = new Random(universeSeed).nextInt(10);
+        if (!backgrounds.containsKey(index)) {
+            backgrounds.put(index, new Background(size.width, size.height, universeSeed));
+        }
+        
+        return backgrounds.get(index);
+    }
+    
     public void setSize(Dimension size) {
         if (!this.size.equals(size)) {
             this.size = size;
             this.borderSize = planetSize(size.width, 5.0) / 2;
-        }
-        if (this.background.getWidth() != size.width || this.background.getHeight() != size.height) {
-            this.background = new Background(size.width, size.height);	
-        }
+            backgrounds.clear();
+        }        
     }
 
     public Font getFont(int style, int fontSize) {
@@ -77,7 +85,7 @@ public class Rendering {
             this.universeSize = universe.getSize();
         }
 
-        drawBackground(g);
+        drawBackground(g, universe.getSeed());
 
         if (!universe.isGameOver()) {
             drawPlanets(g, universe.getAllPlanets());
@@ -88,13 +96,13 @@ public class Rendering {
         }
     }
 
-    private void drawBackground(Graphics g) {
+    private void drawBackground(Graphics g, long universeSeed) {
 //        g.setColor(Color.black);
 //        g.fillRect(0, 0, size.width, size.height);
 //
 //        drawStars(g);
         
-        g.drawImage(this.background.getImage(), 0, 0, null);
+        g.drawImage(this.getBackground(universeSeed).getImage(), 0, 0, null);
     }
 
     public void drawSeed(Graphics g, long seed) {
@@ -114,7 +122,7 @@ public class Rendering {
     }
 
     public void drawTitleScreen(Graphics g) {
-        drawBackground(g);
+        drawBackground(g, 0);
         drawText(g, size.width / 2, size.height / 2, "Cycles of War", Color.yellow, null, HAlign.CENTER, VAlign.CENTER,
                 getFont(Font.BOLD, 48));
     }
@@ -312,7 +320,7 @@ public class Rendering {
     public void drawPlayerSelection(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers,
             List<Integer> possibleNumbersOfRounds, Integer selectedNumberOfRounds, List<Integer> possiblePlanetsPerPlayer,
             Integer selectedNumberOfPlanetsPerPlayer, List<Double> possibleUniverseSizes, double selectedUniverseSize) {
-        drawBackground(g);
+        drawBackground(g, 0);
 
         int marginLeft = 60;
         int marginTop = 40;
@@ -456,7 +464,7 @@ public class Rendering {
     }
 
     public void drawStatistics(Graphics g, TournamentBook tournament, String s, boolean showDetails) {
-        drawBackground(g);
+        drawBackground(g, 0);
 
         Font f = getFont(Font.PLAIN, 14);
 
@@ -494,7 +502,7 @@ public class Rendering {
         if (tournament.getGamesToPlayCount() > 0) {
             text = tournament.getGamesToPlayCount() + " games left, " + text;
         }
-        drawText(g, size.width - marginLeft, marginTop + (h + 2) * (tournament.getRankings().size() + 1), text, Color.white, Color.black, HAlign.RIGHT, VAlign.BOTTOM, f);
+        drawText(g, size.width - marginLeft, marginTop + (h + 2) * (tournament.getRankings().size() + 1), text, Color.white, null, HAlign.RIGHT, VAlign.BOTTOM, f);
     }
 
     private String percentage(double value) {

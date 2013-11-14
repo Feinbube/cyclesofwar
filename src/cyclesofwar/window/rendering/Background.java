@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.Random;
 
-import cyclesofwar.noise.PerlinNoise;
+import cyclesofwar.window.rendering.noise.PerlinNoise;
 
 public class Background {
 	private enum NEBULA_MODE {
@@ -39,11 +39,7 @@ public class Background {
 	final private Random        random;
 	final private BufferedImage image;
 	
-	public Background(final int width, final int height) {
-		this(width, height, 0);
-	}
-	
-	public Background(final int width, final int height, final int seed) {
+	public Background(final int width, final int height, final long seed) {
 		this.width  = width;
 		this.height = height;
 		this.random = new Random(seed);
@@ -73,7 +69,7 @@ public class Background {
 		
 		// generate nebula (...maybe)
 		NEBULA_MODE[] modes = NEBULA_MODE.values();
-		NEBULA_MODE   mode  = modes[random.nextInt(modes.length)];
+		NEBULA_MODE   mode  = NEBULA_MODE.FULL; // modes[random.nextInt(modes.length)];
 		
 		switch (mode) {
 		case NONE:

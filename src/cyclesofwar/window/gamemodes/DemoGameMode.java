@@ -15,8 +15,8 @@ import java.util.List;
 public class DemoGameMode extends GameMode {
 
     private final int speed = 3;
-    private final int titleBlendingTime = 70;
-    private final int statisticsBlendingTime = 200;
+    private final int titleBlendingTime = 50;
+    private final int statisticsBlendingTime = 100;
     
     private DemoStates state = DemoStates.TITLETOARENA;    
     
@@ -36,8 +36,8 @@ public class DemoGameMode extends GameMode {
     public DemoGameMode(GamePanel gamePanel) {
         super(gamePanel);
         
-        oneOnOneTournament = new TournamentBook(Arena.champions(), Arena.planetsPerPlayer, Arena.universeSizeFactor);
-        lastManStandingTournament = new TournamentBook(Arena.champions(), Arena.planetsPerPlayer, Arena.universeSizeFactor);
+        oneOnOneTournament = new TournamentBook(Arena.champions(), Arena.planetsPerPlayer, Arena.universeSizeFactor, 200);
+        lastManStandingTournament = new TournamentBook(Arena.champions(), Arena.planetsPerPlayer, Arena.universeSizeFactor, 200);
     }
 
     @Override
@@ -105,17 +105,19 @@ public class DemoGameMode extends GameMode {
             rendering.drawTitleScreen(g);
         } else if (state == DemoStates.ARENA) {
             rendering.drawUniverse(g, universe);
+            rendering.drawSeed(g, universe.getSeed());
         } else if (state == DemoStates.ARENASTATS) {
             rendering.drawStatistics(g, oneOnOneTournament, "1-On-1 Tournament", true);
         } else if (state == DemoStates.TITLETOTOURNAMENT) {
             rendering.drawTitleScreen(g);
         } else if (state == DemoStates.TOURNAMENT) {
             rendering.drawUniverse(g, universe);
+            rendering.drawSeed(g, universe.getSeed());
         } else if (state == DemoStates.TOURNAMENTSTATS) {
             rendering.drawStatistics(g, lastManStandingTournament, "Last Man Standing Tournament", false);
         }
         
-        rendering.drawControlInfo(g, "svn://code.hpi.uni-potsdam.de/cyclesofwar", 18);
+        rendering.drawControlInfo(g, "Join the action: svn://code.hpi.uni-potsdam.de/cyclesofwar", 18);
     }
 
     @Override
