@@ -518,4 +518,18 @@ public abstract class Player extends Sortable {
                 return Double.compare(player2.getPlanets().size(), player1.getPlanets().size());
             }
         };
+        
+        
+        /*
+         * used to sort players by force count (descending)
+         * 
+         * use Player.sortBy(ForceCountComparator, players, )
+         * or Player.sortedBy(ForceCountComparator, players, )
+         */
+        public static Comparator<Player> ForceCountComparator = new Comparator<Player>() {
+            @Override
+            public int compare(Player player1, Player player2) {
+                return Double.compare(player2.getFullForce(), player1.getFullForce());
+            }
+        };
 }
