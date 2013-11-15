@@ -12,6 +12,11 @@ clean:
 	rm -f src/cyclesofwar/*.class src/cyclesofwar/*/*.class src/cyclesofwar/*/*/*.class src/cyclesofwar/*/*/*/*.class *.time *.ooo *.lms ranking.new
 
 
+demo: updatereadonly clean all run
+
+updatereadonly:
+	svn up
+
 ranking.update:
 	svn --config-option config:tunnels:ssh='ssh -i cyclesofwar' up -q; \
         svn info > revision.new
