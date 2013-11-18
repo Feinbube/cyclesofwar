@@ -41,6 +41,10 @@ public class Universe {
 
         size = Math.sqrt(combatants.size()) * universeSizeFactor;
 
+        if(seed < 0) {
+            seed = -seed;
+        }
+        
         this.seed = seed;
         random.setSeed(seed);
 
