@@ -4,9 +4,11 @@ import java.awt.Color;
 
 public class ColorTools {
     
+    private static final float INT_TO_FLOAT_CONST = 1f / 255f;
+    
     // http://harmoniccode.blogspot.de/2011/04/bilinear-color-interpolation.html
     public static Color interpolate(Color c1, Color c2, float fraction) {
-        final float INT_TO_FLOAT_CONST = 1f / 255f;
+        
         fraction = Math.min(fraction, 1f);
         fraction = Math.max(fraction, 0f);
 
@@ -30,15 +32,28 @@ public class ColorTools {
         float blue = b1 + (d_b * fraction);
         float alpha = a1 + (d_a * fraction);
 
-        red = Math.min(red, 1f);
-        red = Math.max(red, 0f);
-        green = Math.min(green, 1f);
-        green = Math.max(green, 0f);
-        blue = Math.min(blue, 1f);
-        blue = Math.max(blue, 0f);
-        alpha = Math.min(alpha, 1f);
-        alpha = Math.max(alpha, 0f);
+        return newColor(red, green, blue, alpha);      
+    }
+    
+    public static Color transparent(Color c, float fraction) {
+        final float r = c.getRed() * INT_TO_FLOAT_CONST;
+        final float g = c.getGreen() * INT_TO_FLOAT_CONST;
+        final float b = c.getBlue() * INT_TO_FLOAT_CONST;
+        final float a = fraction;
+        
+        return newColor(r, g, b, a);
+    }
+    
+    private static Color newColor(float r, float g, float b, float a) {
+        r = Math.min(r, 1f);
+        r = Math.max(r, 0f);
+        g = Math.min(g, 1f);
+        g = Math.max(g, 0f);
+        b = Math.min(b, 1f);
+        b = Math.max(b, 0f);
+        a = Math.min(a, 1f);
+        a = Math.max(a, 0f);
 
-        return new Color(red, green, blue, alpha);      
+        return new Color(r, g, b, a);
     }
 }

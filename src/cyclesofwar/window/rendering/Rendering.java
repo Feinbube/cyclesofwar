@@ -16,8 +16,6 @@ import cyclesofwar.tournament.TournamentBook;
 import cyclesofwar.tournament.TournamentRecord;
 import cyclesofwar.window.rendering.textures.PlanetTexture;
 import cyclesofwar.window.rendering.textures.UniverseTexture;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -53,6 +51,7 @@ public class Rendering {
     private final List<Tag> tags = new ArrayList<>();
     
     private final Map<Integer, UniverseTexture> backgrounds = new TreeMap<>();
+    private final Map<Integer, PlanetTexture> planetTextures = new TreeMap();
 
     public Rendering() {
     }
@@ -71,6 +70,7 @@ public class Rendering {
             this.size = size;
             this.borderSize = planetSize(size.width, 5.0) / 2;
             backgrounds.clear();
+            planetTextures.clear();
         }        
     }
 
@@ -95,11 +95,6 @@ public class Rendering {
     }
 
     private void drawBackground(Graphics g, long universeSeed) {
-//        g.setColor(Color.black);
-//        g.fillRect(0, 0, size.width, size.height);
-//
-//        drawStars(g);
-        
         g.drawImage(this.getBackground(universeSeed).getImage(), 0, 0, null);
     }
 
@@ -134,29 +129,23 @@ public class Rendering {
     }
 
     private void drawPlanets(Graphics g, List<Planet> planets) {  
-        for( int i = 0; i < planets.size(); i++) {            
+        for( int i = 0; i < planets.size(); i++) {  
             Planet planet = planets.get(i);
-        
+
+            if(!planetTextures.containsKey(i) || !planetTextures.get(i).getColor().equals(planet.getPlayer().getPlayerBackColor())) {
+                final int planetSize = planetSize(g, planet.getProductionRatePerSecond());                
+                planetTextures.put(i, new PlanetTexture(planetSize, planetSize, i, planet.getPlayer().getPlayerBackColor()));
+            }     
+            
+            PlanetTexture planetTexture = planetTextures.get(i);
+            
             final int x = (int) getX(g, planet.getX());
             final int y = (int) getY(g, planet.getY());
-            final int planetSize = planetSize(g, planet.getProductionRatePerSecond());
-            
-            
-            final int uX = x - (planetSize >> 1);
-            final int uY = y - (planetSize >> 1);
+            final int uX = x - (planetTexture.getWidth() >> 1);
+            final int uY = y - (planetTexture.getHeight() >> 1);   
 
-            
-            BufferedImage image = new BufferedImage(planetSize, planetSize, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D canvas = image.createGraphics();
-            canvas.setColor(planet.getPlayer().getPlayerBackColor());
-            canvas.fillOval(0, 0, planetSize, planetSize);
-
-            PlanetTexture bg = new PlanetTexture(planetSize, planetSize, i, planet.getPlayer().getPlayerBackColor());
-            g.drawImage(bg.getImage(), uX, uY, null);
-            
-            g.setColor(planet.getPlayer().getPlayerBackColor());
-            // g.fillOval(uX, uY, planetSize, planetSize);
-            drawText(g, x, y, ((int) planet.getForces()) + "", planet.getPlayer().getPlayerForeColor(), null, HAlign.CENTER, VAlign.CENTER, 10);
+            g.drawImage(planetTexture.getImage(), uX, uY, null);            
+            drawText(g, x, y, ((int) planet.getForces()) + "", Color.WHITE, null, HAlign.CENTER, VAlign.CENTER, 10);
         }
     }
 
