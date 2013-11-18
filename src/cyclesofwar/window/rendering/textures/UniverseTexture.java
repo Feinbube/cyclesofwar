@@ -1,14 +1,11 @@
-package cyclesofwar.window.rendering;
+package cyclesofwar.window.rendering.textures;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.Random;
 
-import cyclesofwar.window.rendering.noise.PerlinNoise;
-
-public class Background {
+public class UniverseTexture extends Texture {
 	private enum NEBULA_MODE {
 		NONE,
 		FULL,
@@ -32,34 +29,17 @@ public class Background {
 	private static final double MIN_BRIGHTNESS   = 0.5;
 	private static final double MAX_BRIGHTNESS   = 5;
 	private static final double BRIGHTNESS_RANGE = MAX_BRIGHTNESS - MIN_BRIGHTNESS;
-	
-	final private int           width;
-	final private int           height;
+
 	final private int           stars;
-	final private Random        random;
-	final private BufferedImage image;
+
 	
-	public Background(final int width, final int height, final long seed) {
-		this.width  = width;
-		this.height = height;
-		this.random = new Random(seed);
-		this.stars  = MIN_STARS + random.nextInt(VAR_STARS);
-		this.image  = this.generate();
+	public UniverseTexture(final int width, final int height, final long seed) {
+            super(width, height, seed);	
+            this.stars  = MIN_STARS + random.nextInt(VAR_STARS);                
 	}
-	
-	public BufferedImage getImage() {
-		return this.image;
-	}
-	
-	public int getHeight() {
-		return this.height;
-	}
-	
-	public int getWidth() {
-		return this.width;
-	}
-	
-	private BufferedImage generate() {
+        
+        @Override
+	protected BufferedImage generate() {
 		// a bit nasty to do the nebula and star generation in one loop
 		// however due to performance reasons with image processing, we will do it anyway
 		BufferedImage image = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
@@ -86,12 +66,6 @@ public class Background {
 		this.stars(image);
 		
 		return image;
-	}
-	
-	private void pitchBlack(BufferedImage image) {
-		Graphics2D canvas = image.createGraphics();
-		canvas.setColor(Color.BLACK);
-		canvas.fillRect(0, 0, this.width, this.height);
 	}
 	
 	private void nebulaEverywhere(BufferedImage image, Color color) {

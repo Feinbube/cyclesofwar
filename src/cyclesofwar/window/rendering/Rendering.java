@@ -14,6 +14,10 @@ import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.tournament.TournamentBook;
 import cyclesofwar.tournament.TournamentRecord;
+import cyclesofwar.window.rendering.textures.PlanetTexture;
+import cyclesofwar.window.rendering.textures.UniverseTexture;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -44,25 +48,19 @@ public class Rendering {
     private Dimension size = new Dimension(800, 480);
     private double universeSize = 0.0;
     private int borderSize = 20;
-
-    private final List<Star> stars = new ArrayList<>();
-
+    
     private final Random random = new Random();
     private final List<Tag> tags = new ArrayList<>();
     
-    private final Map<Integer, Background> backgrounds = new TreeMap<>();
+    private final Map<Integer, UniverseTexture> backgrounds = new TreeMap<>();
 
     public Rendering() {
-        stars.clear();
-        for (int i = 0; i < StarCount; i++) {
-            stars.add(new Star(random));
-        }
     }
 
-    private Background getBackground(long universeSeed) {
+    private UniverseTexture getBackground(long universeSeed) {
         Integer index = new Random(universeSeed).nextInt(10);
         if (!backgrounds.containsKey(index)) {
-            backgrounds.put(index, new Background(size.width, size.height, universeSeed));
+            backgrounds.put(index, new UniverseTexture(size.width, size.height, universeSeed));
         }
         
         return backgrounds.get(index);
@@ -135,31 +133,30 @@ public class Rendering {
                 getFont(Font.PLAIN, 32));
     }
 
-    private void drawStars(Graphics g) {
-        for (Star star : stars) {
-            g.setColor(star.c);
-
-            int starSize = (int) (star.d * 4 + 1);
-            int x = (int) (size.width * star.x);
-            int y = (int) (size.height * star.y);
-            g.fillOval(x - starSize / 2, y - starSize / 2, starSize, starSize);
-        }
-    }
-
-    private void drawPlanets(Graphics g, List<Planet> planets) {
-        for (Planet planet : planets) {
+    private void drawPlanets(Graphics g, List<Planet> planets) {  
+        for( int i = 0; i < planets.size(); i++) {            
+            Planet planet = planets.get(i);
+        
             final int x = (int) getX(g, planet.getX());
             final int y = (int) getY(g, planet.getY());
             final int planetSize = planetSize(g, planet.getProductionRatePerSecond());
             
+            
             final int uX = x - (planetSize >> 1);
             final int uY = y - (planetSize >> 1);
 
-            g.setColor(planet.getPlayer().getPlayerBackColor());
-            g.fillOval(uX, uY, planetSize, planetSize);
+            
+            BufferedImage image = new BufferedImage(planetSize, planetSize, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D canvas = image.createGraphics();
+            canvas.setColor(planet.getPlayer().getPlayerBackColor());
+            canvas.fillOval(0, 0, planetSize, planetSize);
 
-            drawText(g, x, y, ((int) planet.getForces()) + "", planet.getPlayer().getPlayerForeColor(), null, HAlign.CENTER, VAlign.CENTER,
-                    10);
+            PlanetTexture bg = new PlanetTexture(planetSize, planetSize, i, planet.getPlayer().getPlayerBackColor());
+            g.drawImage(bg.getImage(), uX, uY, null);
+            
+            g.setColor(planet.getPlayer().getPlayerBackColor());
+            // g.fillOval(uX, uY, planetSize, planetSize);
+            drawText(g, x, y, ((int) planet.getForces()) + "", planet.getPlayer().getPlayerForeColor(), null, HAlign.CENTER, VAlign.CENTER, 10);
         }
     }
 
@@ -168,7 +165,7 @@ public class Rendering {
     }
 
     private int planetSize(int size, double productionRatePerSecond) {
-        return (int) (productionRatePerSecond * 7.0 * size / 1000.0);
+        return (int) ((productionRatePerSecond + 1.0) * 7.0 * size / 1000.0);
     }
 
     private double getX(Graphics g, double x) {
@@ -230,7 +227,7 @@ public class Rendering {
         double sinAngle = yDiff / dist;
         double cosAngle = xDiff / dist;
 
-        double length = Math.sqrt(d) * 5;
+        double length = Math.sqrt(d) * 5.0;
         for (int i = 0; i < d; i++) {
             double localx = random.nextDouble() * length;
             double localy;
