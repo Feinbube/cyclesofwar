@@ -17,6 +17,10 @@ public class PlanetTexture extends Texture {
                 this.color = color;
 	}
         
+        public Color getColor() {
+            return color;
+        }
+        
         @Override
 	protected BufferedImage generate() {
 		BufferedImage result = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
@@ -26,6 +30,16 @@ public class PlanetTexture extends Texture {
 
 		return result;
 	}
+        
+        private float getDistance(float x, float y, float midX, float midY) {
+            float x2 = x - midX;
+            x2 *= x2;
+            
+            float y2 = y - midY;
+            y2 *= y2;
+            
+            return (float)Math.sqrt(x2 + y2);
+        }
         
         private void nebulaEverywhere(BufferedImage image, Color color) {
 		int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
@@ -37,30 +51,47 @@ public class PlanetTexture extends Texture {
                 Color c3 = c2.darker();
                 Color c4 = c3.darker();
                 
+                Color atmosphere = ColorTools.interpolate(Color.BLUE, Color.WHITE, 0.8f);
+                
+                float w2 = width/2;
+                float w7 = width/7;
+                
                 float value = 0.5f;
 		for (int y = 0, yNoise = SEED; y < height ; ++y, ++yNoise) {
 			for (int x = 0, xNoise = SEED; x < width; ++x, ++xNoise) {
 				final double NOISE = PerlinNoise.noise(xNoise * ZOOM, yNoise * ZOOM);
 
-                                float x2 = x - width/2.0f;
-                                x2 *= x2;
+                                float d = getDistance(x, y, w2, height/2.0f);
                                 
-                                float y2 = y - height/2.0f;
-                                y2 *= y2;
+                                if(d < w2 - w7) { // planet
                                 
-                                float d = (float)Math.sqrt(x2 + y2);
-                                
-                                if(d < width/2) {
-                                
-                                    if(NOISE < value) {
-                                        float t = (float)NOISE * 1.0f/value;
-                                        pixels[y*width + x] = ColorTools.interpolate( ColorTools.interpolate(c2, c1, t), Color.BLACK, d * 2.0f/width - 0.4f  ).hashCode();
-                                    } else {
-                                        float t = (float)(NOISE-value) * 1.0f/value;
-                                        pixels[y*width + x] = ColorTools.interpolate( ColorTools.interpolate(c3, c4, t), Color.BLACK, d * 2.0f/width - 0.4f ).hashCode();
-                                    }
+                                    // continents
+                                    Color c = NOISE < value
+                                            ? ColorTools.interpolate(c2, c1, (float) NOISE * 1.0f/value) 
+                                            : ColorTools.interpolate(c3, c4, (float)(NOISE-value) * 1.0f/value);
                                     
-                                } else {
+                                    // darker at the edges
+                                    float d2 = getDistance(x, y, width/4.0f, height/4.0f); // spot not in the middle of the planet :)
+                                    c = ColorTools.interpolate( c, Color.BLACK, d2 * 2.0f/width - 0.35f  );
+                                    
+                                    // atmosphere
+                                    c = ColorTools.interpolate( c, atmosphere , 0.1f  );
+                                            
+                                    pixels[y*width + x] = c.hashCode();
+                                    
+                                } else if(d < w2 ) { // atmosphere
+                                    Color c = atmosphere;
+                                    
+                                    // darker at the edges
+                                    float d2 = getDistance(x, y, width/4.0f, height/4.0f); // spot not in the middle of the planet :)
+                                    d2 = d2 * 2.0f/width - 0.8f;
+                                    c = ColorTools.interpolate( c, Color.BLACK, d2 );
+                                    
+                                    // less visible at the edges
+                                    float alpha = (1.0f - ((d + w7 - w2)/w7)) * 0.35f;
+                                    pixels[y*width + x] = ColorTools.transparent(c, alpha).hashCode();
+                                    
+                                } else { // space
                                     pixels[y*width + x] = 0;
                                 }
 				
