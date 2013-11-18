@@ -14,6 +14,7 @@ import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.tournament.TournamentBook;
 import cyclesofwar.tournament.TournamentRecord;
+import cyclesofwar.window.HumanReadableLongConverter;
 import cyclesofwar.window.rendering.textures.PlanetTexture;
 import cyclesofwar.window.rendering.textures.UniverseTexture;
 import java.util.Map;
@@ -53,6 +54,10 @@ public class Rendering {
     private final Map<Integer, UniverseTexture> backgrounds = new TreeMap<>();
     private final Map<Integer, PlanetTexture> planetTextures = new TreeMap();
 
+    private final static HumanReadableLongConverter humanReadableLongConverter = new HumanReadableLongConverter();
+    
+    private final static Fps fps = new Fps();
+    
     public Rendering() {
     }
 
@@ -98,8 +103,14 @@ public class Rendering {
         g.drawImage(this.getBackground(universeSeed).getImage(), 0, 0, null);
     }
 
+    public void drawFps(Graphics g) {    
+        fps.update();
+        drawText(g, size.width - 5, 15, "fps: " + fps.toString(), Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
+    }
+            
     public void drawSeed(Graphics g, long seed) {
-        drawText(g, size.width - 5, 5, "seed: " + seed, Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
+        drawText(g, size.width - 5, 0, "human readable seed: \"" + humanReadableLongConverter.ToString(seed) + "\"", Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
+        drawFps(g);
     }
 
     public void drawControlInfo(Graphics g, String s) {

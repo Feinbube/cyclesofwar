@@ -117,7 +117,9 @@ public class DemoGameMode extends GameMode {
             rendering.drawStatistics(g, lastManStandingTournament, "Last Man Standing Tournament", false);
         }
         
-        rendering.drawControlInfo(g, "Join the action: svn://code.hpi.uni-potsdam.de/cyclesofwar", 18);
+        if (state != DemoStates.TITLETOARENA && state != DemoStates.TITLETOTOURNAMENT) {
+            rendering.drawControlInfo(g, "Join the action: svn://code.hpi.uni-potsdam.de/cyclesofwar", 18);
+        }
     }
 
     @Override
