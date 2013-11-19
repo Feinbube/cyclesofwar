@@ -1,8 +1,9 @@
 package cyclesofwar.window;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,21 +23,19 @@ public class HumanReadableLongConverter {
     public HumanReadableLongConverter(String dictionaryFileName) {
         try {
             this.wordlist = readFile(dictionaryFileName);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             this.wordlist = new ArrayList<>();
             Logger.getLogger(HumanReadableLongConverter.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (java.security.AccessControlException ex) {
-            this.wordlist = new ArrayList<>();
-            Logger.getLogger(HumanReadableLongConverter.class.getName()).log(Level.SEVERE, null, ex);            
         }
     }
 
     public HumanReadableLongConverter() {
-        this("en_US.dic");
+        this("/cyclesofwar/resources/dictionary.txt");
     }
 
     private List<String> readFile(String fileName) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        InputStream stream = getClass().getResourceAsStream(fileName);
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));        
         try {
             List<String> result = new ArrayList<>();
             String line = br.readLine();
