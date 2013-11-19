@@ -25,6 +25,9 @@ public class HumanReadableLongConverter {
         } catch (IOException ex) {
             this.wordlist = new ArrayList<>();
             Logger.getLogger(HumanReadableLongConverter.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (java.security.AccessControlException ex) {
+            this.wordlist = new ArrayList<>();
+            Logger.getLogger(HumanReadableLongConverter.class.getName()).log(Level.SEVERE, null, ex);            
         }
     }
 
