@@ -54,6 +54,7 @@ public class LiveGameMode extends GameMode {
 	@Override
 	protected void paintGame(Graphics g) {
 		rendering.drawUniverse(g, universe);
+                rendering.drawPlayers(g, universe.getPlayers());
 	}
 
 	@Override

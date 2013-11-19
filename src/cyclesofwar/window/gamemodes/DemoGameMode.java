@@ -105,20 +105,26 @@ public class DemoGameMode extends GameMode {
             rendering.drawTitleScreen(g);
         } else if (state == DemoStates.ARENA) {
             rendering.drawUniverse(g, universe);
-            rendering.drawSeed(g, universe.getSeed());
+            rendering.drawPlayerNames(g, universe.getPlayers());
+            rendering.drawCharts(g, universe.getPlayers());
+            // rendering.drawSeed(g, universe.getSeed());
+            rendering.drawFps(g);
         } else if (state == DemoStates.ARENASTATS) {
             rendering.drawStatistics(g, oneOnOneTournament, "1-On-1 Tournament", true);
         } else if (state == DemoStates.TITLETOTOURNAMENT) {
             rendering.drawTitleScreen(g);
         } else if (state == DemoStates.TOURNAMENT) {
             rendering.drawUniverse(g, universe);
-            rendering.drawSeed(g, universe.getSeed());
+            rendering.drawPlayerNames(g, universe.getPlayers());
+            rendering.drawCharts(g, universe.getPlayers());
+            // rendering.drawSeed(g, universe.getSeed());
+            rendering.drawFps(g);
         } else if (state == DemoStates.TOURNAMENTSTATS) {
             rendering.drawStatistics(g, lastManStandingTournament, "Last Man Standing Tournament", false);
         }
         
         if (state != DemoStates.TITLETOARENA && state != DemoStates.TITLETOTOURNAMENT) {
-            rendering.drawControlInfo(g, "Join the action: svn://code.hpi.uni-potsdam.de/cyclesofwar", 18);
+            rendering.drawControlInfo(g, "Join the action: svn://code.hpi.uni-potsdam.de/cyclesofwar", 16);
         }
     }
 
