@@ -15,6 +15,7 @@ import cyclesofwar.Universe;
 import cyclesofwar.tournament.TournamentBook;
 import cyclesofwar.tournament.TournamentRecord;
 import cyclesofwar.window.HumanReadableLongConverter;
+import cyclesofwar.window.rendering.textures.ColorTools;
 import cyclesofwar.window.rendering.textures.PlanetTexture;
 import cyclesofwar.window.rendering.textures.UniverseTexture;
 import java.util.Map;
@@ -32,6 +33,16 @@ public class Rendering {
         Object getTag(TournamentBook tournament, int i) {
             return null;
         }
+    }
+    
+    class ValueAndColor {
+        public double value;
+        public Color color;
+
+        public ValueAndColor(double value, Color color) {
+            this.value = value;
+            this.color = color;
+        }               
     }
 
     enum HAlign {
@@ -73,14 +84,18 @@ public class Rendering {
     public void setSize(Dimension size) {
         if (!this.size.equals(size)) {
             this.size = size;
-            this.borderSize = planetSize(size.width, 5.0) / 2;
+            this.borderSize = planetSize(size.width, 5.0) / 2 + 30;
             backgrounds.clear();
             planetTextures.clear();
         }        
     }
 
     public Font getFont(int style, int fontSize) {
-        return new Font("Courier New", style, (int) (fontSize * 0.5 + fontSize * 0.5 * size.width / 1000.0));
+        return new Font("Courier New", style, (int)getScaled(fontSize));
+    }
+    
+    public double getScaled(double value) {
+        return value * 0.5 + value * 0.5 * size.width / 1000.0;
     }
 
     public void drawUniverse(Graphics g, Universe universe) {
@@ -93,7 +108,6 @@ public class Rendering {
         if (!universe.isGameOver()) {
             drawPlanets(g, universe.getAllPlanets());
             drawFleets(g, universe.getAllFleets(), universe.getNow());
-            drawPlayers(g, universe.getPlayers());
         } else {
             drawGameOverScreen(g, universe.getWinner().getName());
         }
@@ -105,12 +119,11 @@ public class Rendering {
 
     public void drawFps(Graphics g) {    
         fps.update();
-        drawText(g, size.width - 5, 15, "fps: " + fps.toString(), Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
+        drawText(g, size.width - 5, 0, fps.toString() + "fps", Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
     }
             
     public void drawSeed(Graphics g, long seed) {
         drawText(g, size.width - 5, 0, "human readable seed: \"" + humanReadableLongConverter.ToString(seed) + "\"", Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
-        drawFps(g);
     }
 
     public void drawControlInfo(Graphics g, String s) {
@@ -279,8 +292,8 @@ public class Rendering {
             g.fillOval((int) (x + localX / 2), (int) (y + localY / 2), 2, 2);
         }
     }
-
-    private void drawPlayers(Graphics g, List<Player> players) {
+    
+    public void drawPlayers(Graphics g, List<Player> players) {
         int h = g.getFontMetrics().getHeight();
 
         players = Player.sortedBy(Player.PlanetCountComparator, players);
@@ -295,7 +308,81 @@ public class Rendering {
             row++;
         }
     }
+    
+    public void drawPlayerNames(Graphics g, List<Player> players) {
+        int left = borderSize;
+        for(Player player : players) {
+            Color bg = player.isAlive() ? player.getPlayerBackColor() : Color.DARK_GRAY;
+            bg = ColorTools.transparent(bg, 0.75f);
+            
+            Color fg = player.isAlive() ? player.getPlayerForeColor() : Color.GRAY;
+            
+            Font f = getFont(Font.PLAIN, 12);
+            int w = g.getFontMetrics(f).stringWidth(player.getName());
+            int h = g.getFontMetrics(f).getHeight();
+            
+            g.setColor(bg);
+            g.fillPolygon(
+                    new int[]{left, left +h, left +w+h, left+w+2*h}, 
+                    new int[]{0, h+5, h+5, 0}, 
+                    4);            
+            
+            left = h + drawText(g, left + h, 5, player.getName(), fg, null, HAlign.LEFT, VAlign.CENTER, 12);
+        }
+    }
+    
+    public void drawCharts(Graphics g, List<Player> players) {
+        int size = (int)getScaled(60);
+        drawPieChart(g, "Planets", this.size.width - size/2 - 10, size, size, planetData(players));
+        drawPieChart(g, "Fleets",  this.size.width - size/2 - 10, (int)(2.25 * size), size, fleetData(players));
+        drawPieChart(g, "Forces",  this.size.width - size/2 - 10, (int)(3.5 * size), size, forceData(players));
+    }
+    
+    private void drawPieChart(Graphics g, String text, int x, int y, int size, List<ValueAndColor> valuesAndColors) {
+        int sum = 0;
+        for(ValueAndColor valueAndColor : valuesAndColors) { sum += valueAndColor.value; }
+        
+        x -= size /2;
+        y -= size /2;
+        
+        double angle = 90;
+        for(ValueAndColor valueAndColor : valuesAndColors) {
+            g.setColor(ColorTools.transparent(valueAndColor.color, 0.5f));
+            double newAngle = valueAndColor.value * 360.0 / sum;
+            g.fillArc(x, y, size, size, (int)angle, (int)newAngle);
+            angle += newAngle;
+        }
+        
+        g.setColor(ColorTools.transparent(Color.WHITE, 0.5f));
+        g.drawOval(x, y, size, size);
+        
+        drawText(g, x + size/2, y + size/2, text, Color.WHITE, null, HAlign.CENTER, VAlign.CENTER, 12);
+    }
 
+    private List<ValueAndColor> planetData(List<Player> players) {
+        List<ValueAndColor> result = new ArrayList<>();
+        for(Player player : players) {
+            result.add(new ValueAndColor(player.getPlanets().size(), player.getPlayerBackColor()));
+        }
+        return result;
+    }
+    
+    private List<ValueAndColor> fleetData(List<Player> players) {
+        List<ValueAndColor> result = new ArrayList<>();
+        for(Player player : players) {
+            result.add(new ValueAndColor(player.getFleets().size(), player.getPlayerBackColor()));
+        }
+        return result;
+    }
+    
+    private List<ValueAndColor> forceData(List<Player> players) {
+        List<ValueAndColor> result = new ArrayList<>();
+        for(Player player : players) {
+            result.add(new ValueAndColor(player.getFullForce(), player.getPlayerBackColor()));
+        }
+        return result;
+    }
+    
     private String shortInfo(Player player) {
         String result = player.getName();
 
