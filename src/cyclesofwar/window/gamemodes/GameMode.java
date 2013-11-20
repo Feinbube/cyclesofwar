@@ -11,7 +11,7 @@ import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.window.GameModes;
 import cyclesofwar.window.GamePanel;
-import cyclesofwar.window.rendering.Rendering;
+import cyclesofwar.window.rendering.*;
 
 public abstract class GameMode {
 
@@ -20,7 +20,7 @@ public abstract class GameMode {
 	private final Object renderingLock = new Object();
 
 	protected Random random = new Random();
-	protected Rendering rendering = new Rendering();
+	protected Rendering rendering = new FancyRendering();
 
 	public GameMode(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
