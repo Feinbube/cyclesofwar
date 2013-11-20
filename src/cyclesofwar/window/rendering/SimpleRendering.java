@@ -65,7 +65,7 @@ public class SimpleRendering extends Rendering {
 
     @Override
     protected void drawUpdatedFps(Graphics g) {
-        drawText(g, size.width - 5, 0, fps + "fps", Color.yellow, null, HAlign.RIGHT, VAlign.TOP, 12);
+        drawText(g, size.width - 10, 0, fps + "fps", Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
     }
     
     @Override

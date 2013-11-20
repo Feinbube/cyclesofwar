@@ -17,6 +17,8 @@ import javax.swing.event.MouseInputListener;
 import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.window.gamemodes.*;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 public class GamePanel extends JPanel implements KeyListener, MouseInputListener, ActionListener {
 
@@ -176,7 +178,9 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		gameMode.paintComponent(g, getSize());
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		gameMode.paintComponent(g2, getSize());
 	}
 
 	public void setLiveUniverse(Universe universe) {
