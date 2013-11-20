@@ -150,7 +150,7 @@ public class FancyRendering extends SimpleRendering {
             g2.drawOval((int) (left + h * 1.3), 7, r, r);
 
             c = player.isAlive() ? fancyTextColor : fancyInActiveTextColor;
-            drawText(g2, (int) (left + h * 2.5)+1, 11, player.getName(), c.darker().darker(), null, HAlign.LEFT, VAlign.CENTER, f);
+            drawText(g2, (int) (left + h * 2.5)+1, 11, player.getName(), Color.BLACK, null, HAlign.LEFT, VAlign.CENTER, f);
             left = (int) (h * 1.75 + drawText(g2, (int) (left + h * 2.5), 10, player.getName(), c, null, HAlign.LEFT, VAlign.CENTER, f));
         }
         
@@ -166,9 +166,9 @@ public class FancyRendering extends SimpleRendering {
 
     public void drawCharts(Graphics g, List<Player> players) {
         int size = (int) getScaled(60);
-        drawPieChart(g, "Planets", this.size.width - size / 2 - 10, (int) (0.75 * size), size, planetData(players));
-        drawPieChart(g, "Fleets", this.size.width - size / 2 - 10, (int) (2.0 * size), size, fleetData(players));
-        drawPieChart(g, "Forces", this.size.width - size / 2 - 10, (int) (3.25 * size), size, forceData(players));
+        drawPieChart(g, "Planets", this.size.width - size / 2 - 10, (int) (0.95 * size), size, planetData(players));
+        drawPieChart(g, "Fleets", this.size.width - size / 2 - 10, (int) (2.2 * size), size, fleetData(players));
+        drawPieChart(g, "Forces", this.size.width - size / 2 - 10, (int) (3.45 * size), size, forceData(players));
     }
 
     private void drawPieChart(Graphics g, String text, int x, int y, int size, List<ValueAndColor> valuesAndColors) {
@@ -194,8 +194,8 @@ public class FancyRendering extends SimpleRendering {
         g2.setStroke(new BasicStroke(2));
         g2.drawOval(x, y, size, size);
 
-        drawText(g2, x + size / 2+1, y + size / 2+1, text, fancyTextColor.darker().darker(), null, HAlign.CENTER, VAlign.CENTER, 12);
-        drawText(g2, x + size / 2, y + size / 2, text, fancyTextColor, null, HAlign.CENTER, VAlign.CENTER, 12);
+        drawText(g2, x + size / 2+1, y + size / 2+1, text, Color.BLACK, null, HAlign.CENTER, VAlign.CENTER, getFont(Font.BOLD, 12));
+        drawText(g2, x + size / 2, y + size / 2, text, fancyTextColor, null, HAlign.CENTER, VAlign.CENTER, getFont(Font.BOLD, 12));
         g2.setStroke(new BasicStroke(1));
     }
 
