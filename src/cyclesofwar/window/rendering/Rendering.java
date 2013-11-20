@@ -69,11 +69,14 @@ public abstract class Rendering {
     protected abstract void drawUpdatedFps(Graphics g);
     protected abstract void drawGameOverScreen(Graphics g, String winnerName);
     
+    protected abstract void applyNewSize();
+    
     public void setSize(Dimension size) {
         if (!this.size.equals(size)) {
             this.size = size;
             this.borderSize = planetSize(size.width, 5.0) / 2 + 30;
-        }        
+            applyNewSize();
+        }     
     }
     
     public double getScaled(double value) {

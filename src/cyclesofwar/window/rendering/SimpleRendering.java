@@ -11,10 +11,9 @@ import cyclesofwar.Fleet;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 import cyclesofwar.tournament.TournamentBook;
-import cyclesofwar.window.rendering.textures.ColorTools;
 
 public class SimpleRendering extends Rendering {
-
+    
     protected class Star {
 
 	double x;
@@ -47,6 +46,10 @@ public class SimpleRendering extends Rendering {
         return new Font("Courier New", style, (int)getScaled(fontSize));
     }
 
+    @Override
+    protected void applyNewSize() {
+    }
+    
     @Override
     public void drawBackground(Graphics g, long universeSeed) {
         g.setColor(Color.black);

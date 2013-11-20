@@ -43,15 +43,11 @@ public class FancyRendering extends SimpleRendering {
 
         return backgrounds.get(index);
     }
-
+    
     @Override
-    public void setSize(Dimension size) {
-        super.setSize(size);
-
-        if (!this.size.equals(size)) {
-            backgrounds.clear();
-            planetTextures.clear();
-        }
+    protected void applyNewSize() {
+        backgrounds.clear();
+        planetTextures.clear();
     }
 
     @Override
