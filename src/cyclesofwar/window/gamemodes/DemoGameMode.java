@@ -9,6 +9,7 @@ import cyclesofwar.window.GameModes;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import cyclesofwar.window.GamePanel;
+import cyclesofwar.window.rendering.SimpleRendering;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class DemoGameMode extends GameMode {
         super(gamePanel);
         
         oneOnOneTournament = new TournamentBook(Arena.champions(), Arena.planetsPerPlayer, Arena.universeSizeFactor, 200);
-        lastManStandingTournament = new TournamentBook(Arena.champions(), Arena.planetsPerPlayer, Arena.universeSizeFactor, 200);
+        lastManStandingTournament = new TournamentBook(Arena.champions(), Arena.planetsPerPlayer, Arena.universeSizeFactor, 200);        
     }
 
     @Override
@@ -105,8 +106,7 @@ public class DemoGameMode extends GameMode {
             rendering.drawTitleScreen(g);
         } else if (state == DemoStates.ARENA) {
             rendering.drawUniverse(g, universe);
-            rendering.drawPlayerNames(g, universe.getPlayers());
-            rendering.drawCharts(g, universe.getPlayers());
+            rendering.drawPlayers(g, universe.getPlayers());
             // rendering.drawSeed(g, universe.getSeed());
             rendering.drawFps(g);
         } else if (state == DemoStates.ARENASTATS) {
@@ -115,8 +115,7 @@ public class DemoGameMode extends GameMode {
             rendering.drawTitleScreen(g);
         } else if (state == DemoStates.TOURNAMENT) {
             rendering.drawUniverse(g, universe);
-            rendering.drawPlayerNames(g, universe.getPlayers());
-            rendering.drawCharts(g, universe.getPlayers());
+            rendering.drawPlayers(g, universe.getPlayers());
             // rendering.drawSeed(g, universe.getSeed());
             rendering.drawFps(g);
         } else if (state == DemoStates.TOURNAMENTSTATS) {
