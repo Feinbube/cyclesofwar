@@ -13,6 +13,9 @@ import cyclesofwar.window.HumanReadableLongConverter;
 import cyclesofwar.window.rendering.textures.ColorTools;
 import cyclesofwar.window.rendering.textures.PlanetTexture;
 import cyclesofwar.window.rendering.textures.UniverseTexture;
+import java.awt.BasicStroke;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -110,41 +113,48 @@ public class FancyRendering extends SimpleRendering {
     }
 
     public void drawFancyPlayerNames(Graphics g, List<Player> players) {
-        int left = borderSize;
-        for (Player player : players) {
+        int left = this.borderSize;
+        Graphics2D g2 = (Graphics2D) g;
+        
+        Font f = getFont(Font.BOLD, 12);
+        int h = g2.getFontMetrics(f).getHeight();
 
-            Font f = getFont(Font.BOLD, 12);
-            int h = g.getFontMetrics(f).getHeight();
-            int w = g.getFontMetrics(f).stringWidth(player.getName()) + h*2;
+        int borderSize = h / 4;
+        
+        for (Player player : players) {
+            int w = g2.getFontMetrics(f).stringWidth(player.getName()) + h*2;
 
             Color c = player.isAlive() ? fancyActiveBackColor : fancyInActiveBackColor;
-            g.setColor(c);
-            g.fillPolygon(
-                    new int[]{left, left + h, left + w + h, left + w + 2 * h},
-                    new int[]{0, h + 10, h + 10, 0},
+            g2.setColor(c);
+            g2.fillPolygon(
+                    new int[]{left + borderSize/2, left + h + borderSize/2, left + w + h - borderSize/2, left + w + 2 * h - borderSize/2},
+                    new int[]{borderSize/2, h + 10-borderSize/2, h + 10-borderSize/2, borderSize/2},
                     4);
 
             c = player.isAlive() ? fancyActiveBorderColor : fancyInActiveBorderColor;
-            g.setColor(c);
-            for (int i = 0; i < h/4; i++) {
-                g.drawPolygon(
-                        new int[]{left + i * 2, left + h + i, left + w + h - i, left + w + 2 * h - i * 2},
-                        new int[]{i, h - i + 10, h - i + 10, i},
-                        4);
-            }
+            g2.setColor(c);
+            g2.setStroke(new BasicStroke(borderSize));
+            g2.drawPolygon(
+                    new int[]{left, left + h, left + w + h, left + w + 2 * h},
+                    new int[]{0, h + 10, h + 10, 0},
+                    4);
+            
 
             int r = (int) (h * 0.7);
-            g.setColor(player.getPlayerBackColor());
-            g.fillOval((int) (left + h * 1.3), 7, r, r);
+            g2.setColor(player.getPlayerBackColor());
+            g2.fillOval((int) (left + h * 1.3), 7, r, r);
 
             c = player.isAlive() ? fancyActiveBorderColor : fancyInActiveBorderColor;
-            g.setColor(c);
-            g.drawOval((int) (left + h * 1.3), 7, r, r);
-            g.drawOval((int) (left + h * 1.3 - 1), 7 - 1, r + 2, r + 2);
+            g2.setColor(c);
+            g2.setStroke(new BasicStroke(2));
+            g2.drawOval((int) (left + h * 1.3), 7, r, r);
 
             c = player.isAlive() ? fancyTextColor : fancyInActiveTextColor;
-            left = (int) (h * 1.5 + drawText(g, (int) (left + h * 2.5), 10, player.getName(), c, null, HAlign.LEFT, VAlign.CENTER, f));
+            drawText(g2, (int) (left + h * 2.5)+1, 11, player.getName(), c.darker().darker(), null, HAlign.LEFT, VAlign.CENTER, f);
+            left = (int) (h * 1.75 + drawText(g2, (int) (left + h * 2.5), 10, player.getName(), c, null, HAlign.LEFT, VAlign.CENTER, f));
         }
+        
+        g2.setStroke(new BasicStroke(1));
     }
 
     @Override
@@ -162,6 +172,8 @@ public class FancyRendering extends SimpleRendering {
     }
 
     private void drawPieChart(Graphics g, String text, int x, int y, int size, List<ValueAndColor> valuesAndColors) {
+        Graphics2D g2 = (Graphics2D) g;
+        
         int sum = 0;
         for (ValueAndColor valueAndColor : valuesAndColors) {
             sum += valueAndColor.value;
@@ -172,17 +184,19 @@ public class FancyRendering extends SimpleRendering {
 
         double angle = 90;
         for (ValueAndColor valueAndColor : valuesAndColors) {
-            g.setColor(ColorTools.transparent(valueAndColor.color, 0.5f));
+            g2.setColor(ColorTools.transparent(valueAndColor.color, 0.5f));
             double newAngle = valueAndColor.value * 360.0 / sum;
-            g.fillArc(x, y, size, size, (int) angle, (int) newAngle);
+            g2.fillArc(x, y, size, size, (int) angle, (int) newAngle);
             angle += newAngle;
         }
 
-        g.setColor(fancyActiveBorderColor);
-        g.drawOval(x, y, size, size);
-        g.drawOval(x + 1, y + 1, size - 2, size - 2);
+        g2.setColor(fancyActiveBorderColor);
+        g2.setStroke(new BasicStroke(2));
+        g2.drawOval(x, y, size, size);
 
-        drawText(g, x + size / 2, y + size / 2, text, fancyTextColor, null, HAlign.CENTER, VAlign.CENTER, 12);
+        drawText(g2, x + size / 2+1, y + size / 2+1, text, fancyTextColor.darker().darker(), null, HAlign.CENTER, VAlign.CENTER, 12);
+        drawText(g2, x + size / 2, y + size / 2, text, fancyTextColor, null, HAlign.CENTER, VAlign.CENTER, 12);
+        g2.setStroke(new BasicStroke(1));
     }
 
     @Override
