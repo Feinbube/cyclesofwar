@@ -1,6 +1,6 @@
 package cyclesofwar.window.rendering.noise;
 
-public class SimplexNoise {
+public final class SimplexNoise implements Noise {
 	private static final double SQRT3 = Math.sqrt(3.0);
 	
 	private static final double SKEW    = 0.5 * (SQRT3 - 1.0);
@@ -58,7 +58,7 @@ public class SimplexNoise {
 		return grid[0] * a + grid[1] * b;
 	}
 	
-	public static double noise(double x, double y) {
+	public double noise(double x, double y) {
 		final double HAIRY = (x + y) * SKEW;
 		
 		// indices into simplex cell space of skewed input 

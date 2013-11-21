@@ -1,5 +1,7 @@
 package cyclesofwar.window.rendering.textures;
 
+import cyclesofwar.window.rendering.noise.Noise;
+import cyclesofwar.window.rendering.noise.PerlinNoise;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -56,10 +58,12 @@ public class PlanetTexture extends Texture {
                 float w2 = width/2;
                 float w7 = width/7;
                 
+                Noise noise = new PerlinNoise();
+                
                 float value = 0.5f;
 		for (int y = 0, yNoise = SEED; y < height ; ++y, ++yNoise) {
 			for (int x = 0, xNoise = SEED; x < width; ++x, ++xNoise) {
-				final double NOISE = PerlinNoise.noise(xNoise * ZOOM, yNoise * ZOOM);
+				final double NOISE = noise.noise(xNoise * ZOOM, yNoise * ZOOM);
 
                                 float d = getDistance(x, y, w2, height/2.0f);
                                 

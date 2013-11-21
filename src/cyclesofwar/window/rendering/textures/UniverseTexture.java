@@ -1,5 +1,7 @@
 package cyclesofwar.window.rendering.textures;
 
+import cyclesofwar.window.rendering.noise.Noise;
+import cyclesofwar.window.rendering.noise.PerlinNoise;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -87,9 +89,11 @@ public class UniverseTexture extends Texture {
 		
 		int i = yStart * this.width + xStart;
 		
+                Noise noise = new PerlinNoise();
+                
 		for (int y = yStart, yNoise = SEED; y < yEnd ; ++y, ++yNoise) {
 			for (int x = xStart, xNoise = SEED; x < xEnd; ++x, ++xNoise, ++i) {
-				final double NOISE = PerlinNoise.noise(xNoise * ZOOM, yNoise * ZOOM);
+				final double NOISE = noise.noise(xNoise * ZOOM, yNoise * ZOOM);
 				final double GRADE = Math.pow(NOISE, NEBULA_GRADE);
 				
 				pixels[i] = new Color((int)(R * GRADE), (int)(G * GRADE), (int)(B * GRADE)).hashCode();
