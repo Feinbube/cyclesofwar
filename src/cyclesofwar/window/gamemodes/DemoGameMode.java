@@ -16,7 +16,9 @@ import java.util.List;
 public class DemoGameMode extends GameMode {
 
     private final int speed = 3;
+    
     private final int titleBlendingTime = 50;
+    private final int gameOverBlendingTime = 150;
     private final int statisticsBlendingTime = 100;
     
     private DemoStates state = DemoStates.TITLETOARENA;    
@@ -92,7 +94,7 @@ public class DemoGameMode extends GameMode {
             throw new RuntimeException(e);
         }
         
-        if(universe.isGameOver() && timecounter++ > titleBlendingTime) {
+        if(universe.isGameOver() && timecounter++ > gameOverBlendingTime) {
             tournamentBook.addFinishedGame(universe);
             timecounter = 0;
             this.state = state;

@@ -15,6 +15,8 @@ import cyclesofwar.window.rendering.textures.PlanetTexture;
 import cyclesofwar.window.rendering.textures.UniverseTexture;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -34,7 +36,14 @@ public class FancyRendering extends SimpleRendering {
 
     private final static HumanReadableLongConverter humanReadableLongConverter = new HumanReadableLongConverter();
 
+    private final Map<Player, List<Double>> histogramPlanets = new TreeMap<>();
+    private final Map<Player, List<Double>> histogramFleets = new TreeMap<>();
+    private final Map<Player, List<Double>> histogramForces = new TreeMap<>();
+    
+    private boolean resetNeeded = false;
+
     public FancyRendering() {
+        this.textColor = fancyTextColor;
     }
 
     private UniverseTexture getBackground(long universeSeed) {
@@ -45,7 +54,7 @@ public class FancyRendering extends SimpleRendering {
 
         return backgrounds.get(index);
     }
-    
+
     @Override
     protected void applyNewSize() {
         backgrounds.clear();
@@ -66,17 +75,24 @@ public class FancyRendering extends SimpleRendering {
     public void drawBackground(Graphics g, long universeSeed) {
         g.drawImage(this.getBackground(universeSeed).getImage(), 0, 0, null);
     }
-    
+
     @Override
     public void drawUniverse(Graphics g, Universe universe) {
         super.drawUniverse(g, universe);
-        
-        if(universe.isGameOver())
-            return;
-        
+
         List<Player> players = universe.getPlayers();
         players.add(universe.getNonePlayer());
-        drawCharts(g, players);
+
+        if (!universe.isGameOver()) {
+            if(resetNeeded){
+                reset();
+            }
+            
+            drawCharts(g, players);
+            updateHistograms(players);
+        } else {
+            resetNeeded = true;
+        }
     }
 
     @Override
@@ -126,20 +142,20 @@ public class FancyRendering extends SimpleRendering {
     public void drawFancyPlayerNames(Graphics g, List<Player> players) {
         int left = this.borderSize;
         Graphics2D g2 = (Graphics2D) g;
-        
+
         Font f = getFont(Font.BOLD, 12);
         int h = g2.getFontMetrics(f).getHeight();
 
         int borderSize = h / 4;
-        
+
         for (Player player : players) {
-            int w = g2.getFontMetrics(f).stringWidth(player.getName()) + h*2;
+            int w = g2.getFontMetrics(f).stringWidth(player.getName()) + h * 2;
 
             Color c = player.isAlive() ? fancyActiveBackColor : fancyInActiveBackColor;
             g2.setColor(c);
             g2.fillPolygon(
-                    new int[]{left + borderSize/2, left + h + borderSize/2, left + w + h - borderSize/2, left + w + 2 * h - borderSize/2},
-                    new int[]{borderSize/2, h + 10-borderSize/2, h + 10-borderSize/2, borderSize/2},
+                    new int[]{left + borderSize / 2, left + h + borderSize / 2, left + w + h - borderSize / 2, left + w + 2 * h - borderSize / 2},
+                    new int[]{borderSize / 2, h + 10 - borderSize / 2, h + 10 - borderSize / 2, borderSize / 2},
                     4);
 
             c = player.isAlive() ? fancyActiveBorderColor : fancyInActiveBorderColor;
@@ -149,7 +165,6 @@ public class FancyRendering extends SimpleRendering {
                     new int[]{left, left + h, left + w + h, left + w + 2 * h},
                     new int[]{0, h + 10, h + 10, 0},
                     4);
-            
 
             int r = (int) (h * 0.7);
             g2.setColor(player.getPlayerBackColor());
@@ -161,38 +176,37 @@ public class FancyRendering extends SimpleRendering {
             g2.drawOval((int) (left + h * 1.3), 7, r, r);
 
             c = player.isAlive() ? fancyTextColor : fancyInActiveTextColor;
-            drawText(g2, (int) (left + h * 2.5)+1, 11, player.getName(), Color.BLACK, null, HAlign.LEFT, VAlign.CENTER, f);
             left = (int) (h * 1.75 + drawText(g2, (int) (left + h * 2.5), 10, player.getName(), c, null, HAlign.LEFT, VAlign.CENTER, f));
         }
-        
+
         g2.setStroke(new BasicStroke(1));
     }
 
     @Override
     public void drawPlayers(Graphics g, List<Player> players) {
         // drawPlayerNames(g, players)
-        drawFancyPlayerNames(g, players);       
+        drawFancyPlayerNames(g, players);
     }
 
     public void drawCharts(Graphics g, List<Player> players) {
         int size = (int) getScaled(60);
         double start = 0.95;
         double step = 1.25;
-        
+
         drawPieChart(g, "Planets", 12, this.size.width - size / 2 - 10, (int) ((start + step * 0) * size), size, planetData(players));
-        drawPieChart(g, "Fleets", 12,this.size.width - size / 2 - 10, (int) ((start + step * 1) * size), size, fleetData(players));
-        drawPieChart(g, "Forces", 12,this.size.width - size / 2 - 10, (int) ((start + step * 2) * size), size, forceFullData(players));
-        
+        drawPieChart(g, "Fleets", 12, this.size.width - size / 2 - 10, (int) ((start + step * 1) * size), size, fleetData(players));
+        drawPieChart(g, "Forces", 12, this.size.width - size / 2 - 10, (int) ((start + step * 2) * size), size, forceFullData(players));
+
         start += 4 * step;
         size = (int) getScaled(40);
-        start += step * getScaled(40)/getScaled(60);
+        start += step * getScaled(40) / getScaled(60);
         drawPieChart(g, "Ground", 10, this.size.width - size / 2 - 10, (int) ((start + step * 0) * size), size, forcePlanetData(players));
         drawPieChart(g, "Space", 10, this.size.width - size / 2 - 10, (int) ((start + step * 1) * size), size, forceFleetData(players));
     }
 
     private void drawPieChart(Graphics g, String text, int textSize, int x, int y, int size, List<ValueAndColor> valuesAndColors) {
         Graphics2D g2 = (Graphics2D) g;
-        
+
         int sum = 0;
         for (ValueAndColor valueAndColor : valuesAndColors) {
             sum += valueAndColor.value;
@@ -213,7 +227,6 @@ public class FancyRendering extends SimpleRendering {
         g2.setStroke(new BasicStroke(2));
         g2.drawOval(x, y, size, size);
 
-        drawText(g2, x + size / 2+1, y + size / 2+1, text, Color.BLACK, null, HAlign.CENTER, VAlign.CENTER, getFont(Font.BOLD, textSize));
         drawText(g2, x + size / 2, y + size / 2, text, fancyTextColor, null, HAlign.CENTER, VAlign.CENTER, getFont(Font.BOLD, textSize));
         g2.setStroke(new BasicStroke(1));
     }
@@ -256,5 +269,86 @@ public class FancyRendering extends SimpleRendering {
         drawText(g, x + w / 2, y - h / 2, caption, fancyTextColor, null, HAlign.CENTER, VAlign.CENTER, f);
 
         remember(x, y - h, w, h, id);
+    }
+
+    @Override
+    protected int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, Font font) {
+        super.drawText(g, x+1, y+1, s, Color.BLACK, bc, hAlgin, vAlign, font);
+        return super.drawText(g, x, y, s, fc, bc, hAlgin, vAlign, font);
+    }
+    
+    @Override
+    protected void drawGameOverScreen(Graphics g, String winnerName) {
+        drawHistograms(g, winnerName);
+    }
+
+    protected void drawHistograms(Graphics g, String winnerName) {
+        int w = (size.width - borderSize * 3) / 2;
+        int h = (size.height - borderSize * 3) / 2;
+        int r = (borderSize + size.width) / 2;
+        int b = (borderSize + size.height) / 2;
+
+        drawText(g, borderSize + w / 2, borderSize + h / 2, winnerName + " has won!", fancyTextColor, null, HAlign.CENTER, VAlign.CENTER, 28);
+
+        drawHistogram(g, "Forces", r, borderSize, w, h, histogramForces);
+        drawHistogram(g, "Planets", borderSize, b, w, h, histogramPlanets);
+        drawHistogram(g, "Fleets", r, b, w, h, histogramFleets);
+    }
+
+    protected void drawHistogram(Graphics g, String s, int x, int y, int w, int h, Map<Player, List<Double>> histogram) {
+        g.setColor(ColorTools.transparent(Color.BLACK, 0.7));
+        g.fillRect(x, y, w, h);
+
+        double maxX = histogram.get((Player) histogram.keySet().toArray()[0]).size();
+        double maxY = maxInHistogram(histogram);
+
+        for (Player player : histogram.keySet()) {
+            g.setColor(player.getPlayerBackColor());
+
+            for (int i = 1; i < histogram.get(player).size(); i++) {
+
+                double pX1 = (i - 1) * w / maxX;
+                double pY1 = histogram.get(player).get(i - 1) * h / maxY;
+
+                double pX2 = i * w / maxX;
+                double pY2 = histogram.get(player).get(i) * h / maxY;
+
+                g.drawLine((int) pX1 + x, y + h - (int) pY1, (int) pX2 + x, y + h - (int) pY2);
+            }
+        }
+
+        drawText(g, x + w - 5, y + h - 5, s, fancyTextColor, null, HAlign.RIGHT, VAlign.TOP, 18);
+    }
+
+    protected void updateHistograms(List<Player> players) {
+        for (Player player : players) {
+            updateHistogram(histogramPlanets, player, player.getPlanets().size());
+            updateHistogram(histogramFleets, player, player.getFleets().size());
+            updateHistogram(histogramForces, player, player.getFullForce());
+        }
+    }
+
+    protected void updateHistogram(Map<Player, List<Double>> histogram, Player player, double value) {
+        if (!histogram.containsKey(player)) {
+            histogram.put(player, new ArrayList<Double>());
+        }
+
+        histogram.get(player).add(value);
+    }
+
+    protected double maxInHistogram(Map<Player, List<Double>> histogram) {
+        double result = Double.MIN_VALUE;
+        for (Player player : histogram.keySet()) {
+            result = Math.max(result, Collections.max(histogram.get(player)));
+        }
+        return result;
+    }
+    
+    private void reset() {
+        resetNeeded = false;
+
+        histogramPlanets.clear();
+        histogramFleets.clear();
+        histogramForces.clear();
     }
 }
