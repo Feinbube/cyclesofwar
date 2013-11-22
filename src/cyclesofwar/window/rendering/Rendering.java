@@ -226,10 +226,10 @@ public abstract class Rendering {
             }
         });
     }
-
+        
     protected int drawPerformanceAgainst(Graphics g, TournamentBook tournament, int rank, Font f, int marginLeft, int marginTop) {
         final Player competitor = tournament.getRankings().get(rank).getPlayer();
-        int maxPos = drawText(g, marginLeft, marginTop, (rank + 1) + ".", competitor.getPlayerForeColor(), competitor.getPlayerBackColor(), f);
+        int maxPos = drawText(g, marginLeft, marginTop, (rank + 1) + ".", getPlayerTextColor(competitor), competitor.getPlayerBackColor(), f);
 
         return drawContent(g, tournament, f, marginLeft, marginTop, maxPos, new DrawContentProvider() {
 
@@ -264,6 +264,10 @@ public abstract class Rendering {
     protected int drawContent(Graphics g, TournamentBook tournament, Font f, int marginLeft, int marginTop, DrawContentProvider drawContentProvider) {
         return drawContent(g, tournament, f, marginLeft, marginTop, 0, drawContentProvider);
     }
+    
+    protected Color getPlayerTextColor(Player player) {
+        return player.getPlayerForeColor();
+    }
 
     protected int drawContent(Graphics g, TournamentBook tournament, Font f, int marginLeft, int marginTop, int maxpos, DrawContentProvider drawContentProvider) {
         int maxPos = maxpos;
@@ -271,7 +275,7 @@ public abstract class Rendering {
         for (int i = 0; i < tournament.getRankings().size(); i++) {
             Player player = tournament.getRankings().get(i).getPlayer();
             int pos = drawText(g, marginLeft, marginTop + (h + 2) * (i + 1), drawContentProvider.getString(tournament, i),
-                    player.getPlayerForeColor(), null, f);
+                    getPlayerTextColor(player), null, f);
             Object tag = drawContentProvider.getTag(tournament, i);
             if (tag != null) {
                 remember(marginLeft - 2, marginTop + (h + 2) * (i + 1) + 4, pos - marginLeft + 3, g.getFontMetrics(f).getHeight(), tag);
@@ -284,14 +288,18 @@ public abstract class Rendering {
     }
 
     protected int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, Font font) {
-        return drawText(g, x, y, s, fc, bc, HAlign.LEFT, VAlign.BOTTOM, font);
+        return drawText(g, x, y, s, fc, bc, null, HAlign.LEFT, VAlign.BOTTOM, font);
     }
 
     protected int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, int fontSize) {
-        return drawText(g, x, y, s, fc, bc, hAlgin, vAlign, getFont(Font.PLAIN, fontSize));
+        return drawText(g, x, y, s, fc, bc, null, hAlgin, vAlign, getFont(Font.PLAIN, fontSize));
+    }
+    
+    protected int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, Font font) {
+        return drawText(g, x, y, s, fc, bc, null, hAlgin, vAlign, font);
     }
 
-    protected int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, Font font) {
+    protected int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, Color sc, HAlign hAlgin, VAlign vAlign, Font font) {
         g.setFont(font);
 
         int w = g.getFontMetrics(font).stringWidth(s);
@@ -304,7 +312,12 @@ public abstract class Rendering {
             g.setColor(bc);
             g.fillRect(x - 2, y + 4, w + 3, h);
         }
-
+        
+        if (sc != null) {
+            g.setColor(sc);
+            g.drawString(s, x +1, y + h+1);
+        }        
+        
         g.setColor(fc);
         g.drawString(s, x, y + h);
 

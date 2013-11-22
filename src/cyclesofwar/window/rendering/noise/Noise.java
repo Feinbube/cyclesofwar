@@ -57,4 +57,15 @@ public abstract class Noise {
             }
         }
     }
+    
+    public void blendTexture(BufferedImage image, Color c) {
+        int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+
+        int width = image.getWidth();
+        for (int y = 0; y < image.getHeight(); ++y) {
+            for (int x = 0; x < width; ++x) {
+                pixels[y * width + x] = at(x, y, new Color(pixels[y * width + x]), c).hashCode();
+            }
+        }
+    }
 }

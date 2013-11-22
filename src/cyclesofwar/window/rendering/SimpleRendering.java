@@ -125,7 +125,7 @@ public class SimpleRendering extends Rendering {
             g.setColor(planet.getPlayer().getPlayerBackColor());
             g.fillOval(uX, uY, planetSize, planetSize);
 
-            drawText(g, x, y, ((int) planet.getForces()) + "", planet.getPlayer().getPlayerForeColor(), null, HAlign.CENTER, VAlign.CENTER,
+            drawText(g, x, y, ((int) planet.getForces()) + "", getPlayerTextColor(planet.getPlayer()), null, HAlign.CENTER, VAlign.CENTER,
                     10);
         }
     }
@@ -157,7 +157,7 @@ public class SimpleRendering extends Rendering {
             } else if (fleet.getFormation() == Fleet.Formation.EYE) {
                 drawSwarmFormation(g, fleet, x, y, d, false, localTime);
                 if (d < MaxRenderedFleet) {
-                    g.setColor(fleet.getPlayer().getPlayerForeColor());
+                    g.setColor(getPlayerTextColor(fleet.getPlayer()));
                     g.fillOval((int) x - 1, (int) y - 1, 5, 5);
                 }
             } else if (fleet.getFormation() == Fleet.Formation.SPIRAL) {
@@ -165,7 +165,7 @@ public class SimpleRendering extends Rendering {
             }
 
             if (d == MaxRenderedFleet) {
-                drawText(g, (int) x, (int) y, fleet.getForce() + "", fleet.getPlayer().getPlayerForeColor(), null, HAlign.CENTER,
+                drawText(g, (int) x, (int) y, fleet.getForce() + "", getPlayerTextColor(fleet.getPlayer()), null, HAlign.CENTER,
                         VAlign.CENTER, 10);
             }
         }
@@ -246,7 +246,7 @@ public class SimpleRendering extends Rendering {
             if(!player.isAlive())
                 continue;
 
-            drawText(g, 5, row * (h + 4) + 5, shortInfo(player), player.getPlayerForeColor(), player.getPlayerBackColor(), HAlign.LEFT,
+            drawText(g, 5, row * (h + 4) + 5, shortInfo(player), getPlayerTextColor(player), player.getPlayerBackColor(), HAlign.LEFT,
                     VAlign.CENTER, 12);
             row++;
         }
@@ -325,7 +325,7 @@ public class SimpleRendering extends Rendering {
                 posX = marginLeft;
                 posY += h + 6;
             }
-            drawText(g, posX, posY, player.getName(), player.getPlayerForeColor(), player.getPlayerBackColor(), f);
+            drawText(g, posX, posY, player.getName(), getPlayerTextColor(player), player.getPlayerBackColor(), f);
             remember(posX, posY, w, h, player);
             if (selectedPlayers.contains(player)) {
                 drawBorder(g, posX, posY, w, h);

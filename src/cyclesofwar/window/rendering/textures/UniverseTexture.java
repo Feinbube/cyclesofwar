@@ -42,25 +42,10 @@ public class UniverseTexture extends Texture {
 
         this.pitchBlack(image);
         new NebulaNoise(seed).texture(image, color);
-        //this.galaxy(image, seed);
-        this.stars(image);
+        // this.galaxy(image, seed);
+        new StarNoise(seed).blendTexture(image, Color.WHITE);
 
         return image;
-    }
-
-    private void stars(BufferedImage image) {
-        Graphics2D canvas = image.createGraphics();
-
-        for (int star = 0; star < this.stars; ++star) {
-            final int x = this.random.nextInt(this.width);
-            final int y = this.random.nextInt(this.height);
-
-            final double brightness = MIN_BRIGHTNESS + BRIGHTNESS_RANGE * this.random.nextDouble();
-            final int grey = (int) (255.0 / MAX_BRIGHTNESS * brightness);
-
-            canvas.setColor(new Color(grey, grey, grey));
-            canvas.fillOval(x, y, STAR_SIZE, STAR_SIZE);
-        }
     }
 
     private void galaxy(BufferedImage image, int seed) {
