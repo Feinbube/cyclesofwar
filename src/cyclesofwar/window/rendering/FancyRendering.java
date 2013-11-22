@@ -1,7 +1,6 @@
 package cyclesofwar.window.rendering;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.List;
@@ -15,7 +14,6 @@ import cyclesofwar.window.rendering.textures.PlanetTexture;
 import cyclesofwar.window.rendering.textures.UniverseTexture;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -55,7 +53,7 @@ public class FancyRendering extends SimpleRendering {
 
     @Override
     public Font getFont(int style, int fontSize) {
-        return new Font("Arial", style, (int) getScaled(fontSize));
+        return new Font("Impact", style, (int) getScaled(fontSize));
     }
 
     @Override
