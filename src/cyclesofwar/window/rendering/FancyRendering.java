@@ -1,5 +1,6 @@
 package cyclesofwar.window.rendering;
 
+import cyclesofwar.Fleet;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -36,10 +37,10 @@ public class FancyRendering extends SimpleRendering {
 
     private final static HumanReadableLongConverter humanReadableLongConverter = new HumanReadableLongConverter();
 
-    private final Map<Player, List<Double>> histogramPlanets = new TreeMap<>();
-    private final Map<Player, List<Double>> histogramFleets = new TreeMap<>();
-    private final Map<Player, List<Double>> histogramForces = new TreeMap<>();
-    
+    private final Map<Player, List<Double>> historyPlanets = new TreeMap<>();
+    private final Map<Player, List<Double>> historyFleets = new TreeMap<>();
+    private final Map<Player, List<Double>> historyForces = new TreeMap<>();
+
     private boolean resetNeeded = false;
 
     public FancyRendering() {
@@ -77,6 +78,11 @@ public class FancyRendering extends SimpleRendering {
     }
 
     @Override
+    protected Color getPlayerTextColor(Player player) {
+        return fancyTextColor;
+    }
+
+    @Override
     public void drawUniverse(Graphics g, Universe universe) {
         super.drawUniverse(g, universe);
 
@@ -84,10 +90,10 @@ public class FancyRendering extends SimpleRendering {
         players.add(universe.getNonePlayer());
 
         if (!universe.isGameOver()) {
-            if(resetNeeded){
+            if (resetNeeded) {
                 reset();
             }
-            
+
             drawCharts(g, players);
             updateHistograms(players);
         } else {
@@ -123,7 +129,7 @@ public class FancyRendering extends SimpleRendering {
             Color bg = player.isAlive() ? player.getPlayerBackColor() : Color.DARK_GRAY;
             bg = ColorTools.transparent(bg, 0.75f);
 
-            Color fg = player.isAlive() ? player.getPlayerForeColor() : Color.GRAY;
+            Color fg = player.isAlive() ? fancyTextColor : fancyInActiveTextColor;
 
             Font f = getFont(Font.PLAIN, 12);
             int w = g.getFontMetrics(f).stringWidth(player.getName());
@@ -272,11 +278,10 @@ public class FancyRendering extends SimpleRendering {
     }
 
     @Override
-    protected int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, HAlign hAlgin, VAlign vAlign, Font font) {
-        super.drawText(g, x+1, y+1, s, Color.BLACK, bc, hAlgin, vAlign, font);
-        return super.drawText(g, x, y, s, fc, bc, hAlgin, vAlign, font);
+    protected int drawText(Graphics g, int x, int y, String s, Color fc, Color bc, Color sc, HAlign hAlgin, VAlign vAlign, Font font) {
+        return super.drawText(g, x, y, s, fc, bc, Color.BLACK, hAlgin, vAlign, font);
     }
-    
+
     @Override
     protected void drawGameOverScreen(Graphics g, String winnerName) {
         drawHistograms(g, winnerName);
@@ -290,65 +295,116 @@ public class FancyRendering extends SimpleRendering {
 
         drawText(g, borderSize + w / 2, borderSize + h / 2, winnerName + " has won!", fancyTextColor, null, HAlign.CENTER, VAlign.CENTER, 28);
 
-        drawHistogram(g, "Forces", r, borderSize, w, h, histogramForces);
-        drawHistogram(g, "Planets", borderSize, b, w, h, histogramPlanets);
-        drawHistogram(g, "Fleets", r, b, w, h, histogramFleets);
+        drawHistogram(g, "Forces", r, borderSize, w, h, historyForces);
+        drawHistogram(g, "Planets", borderSize, b, w, h, historyPlanets);
+        drawHistogram(g, "Fleets", r, b, w, h, historyFleets);
     }
 
-    protected void drawHistogram(Graphics g, String s, int x, int y, int w, int h, Map<Player, List<Double>> histogram) {
-        g.setColor(ColorTools.transparent(Color.BLACK, 0.7));
-        g.fillRect(x, y, w, h);
+    protected void drawHistogram(Graphics g, String s, int x, int y, int w, int h, Map<Player, List<Double>> history) {
+        Graphics2D g2 = (Graphics2D) g;
 
-        double maxX = histogram.get((Player) histogram.keySet().toArray()[0]).size();
-        double maxY = maxInHistogram(histogram);
+        g2.setColor(ColorTools.transparent(Color.BLACK, 0.7));
+        g2.fillRect(x, y, w, h);
 
-        for (Player player : histogram.keySet()) {
-            g.setColor(player.getPlayerBackColor());
+        double maxX = history.get((Player) history.keySet().toArray()[0]).size();
+        double maxY = maxInHistogram(history);
 
-            for (int i = 1; i < histogram.get(player).size(); i++) {
+        //g2.setStroke(new BasicStroke(2));
+        for (Player player : history.keySet()) {
+            g2.setColor(player.getPlayerBackColor());
+
+            for (int i = 1; i < history.get(player).size(); i++) {
 
                 double pX1 = (i - 1) * w / maxX;
-                double pY1 = histogram.get(player).get(i - 1) * h / maxY;
+                double pY1 = history.get(player).get(i - 1) * h / maxY;
 
                 double pX2 = i * w / maxX;
-                double pY2 = histogram.get(player).get(i) * h / maxY;
+                double pY2 = history.get(player).get(i) * h / maxY;
 
-                g.drawLine((int) pX1 + x, y + h - (int) pY1, (int) pX2 + x, y + h - (int) pY2);
+                g2.drawLine((int) pX1 + x, y + h - (int) pY1, (int) pX2 + x, y + h - (int) pY2);
             }
         }
 
-        drawText(g, x + w - 5, y + h - 5, s, fancyTextColor, null, HAlign.RIGHT, VAlign.TOP, 18);
+        drawText(g2, x + w - 5, y + h - 5, s, fancyTextColor, null, HAlign.RIGHT, VAlign.TOP, 18);
     }
 
     protected void updateHistograms(List<Player> players) {
         for (Player player : players) {
-            updateHistogram(histogramPlanets, player, player.getPlanets().size());
-            updateHistogram(histogramFleets, player, player.getFleets().size());
-            updateHistogram(histogramForces, player, player.getFullForce());
+            updateHistogram(historyPlanets, player, player.getPlanets().size());
+            updateHistogram(historyFleets, player, player.getFleets().size());
+            updateHistogram(historyForces, player, player.getFullForce());
         }
     }
 
-    protected void updateHistogram(Map<Player, List<Double>> histogram, Player player, double value) {
-        if (!histogram.containsKey(player)) {
-            histogram.put(player, new ArrayList<Double>());
+    protected void updateHistogram(Map<Player, List<Double>> history, Player player, double value) {
+        if (!history.containsKey(player)) {
+            history.put(player, new ArrayList<Double>());
         }
 
-        histogram.get(player).add(value);
+        history.get(player).add(value);
     }
 
-    protected double maxInHistogram(Map<Player, List<Double>> histogram) {
+    protected double maxInHistogram(Map<Player, List<Double>> history) {
         double result = Double.MIN_VALUE;
-        for (Player player : histogram.keySet()) {
-            result = Math.max(result, Collections.max(histogram.get(player)));
+        for (Player player : history.keySet()) {
+            result = Math.max(result, Collections.max(history.get(player)));
         }
         return result;
     }
-    
+
     private void reset() {
         resetNeeded = false;
 
-        histogramPlanets.clear();
-        histogramFleets.clear();
-        histogramForces.clear();
+        historyPlanets.clear();
+        historyFleets.clear();
+        historyForces.clear();
+    }
+
+    @Override
+    public void drawFleets(Graphics g, List<Fleet> fleets, double time) {
+        for (Fleet fleet : fleets) {
+            
+            double x = getX(g, fleet.getX());
+            double y = getY(g, fleet.getY());
+            int d = fleet.getForce();
+
+            if (d > MaxRenderedFleet) {
+                d = MaxRenderedFleet;
+            }
+
+            double localTime = time - fleet.getTimeToTarget();
+
+            g.setColor(ColorTools.transparent(fleet.getPlayer().getPlayerBackColor(), 0.5 + 0.5 * d/MaxRenderedFleet));
+            drawArrowFormation(g, fleet, x, y, d);
+
+            if (d == MaxRenderedFleet) {
+                drawText(g, (int) x, (int) y, fleet.getForce() + "", getPlayerTextColor(fleet.getPlayer()), null, HAlign.CENTER,
+                        VAlign.CENTER, 10);
+            }
+        }
+    }
+
+    protected int[] getXY(double localx, double localy, double x, double y, double sinAngle, double cosAngle) {
+        return new int[]{(int) (x - (localx * cosAngle + localy * sinAngle)), (int) (y + (-localx * sinAngle + localy * cosAngle))};
+    }
+
+    protected void drawArrowFormation(Graphics g, Fleet fleet, double x, double y, int d) {
+        double xDiff = fleet.getTarget().getX() - fleet.getX();
+        double yDiff = fleet.getTarget().getY() - fleet.getY();
+
+        xDiff *= 2.0;
+
+        double dist = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+        double sinAngle = yDiff / dist;
+        double cosAngle = xDiff / dist;
+
+        double length = Math.sqrt(d) * 5;
+
+        int[] one = getXY(length / 2, -length / 2, x, y, sinAngle, cosAngle);
+        int[] two = getXY(-length / 2, 0, x, y, sinAngle, cosAngle);
+        int[] three = getXY(length / 2, length / 2, x, y, sinAngle, cosAngle);
+
+        g.drawPolygon(new int[]{one[0], two[0], three[0]}, new int[]{one[1], two[1], three[1]}, 3);
     }
 }
