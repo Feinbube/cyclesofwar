@@ -1,6 +1,7 @@
 package cyclesofwar.window.rendering.textures;
 
 import cyclesofwar.window.rendering.noise.Noise;
+import cyclesofwar.window.rendering.noise.simplex.FractualBrownianMotionNoise;
 import cyclesofwar.window.rendering.noise.simplex.SimplexNoise;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -57,7 +58,7 @@ public class PlanetTexture extends Texture {
         float w2 = width / 2;
         float w7 = width / 7;
 
-        Noise noise = new SimplexNoise(SEED);
+        Noise noise = new FractualBrownianMotionNoise(SEED);
         noise.zoom *= 5;
 
         float value = 0.5f;
@@ -76,6 +77,7 @@ public class PlanetTexture extends Texture {
 
                     // darker at the edges
                     float d2 = getDistance(x, y, width / 4.0f, height / 4.0f); // spot not in the middle of the planet :)
+                    d2 = (float)Math.pow(d2, 1.11);
                     c = ColorTools.interpolate(c, Color.BLACK, d2 * 2.0f / width - 0.35f);
 
                     // atmosphere
