@@ -8,6 +8,7 @@ import java.util.Random;
 
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
+import cyclesofwar.Universe;
 import cyclesofwar.window.HumanReadableLongConverter;
 import cyclesofwar.window.rendering.textures.ColorTools;
 import cyclesofwar.window.rendering.textures.PlanetTexture;
@@ -64,6 +65,18 @@ public class FancyRendering extends SimpleRendering {
     @Override
     public void drawBackground(Graphics g, long universeSeed) {
         g.drawImage(this.getBackground(universeSeed).getImage(), 0, 0, null);
+    }
+    
+    @Override
+    public void drawUniverse(Graphics g, Universe universe) {
+        super.drawUniverse(g, universe);
+        
+        if(universe.isGameOver())
+            return;
+        
+        List<Player> players = universe.getPlayers();
+        players.add(universe.getNonePlayer());
+        drawCharts(g, players);
     }
 
     @Override
@@ -158,18 +171,26 @@ public class FancyRendering extends SimpleRendering {
     @Override
     public void drawPlayers(Graphics g, List<Player> players) {
         // drawPlayerNames(g, players)
-        drawFancyPlayerNames(g, players);
-        drawCharts(g, players);
+        drawFancyPlayerNames(g, players);       
     }
 
     public void drawCharts(Graphics g, List<Player> players) {
         int size = (int) getScaled(60);
-        drawPieChart(g, "Planets", this.size.width - size / 2 - 10, (int) (0.95 * size), size, planetData(players));
-        drawPieChart(g, "Fleets", this.size.width - size / 2 - 10, (int) (2.2 * size), size, fleetData(players));
-        drawPieChart(g, "Forces", this.size.width - size / 2 - 10, (int) (3.45 * size), size, forceData(players));
+        double start = 0.95;
+        double step = 1.25;
+        
+        drawPieChart(g, "Planets", 12, this.size.width - size / 2 - 10, (int) ((start + step * 0) * size), size, planetData(players));
+        drawPieChart(g, "Fleets", 12,this.size.width - size / 2 - 10, (int) ((start + step * 1) * size), size, fleetData(players));
+        drawPieChart(g, "Forces", 12,this.size.width - size / 2 - 10, (int) ((start + step * 2) * size), size, forceFullData(players));
+        
+        start += 4 * step;
+        size = (int) getScaled(40);
+        start += step * getScaled(40)/getScaled(60);
+        drawPieChart(g, "Ground", 10, this.size.width - size / 2 - 10, (int) ((start + step * 0) * size), size, forcePlanetData(players));
+        drawPieChart(g, "Space", 10, this.size.width - size / 2 - 10, (int) ((start + step * 1) * size), size, forceFleetData(players));
     }
 
-    private void drawPieChart(Graphics g, String text, int x, int y, int size, List<ValueAndColor> valuesAndColors) {
+    private void drawPieChart(Graphics g, String text, int textSize, int x, int y, int size, List<ValueAndColor> valuesAndColors) {
         Graphics2D g2 = (Graphics2D) g;
         
         int sum = 0;
@@ -192,8 +213,8 @@ public class FancyRendering extends SimpleRendering {
         g2.setStroke(new BasicStroke(2));
         g2.drawOval(x, y, size, size);
 
-        drawText(g2, x + size / 2+1, y + size / 2+1, text, Color.BLACK, null, HAlign.CENTER, VAlign.CENTER, getFont(Font.BOLD, 12));
-        drawText(g2, x + size / 2, y + size / 2, text, fancyTextColor, null, HAlign.CENTER, VAlign.CENTER, getFont(Font.BOLD, 12));
+        drawText(g2, x + size / 2+1, y + size / 2+1, text, Color.BLACK, null, HAlign.CENTER, VAlign.CENTER, getFont(Font.BOLD, textSize));
+        drawText(g2, x + size / 2, y + size / 2, text, fancyTextColor, null, HAlign.CENTER, VAlign.CENTER, getFont(Font.BOLD, textSize));
         g2.setStroke(new BasicStroke(1));
     }
 
