@@ -135,7 +135,23 @@ public abstract class Rendering {
         return result;
     }
     
-    protected List<ValueAndColor> forceData(List<Player> players) {
+    protected List<ValueAndColor> forcePlanetData(List<Player> players) {
+        List<ValueAndColor> result = new ArrayList<>();
+        for(Player player : players) {
+            result.add(new ValueAndColor(player.getGroundForce(), player.getPlayerBackColor()));
+        }
+        return result;
+    }
+    
+    protected List<ValueAndColor> forceFleetData(List<Player> players) {
+        List<ValueAndColor> result = new ArrayList<>();
+        for(Player player : players) {
+            result.add(new ValueAndColor(player.getSpaceForce(), player.getPlayerBackColor()));
+        }
+        return result;
+    }
+    
+    protected List<ValueAndColor> forceFullData(List<Player> players) {
         List<ValueAndColor> result = new ArrayList<>();
         for(Player player : players) {
             result.add(new ValueAndColor(player.getFullForce(), player.getPlayerBackColor()));

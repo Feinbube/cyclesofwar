@@ -311,4 +311,10 @@ public class Universe {
     private double getlastFleetArrivalTime(List<Fleet> fleets) {
         return fleets.isEmpty() ? 0 : Fleet.max(Fleet.ArrivalTimeComparator, fleets).getTimeToTarget();
     }
+    
+    public Player getNonePlayer() {
+        Player result = Player.NonePlayer;
+        result.setUniverse(this);
+        return result;
+    }
 }
