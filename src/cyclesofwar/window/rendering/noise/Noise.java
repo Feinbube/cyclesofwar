@@ -39,14 +39,22 @@ public abstract class Noise {
 
     public BufferedImage texture(int width, int height, Color c1, Color c2) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        texture(image, c1, c2);
+        return image;
+    }
+    
+    public void texture(BufferedImage image, Color c) {
+        texture(image, Color.BLACK, c);
+    }
+    
+    public void texture(BufferedImage image, Color c1, Color c2) {
         int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
+        int width = image.getWidth();
         for (int y = 0; y < image.getHeight(); ++y) {
-            for (int x = 0; x < image.getWidth(); ++x) {
+            for (int x = 0; x < width; ++x) {
                 pixels[y * width + x] = at(x, y, c1, c2).hashCode();
             }
         }
-
-        return image;
     }
 }

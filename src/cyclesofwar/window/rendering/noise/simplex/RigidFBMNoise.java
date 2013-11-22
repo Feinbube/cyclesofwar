@@ -1,16 +1,16 @@
-package cyclesofwar.window.rendering.noise.perlin;
+package cyclesofwar.window.rendering.noise.simplex;
 
 import cyclesofwar.window.rendering.noise.Noise;
 
-public final class RigidFBM extends Noise {
+public final class RigidFBMNoise extends Noise {
 
     private Noise generator;
 
-    public RigidFBM(int seed) {
-        this(new PerlinNoise(seed), seed);
+    public RigidFBMNoise(int seed) {
+        this(new SimplexNoise(seed), seed);
     }
 
-    public RigidFBM(Noise noise, int seed) {
+    public RigidFBMNoise(Noise noise, int seed) {
         super(seed);
         this.generator = noise;
     }

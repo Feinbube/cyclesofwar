@@ -1,8 +1,8 @@
-package cyclesofwar.window.rendering.noise.perlin;
+package cyclesofwar.window.rendering.noise.simplex;
 
 import cyclesofwar.window.rendering.noise.Noise;
 
-public class FBM2 extends Noise {
+public class FractualBrownianMotionNoise extends Noise {
 
     private static final int DEFAULT_OCTAVES = 8;
     private static final double DEFAULT_PERSISTANCE = 0.5;
@@ -11,19 +11,19 @@ public class FBM2 extends Noise {
     private int octaves;
     private double persistance;
 
-    public FBM2(int seed) {
+    public FractualBrownianMotionNoise(int seed) {
         this(seed, DEFAULT_OCTAVES, DEFAULT_PERSISTANCE);
     }
 
-    public FBM2(int seed, int octaves) {
+    public FractualBrownianMotionNoise(int seed, int octaves) {
         this(seed, octaves, DEFAULT_PERSISTANCE);
     }
 
-    public FBM2(int seed, int octaves, double persistance) {
-        this(seed, octaves, persistance, new PerlinNoise(seed));
+    public FractualBrownianMotionNoise(int seed, int octaves, double persistance) {
+        this(seed, octaves, persistance, new SimplexNoise(seed));
     }
 
-    public FBM2(int seed, int octaves, double persistance, Noise noise) {
+    public FractualBrownianMotionNoise(int seed, int octaves, double persistance, Noise noise) {
         super(seed);
         this.generator = noise;
         this.octaves = octaves;
