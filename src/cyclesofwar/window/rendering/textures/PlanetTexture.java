@@ -1,7 +1,7 @@
 package cyclesofwar.window.rendering.textures;
 
 import cyclesofwar.window.rendering.noise.Noise;
-import cyclesofwar.window.rendering.noise.PerlinNoise;
+import cyclesofwar.window.rendering.noise.perlin.PerlinNoise;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -42,7 +42,7 @@ public class PlanetTexture extends Texture {
             
             return (float)Math.sqrt(x2 + y2);
         }
-        
+                
         private void nebulaEverywhere(BufferedImage image, Color color) {
 		int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		
@@ -63,7 +63,7 @@ public class PlanetTexture extends Texture {
                 float value = 0.5f;
 		for (int y = 0, yNoise = SEED; y < height ; ++y, ++yNoise) {
 			for (int x = 0, xNoise = SEED; x < width; ++x, ++xNoise) {
-				final double NOISE = noise.noise(xNoise * ZOOM, yNoise * ZOOM);
+				double NOISE = noise.raw(xNoise * ZOOM, yNoise * ZOOM) + 0.5;
 
                                 float d = getDistance(x, y, w2, height/2.0f);
                                 
@@ -71,7 +71,7 @@ public class PlanetTexture extends Texture {
                                 
                                     // continents
                                     Color c = NOISE < value
-                                            ? ColorTools.interpolate(c2, c1, (float) NOISE * 1.0f/value) 
+                                            ? ColorTools.interpolate(c1, c2, (float) NOISE * 1.0f/value) 
                                             : ColorTools.interpolate(c3, c4, (float)(NOISE-value) * 1.0f/value);
                                     
                                     // darker at the edges
