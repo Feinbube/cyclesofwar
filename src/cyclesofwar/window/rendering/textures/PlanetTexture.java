@@ -8,7 +8,6 @@ import java.awt.image.DataBufferInt;
 
 public class PlanetTexture extends Texture {
 
-    private static final double ZOOM = 0.1;
     private static final int SEED_CUT = 16;
 
     private final Color color;
@@ -59,11 +58,12 @@ public class PlanetTexture extends Texture {
         float w7 = width / 7;
 
         Noise noise = new SimplexNoise(SEED);
+        noise.zoom *= 5;
 
         float value = 0.5f;
-        for (int y = 0, yNoise = SEED; y < height; ++y, ++yNoise) {
-            for (int x = 0, xNoise = SEED; x < width; ++x, ++xNoise) {
-                double NOISE = noise.raw(xNoise * ZOOM, yNoise * ZOOM) + 0.5;
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                double NOISE = noise.at(x, y);
 
                 float d = getDistance(x, y, w2, height / 2.0f);
 
@@ -71,8 +71,8 @@ public class PlanetTexture extends Texture {
 
                     // continents
                     Color c = NOISE < value
-                            ? ColorTools.interpolate(c1, c2, (float) NOISE * 1.0f / value)
-                            : ColorTools.interpolate(c3, c4, (float) (NOISE - value) * 1.0f / value);
+                            ? ColorTools.interpolate(c1, c2, (float) NOISE / value)
+                            : ColorTools.interpolate(c3, c4, (float) (NOISE - value) / value);
 
                     // darker at the edges
                     float d2 = getDistance(x, y, width / 4.0f, height / 4.0f); // spot not in the middle of the planet :)
