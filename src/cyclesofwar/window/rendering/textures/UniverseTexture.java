@@ -1,8 +1,8 @@
 package cyclesofwar.window.rendering.textures;
 
-import cyclesofwar.window.rendering.noise.perlin.FBM;
 import cyclesofwar.window.rendering.noise.*;
-import cyclesofwar.window.rendering.noise.perlin.*;
+import cyclesofwar.window.rendering.noise.cell.*;
+import cyclesofwar.window.rendering.noise.simplex.FractualBrownianMotionNoise;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -37,9 +37,12 @@ public class UniverseTexture extends Texture {
     protected BufferedImage generate() {
         Color color = NEBULA_COLORS[random.nextInt(NEBULA_COLORS.length)];
         int seed = this.random.nextInt(Integer.MAX_VALUE >> SEED_CUT);
-        
-        image = new FBM2(seed).texture(width, height, color);
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        new FractualBrownianMotionNoise(seed).texture(image, color);
         this.stars(image);
+        this.galaxy(image, seed);
 
         return image;
     }
@@ -79,7 +82,7 @@ public class UniverseTexture extends Texture {
         final int iRadius = (int) (radiusFraction * radius);
         final int outer = radius - iRadius;
 
-        Noise fbm = new FBM(seed);
+        Noise fbm = new FractualBrownianMotionNoise(seed);
 
         for (int y = yMid - radius, yShift = -radius; y < yMid + radius; ++y, ++yShift) {
             for (int x = xMid - radius, xShift = -radius; x < xMid + radius; ++x, ++xShift) {
