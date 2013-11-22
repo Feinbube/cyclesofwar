@@ -64,7 +64,7 @@ public class Jane extends Player {
 
     @Override
     public Color getPlayerBackColor() {
-        return Color.blue.darker();
+        return Color.blue;
     }
 
     @Override

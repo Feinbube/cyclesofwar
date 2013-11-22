@@ -2,7 +2,7 @@ package cyclesofwar.window.rendering.textures;
 
 import cyclesofwar.window.rendering.noise.*;
 import cyclesofwar.window.rendering.noise.cell.*;
-import cyclesofwar.window.rendering.noise.simplex.FractualBrownianMotionNoise;
+import cyclesofwar.window.rendering.noise.simplex.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -12,11 +12,11 @@ public class UniverseTexture extends Texture {
 
     private static final int SEED_CUT = 16;
     private static final Color[] NEBULA_COLORS = {
-        Color.BLUE.brighter(),
-        Color.CYAN.darker(),
-        Color.RED.darker(),
-        Color.GREEN.darker(),
-        Color.MAGENTA.darker()
+        new Color(64, 64, 255),
+        Color.CYAN,
+        Color.RED,
+        Color.GREEN,
+        Color.MAGENTA
     };
     private static final int MIN_STARS = 96;
     private static final int VAR_STARS = 64;
@@ -40,9 +40,10 @@ public class UniverseTexture extends Texture {
 
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-        new FractualBrownianMotionNoise(seed).texture(image, color);
+        this.pitchBlack(image);
+        new NebulaNoise(seed).texture(image, color);
+        //this.galaxy(image, seed);
         this.stars(image);
-        this.galaxy(image, seed);
 
         return image;
     }
