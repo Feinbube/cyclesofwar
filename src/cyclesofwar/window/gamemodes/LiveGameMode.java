@@ -55,6 +55,7 @@ public class LiveGameMode extends GameMode {
 	protected void paintGame(Graphics g) {
 		rendering.drawUniverse(g, universe);
                 rendering.drawPlayers(g, universe.getPlayers());
+                rendering.drawFps(g);
 	}
 
 	@Override

@@ -34,6 +34,8 @@ public class SimpleRendering extends Rendering {
     protected final int StarCount = 1000;
     protected final List<Star> stars = new ArrayList<>();
     
+    protected Color textColor = Color.YELLOW;
+    
     public SimpleRendering() {
         stars.clear();
         for (int i = 0; i < StarCount; i++) {
@@ -57,15 +59,15 @@ public class SimpleRendering extends Rendering {
 
         drawStars(g);       
     }
-
+    
     @Override
     public void drawSeed(Graphics g, long seed) {
-        drawText(g, size.width - 5, 5, "seed: " + seed, Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
+        drawText(g, size.width - 5, 5, "seed: " + seed, textColor, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
     }
 
     @Override
     protected void drawUpdatedFps(Graphics g) {
-        drawText(g, size.width - 10, 0, fps + "fps", Color.yellow, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
+        drawText(g, size.width - 10, 0, fps + "fps", textColor, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
     }
     
     @Override
@@ -75,27 +77,27 @@ public class SimpleRendering extends Rendering {
 
     @Override
     public void drawControlInfo(Graphics g, String s, int fontsize) {
-        drawText(g, size.width - fontsize / 2, size.height - fontsize / 2, s, Color.yellow, null, HAlign.RIGHT, VAlign.TOP, fontsize);
+        drawText(g, size.width - fontsize / 2, size.height - fontsize / 2, s, textColor, null, HAlign.RIGHT, VAlign.TOP, fontsize);
     }
 
     @Override
     public void drawInfo(Graphics g, String s) {
-        drawText(g, size.width / 2, size.height / 2, s, Color.yellow, null, HAlign.CENTER, VAlign.CENTER, getFont(Font.BOLD, 32));
+        drawText(g, size.width / 2, size.height / 2, s, textColor, null, HAlign.CENTER, VAlign.CENTER, getFont(Font.BOLD, 32));
     }
 
     @Override
     public void drawTitleScreen(Graphics g) {
         drawBackground(g, 0);
-        drawText(g, size.width / 2, size.height / 2, "Cycles of War", Color.yellow, null, HAlign.CENTER, VAlign.CENTER,
+        drawText(g, size.width / 2, size.height / 2, "Cycles of War", textColor, null, HAlign.CENTER, VAlign.CENTER,
                 getFont(Font.BOLD, 48));
     }
 
     @Override
     protected void drawGameOverScreen(Graphics g, String winnerName) {
-        drawText(g, size.width / 2, size.height / 3 + 20, "GAME OVER", Color.yellow, null, HAlign.CENTER, VAlign.CENTER,
+        drawText(g, size.width / 2, size.height / 3 + 20, "GAME OVER", textColor, null, HAlign.CENTER, VAlign.CENTER,
                 getFont(Font.BOLD, 48));
 
-        drawText(g, size.width / 2, size.height / 3 + 100, winnerName + " has won!", Color.yellow, null, HAlign.CENTER, VAlign.CENTER,
+        drawText(g, size.width / 2, size.height / 3 + 100, winnerName + " has won!", textColor, null, HAlign.CENTER, VAlign.CENTER,
                 getFont(Font.PLAIN, 32));
     }
     
@@ -262,7 +264,7 @@ public class SimpleRendering extends Rendering {
         tags.clear();
 
         Font f = getFont(Font.BOLD, 18);
-        drawText(g, marginLeft, marginTop - 12, "chose champions:", Color.yellow, null, f);
+        drawText(g, marginLeft, marginTop - 12, "chose champions:", textColor, null, f);
 
         drawPlayers(g, selectedPlayers, allPlayers, marginLeft, marginTop);
 
@@ -270,29 +272,29 @@ public class SimpleRendering extends Rendering {
         left = Math.max(
                 left,
                 drawText(g, marginLeft, size.height - marginTop - g.getFontMetrics(f).getHeight() - 190, "chose number of matches:",
-                        Color.yellow, null, f));
+                        textColor, null, f));
         left = Math.max(
                 left,
                 drawText(g, marginLeft, size.height - marginTop - g.getFontMetrics(f).getHeight() - 150,
-                        "chose number of planets per player:", Color.yellow, null, f));
+                        "chose number of planets per player:", textColor, null, f));
         left = Math.max(
                 left,
                 drawText(g, marginLeft, size.height - marginTop - g.getFontMetrics(f).getHeight() - 110, "chose universe size factor:",
-                        Color.yellow, null, f));
+                        textColor, null, f));
 
         drawSelection(g, "rounds", possibleNumbersOfRounds, selectedNumberOfRounds, marginLeft, marginTop + 190, left);
         drawSelection(g, "planets", possiblePlanetsPerPlayer, selectedNumberOfPlanetsPerPlayer, marginLeft, marginTop + 150, left);
         drawSelection(g, "sizefactors", possibleUniverseSizes, selectedUniverseSize, marginLeft, marginTop + 110, left);
 
-        drawText(g, marginLeft, size.height - marginTop - 100, "chose game mode:", Color.yellow, null, f);
+        drawText(g, marginLeft, size.height - marginTop - 100, "chose game mode:", textColor, null, f);
 
         int borderSize = (int) (size.width * 7.0 / 1000);
         
         int wSteps = (size.width-marginLeft*2) / 5;     
-        drawBigButton(g, "Live Mode", "LIVE", marginLeft + wSteps, size.height - marginTop, HAlign.CENTER, 22, borderSize, Color.yellow);
-        drawBigButton(g, "Tournament Mode", "TOURNAMENT", marginLeft + wSteps*2, size.height - marginTop,HAlign.CENTER, 20, borderSize, Color.yellow);
-        drawBigButton(g, "Arena Mode", "ARENA",  marginLeft + wSteps*3, size.height - marginTop, HAlign.CENTER, 22, borderSize, Color.yellow);
-        drawBigButton(g, "Demo Mode","DEMO", marginLeft + wSteps*4, size.height - marginTop, HAlign.CENTER, 22, borderSize, Color.yellow);
+        drawBigButton(g, "Live Mode", "LIVE", marginLeft + wSteps, size.height - marginTop, HAlign.CENTER, 22, borderSize, textColor);
+        drawBigButton(g, "Tournament Mode", "TOURNAMENT", marginLeft + wSteps*2, size.height - marginTop,HAlign.CENTER, 20, borderSize, textColor);
+        drawBigButton(g, "Arena Mode", "ARENA",  marginLeft + wSteps*3, size.height - marginTop, HAlign.CENTER, 22, borderSize, textColor);
+        drawBigButton(g, "Demo Mode","DEMO", marginLeft + wSteps*4, size.height - marginTop, HAlign.CENTER, 22, borderSize, textColor);
     }
 
     protected <T> void drawSelection(Graphics g, String id, List<T> possibleValues, T selectedValue, int marginLeft, int marginTop, int left) {
@@ -303,7 +305,7 @@ public class SimpleRendering extends Rendering {
             T numberAtI = possibleValues.get(i);
             if (numberAtI.equals(selectedValue)) {
                 drawButton(g, id + numberAtI, numberAtI + "", left + marginLeft + i * tile, size.height - marginTop, HAlign.CENTER, 14,
-                        borderSize, Color.yellow);
+                        borderSize, textColor);
             } else {
                 drawButton(g, id + numberAtI, numberAtI + "", left + marginLeft + i * tile, size.height - marginTop, HAlign.CENTER, 14,
                         borderSize, Color.white);
@@ -374,7 +376,7 @@ public class SimpleRendering extends Rendering {
         int padding = 10;
         int marginTop = 120;
 
-        drawText(g, marginLeft, marginLeft, s, Color.yellow, null, HAlign.LEFT, VAlign.CENTER, getFont(Font.BOLD, 32));
+        drawText(g, marginLeft, marginLeft, s, textColor, null, HAlign.LEFT, VAlign.CENTER, getFont(Font.BOLD, 32));
 
         tournament = tournament.lightWeightClone();
 

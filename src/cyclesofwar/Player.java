@@ -28,7 +28,7 @@ import java.util.List;
  * 		if the game exceeds 100.000 rounds: game is over, nobody wins
  * 		start next round
  */
-public abstract class Player extends Sortable {
+public abstract class Player extends Sortable implements Comparable<Player> {
 
 	/*
 	 * this player means "no player". it is the Null-Object that is assigned to
@@ -532,4 +532,9 @@ public abstract class Player extends Sortable {
                 return Double.compare(player2.getFullForce(), player1.getFullForce());
             }
         };
+
+    @Override
+    public int compareTo(Player other) {
+        return this.getName().compareTo(other.getName());
+    }
 }
