@@ -362,6 +362,8 @@ public class FancyRendering extends SimpleRendering {
 
     @Override
     public void drawFleets(Graphics g, List<Fleet> fleets, double time) {
+        Graphics2D g2 = (Graphics2D)g;
+        
         for (Fleet fleet : fleets) {
             
             double x = getX(g, fleet.getX());
@@ -374,11 +376,12 @@ public class FancyRendering extends SimpleRendering {
 
             double localTime = time - fleet.getTimeToTarget();
 
-            g.setColor(ColorTools.transparent(fleet.getPlayer().getPlayerBackColor(), 0.5 + 0.5 * d/MaxRenderedFleet));
-            drawArrowFormation(g, fleet, x, y, d);
+            g2.setStroke(new BasicStroke(2));
+            g2.setColor(ColorTools.transparent(fleet.getPlayer().getPlayerBackColor(), 0.4 + 0.2 * d/MaxRenderedFleet));
+            drawArrowFormation(g2, fleet, x, y, d);
 
             if (d == MaxRenderedFleet) {
-                drawText(g, (int) x, (int) y, fleet.getForce() + "", getPlayerTextColor(fleet.getPlayer()), null, HAlign.CENTER,
+                drawText(g2, (int) x, (int) y, fleet.getForce() + "", getPlayerTextColor(fleet.getPlayer()), null, HAlign.CENTER,
                         VAlign.CENTER, 10);
             }
         }
