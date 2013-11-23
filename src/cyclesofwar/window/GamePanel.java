@@ -129,12 +129,14 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
                 }
                 
                 if(this.rendering != rendering || renderingImpl == null) {
-                    if(rendering == "Simple") {
+                    if(rendering.equals("Simple")) {
                         renderingImpl = new SimpleRendering();
-                    } else if (rendering == "Fancy") {
+                    } else if (rendering.equals("Fancy")) {
                         renderingImpl = new FancyRendering();
                     }
                 }
+                
+                this.rendering = rendering;
 	}
 	
         public void setSelectedNumberOfRounds(int numbersOfRounds) {
