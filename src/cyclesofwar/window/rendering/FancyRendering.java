@@ -174,12 +174,14 @@ public class FancyRendering extends SimpleRendering {
 
             int r = (int) (h * 0.7);
             g2.setColor(player.getPlayerBackColor());
-            g2.fillOval((int) (left + h * 1.3), 7, r, r);
+            //g2.fillOval((int) (left + h * 1.3), 7, r, r);
+            g2.fillRoundRect((int) (left + h * 1.3), 7, r, r, 5, 5);
 
             c = player.isAlive() ? fancyActiveBorderColor : fancyInActiveBorderColor;
             g2.setColor(c);
             g2.setStroke(new BasicStroke(2));
-            g2.drawOval((int) (left + h * 1.3), 7, r, r);
+            // g2.drawOval((int) (left + h * 1.3), 7, r, r);
+            g2.drawRoundRect((int) (left + h * 1.3), 7, r, r, 5, 5);
 
             c = player.isAlive() ? fancyTextColor : fancyInActiveTextColor;
             left = (int) (h * 1.75 + drawText(g2, (int) (left + h * 2.5), 10, player.getName(), c, null, HAlign.LEFT, VAlign.CENTER, f));
