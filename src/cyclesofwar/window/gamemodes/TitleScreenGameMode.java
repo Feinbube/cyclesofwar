@@ -23,7 +23,7 @@ public class TitleScreenGameMode extends GameMode {
 
 	@Override
 	protected void paintGame(Graphics g) {
-		rendering.drawTitleScreen(g);
+		getRendering().drawTitleScreen(g);
 	}
 
 	@Override

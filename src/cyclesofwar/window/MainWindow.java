@@ -22,7 +22,7 @@ public class MainWindow {
         f.addWindowListener(configManager);
 
         GamePanel panel = new GamePanel(Runtime.getRuntime().availableProcessors() - 1, configManager.getSelectedPlayers(),
-                Arena.registeredPlayers(), configManager.getNumberOfRounds(), configManager.getNumberOfPlanetsPerPlayer(),
+                Arena.registeredPlayers(), configManager.getRendering(), configManager.getNumberOfRounds(), configManager.getNumberOfPlanetsPerPlayer(),
                 configManager.getUniverseSizeFactor());
         configManager.setGamePanel(panel);
 

@@ -29,16 +29,16 @@ public class TournamentGameMode extends GameMode {
 
 	@Override
 	protected void paintGame(Graphics g) {
-		rendering.drawStatistics(g, tournament, "Last Man Standing Tournament", false);
+		getRendering().drawStatistics(g, tournament, "Last Man Standing Tournament", false);
 	}
 
 	@Override
 	protected void drawControls(Graphics g) {
 		if (!getShowControls()) {
-			rendering.drawControlInfo(g, "F1/1 toggle info");
+			getRendering().drawControlInfo(g, "F1/1 toggle info");
 		} else {
 			String pauseString = tournament.isPaused() ? "continue" : "pause";
-			rendering.drawControlInfo(g, "[Key Mapping]: ESC Menue ... CLICK stats: see battle ... SPACE: " + pauseString
+			getRendering().drawControlInfo(g, "[Key Mapping]: ESC Menue ... CLICK stats: see battle ... SPACE: " + pauseString
 					+ " ... 5: new combat");
 		}
 	}
@@ -68,7 +68,7 @@ public class TournamentGameMode extends GameMode {
 
 	@Override
 	protected void mouseReleasedGame(int x, int y) {
-		List<TournamentRecord> winRecords = rendering.getFightRecords(x, y);
+		List<TournamentRecord> winRecords = getRendering().getFightRecords(x, y);
 		if (winRecords != null && winRecords.size() > 0) {
 			TournamentRecord winRecord = winRecords.get(random.nextInt(winRecords.size()));
 			this.setLiveUniverse(new Universe(winRecord.getUniverseSeed(), winRecord.getPlayers(), this

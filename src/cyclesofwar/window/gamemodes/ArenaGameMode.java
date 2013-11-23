@@ -30,16 +30,16 @@ public class ArenaGameMode extends GameMode {
 
 	@Override
 	protected void paintGame(Graphics g) {
-		rendering.drawStatistics(g, tournament, "1-On-1 Tournament", true);
+		getRendering().drawStatistics(g, tournament, "1-On-1 Tournament", true);
 	}
 
 	@Override
 	protected void drawControls(Graphics g) {
 		if (!getShowControls()) {
-			rendering.drawControlInfo(g, "F1/1 toggle info");
+			getRendering().drawControlInfo(g, "F1/1 toggle info");
 		} else {
 			String pauseString = tournament.isPaused() ? "continue" : "pause";
-			rendering.drawControlInfo(g,
+			getRendering().drawControlInfo(g,
 					"[Key Mapping]: ESC Menue ... CLICK player: toogle priority ... CLICK stats: see battle ... SPACE: " + pauseString
 							+ " ... 5: new combat");
 		}
@@ -70,7 +70,7 @@ public class ArenaGameMode extends GameMode {
 
 	@Override
 	protected void mouseReleasedGame(int x, int y) {
-		List<TournamentRecord> winRecords = rendering.getFightRecords(x, y);
+		List<TournamentRecord> winRecords = getRendering().getFightRecords(x, y);
 		if (winRecords != null && winRecords.size() > 0) {
 			TournamentRecord winRecord = winRecords.get(random.nextInt(winRecords.size()));
 			setLiveUniverse(new Universe(winRecord.getUniverseSeed(), winRecord.getPlayers(), this.getSelectedNumberOfPlanetsPerPlayer(),
@@ -78,7 +78,7 @@ public class ArenaGameMode extends GameMode {
 
 			this.switchTo(GameModes.LIVE);
 		} else {
-			Player player = rendering.getPlayer(x, y); //, tournament);
+			Player player = getRendering().getPlayer(x, y); //, tournament);
 			if (player != null && !player.equals(Player.NonePlayer)) {
 				tournament.switchPriority(player);
 			}
