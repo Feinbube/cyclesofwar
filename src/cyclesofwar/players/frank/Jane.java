@@ -16,6 +16,10 @@ public class Jane extends Player {
 
         for (Planet planet : this.getPlanets()) {
 
+            if(planet.getForces() < 1) {
+                continue;
+            }
+            
             double overproduction = planet.getForces() - this.getAdvise(planet, this.getlastFleetArrivalTime()).getForcesToKeep();
 
             for (Planet other : planet.getOthersByDistance()) {

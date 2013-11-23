@@ -17,9 +17,7 @@ import javax.swing.event.MouseInputListener;
 import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.window.gamemodes.*;
-import cyclesofwar.window.rendering.FancyRendering;
-import cyclesofwar.window.rendering.Rendering;
-import cyclesofwar.window.rendering.SimpleRendering;
+import cyclesofwar.window.rendering.*;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
@@ -27,7 +25,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	private static final long serialVersionUID = 1L;
 
-	public final List<String> possibleRenderings = Arrays.asList("Simple", "Fancy");
+	public final List<String> possibleRenderings = Arrays.asList("Simple", "Fancy", "Galaxy", "Organic", "Neural");
         public final List<Integer> possibleNumbersOfRounds = Arrays.asList(2, 5, 10, 20, 50, 75, 100, 250, 500);
 	public final List<Integer> possibleNumbersOfPlanetsPerPlayer = Arrays.asList(1, 2, 5, 10, 20, 25, 50);
 	public final List<Double> possibleValuesForUniverseSizeFactor = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0);
@@ -133,6 +131,12 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
                         renderingImpl = new SimpleRendering();
                     } else if (rendering.equals("Fancy")) {
                         renderingImpl = new FancyRendering();
+                    } else if (rendering.equals("Galaxy")) {
+                        renderingImpl = new GalaxyRendering();
+                    } else if (rendering.equals("Organic")) {
+                        renderingImpl = new OrganicRendering();
+                    } else if (rendering.equals("Neural")) {
+                        renderingImpl = new NeuralRendering();
                     }
                 }
                 

@@ -10,6 +10,9 @@ public abstract class Noise {
     public int seed = 0;
     public double zoom = 0.01;
 
+    public Noise() {
+    }
+    
     public Noise(int seed) {
         this.seed = seed;
     }
@@ -21,6 +24,16 @@ public abstract class Noise {
 
     public abstract double raw(double x, double y);
 
+    public Noise setSeed(int seed) {
+        this.seed = seed;
+        return this;
+    }
+    
+    public Noise setZoom(double zoom) {
+        this.zoom = zoom;
+        return this;
+    }
+    
     public double at(double x, double y) {
         return raw((x + seed) * zoom, (y + seed) * zoom);
     }

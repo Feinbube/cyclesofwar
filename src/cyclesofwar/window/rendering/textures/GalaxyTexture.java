@@ -1,14 +1,12 @@
 package cyclesofwar.window.rendering.textures;
 
 import cyclesofwar.window.rendering.noise.*;
-import cyclesofwar.window.rendering.noise.cell.*;
 import cyclesofwar.window.rendering.noise.simplex.*;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
-public class UniverseTexture extends Texture {
+public class GalaxyTexture extends Texture {
 
     private static final int SEED_CUT = 16;
     private static final Color[] NEBULA_COLORS = {
@@ -18,19 +16,9 @@ public class UniverseTexture extends Texture {
         Color.GREEN,
         Color.MAGENTA
     };
-    private static final int MIN_STARS = 96;
-    private static final int VAR_STARS = 64;
-    private static final int STAR_SIZE = 2;
 
-    private static final double MIN_BRIGHTNESS = 0.5;
-    private static final double MAX_BRIGHTNESS = 5;
-    private static final double BRIGHTNESS_RANGE = MAX_BRIGHTNESS - MIN_BRIGHTNESS;
-
-    final private int stars;
-
-    public UniverseTexture(final int width, final int height, final long seed) {
+    public GalaxyTexture(final int width, final int height, final long seed) {
         super(width, height, seed);
-        this.stars = MIN_STARS + random.nextInt(VAR_STARS);
     }
 
     @Override
@@ -42,7 +30,7 @@ public class UniverseTexture extends Texture {
 
         this.pitchBlack(image);
         new NebulaNoise(seed).texture(image, color);
-        // this.galaxy(image, seed);
+        this.galaxy(image, seed);
         new StarNoise(seed).blendTexture(image, Color.WHITE);
 
         return image;

@@ -28,7 +28,7 @@ public class PlanetTexture extends Texture {
         BufferedImage result = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
 
         this.pitchBlack(result);
-        this.nebulaEverywhere(result, this.color);
+        this.planetTexture(result, this.color);
 
         return result;
     }
@@ -43,7 +43,7 @@ public class PlanetTexture extends Texture {
         return (float) Math.sqrt(x2 + y2);
     }
 
-    private void nebulaEverywhere(BufferedImage image, Color color) {
+    private void planetTexture(BufferedImage image, Color color) {
         int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
         final int SEED = this.random.nextInt(Integer.MAX_VALUE >> SEED_CUT);

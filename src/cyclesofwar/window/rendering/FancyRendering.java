@@ -11,9 +11,11 @@ import cyclesofwar.Planet;
 import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.window.HumanReadableLongConverter;
+import cyclesofwar.window.rendering.noise.cell.MosaicNoise;
 import cyclesofwar.window.rendering.textures.ColorTools;
 import cyclesofwar.window.rendering.textures.PlanetTexture;
-import cyclesofwar.window.rendering.textures.UniverseTexture;
+import cyclesofwar.window.rendering.textures.Texture;
+import cyclesofwar.window.rendering.textures.BackgroundTexture;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -23,37 +25,41 @@ import java.util.TreeMap;
 
 public class FancyRendering extends SimpleRendering {
 
-    private final Map<Integer, UniverseTexture> backgrounds = new TreeMap<>();
-    private final Map<Integer, PlanetTexture> planetTextures = new TreeMap();
+    protected final Map<Integer, Texture> backgrounds = new TreeMap<>();
+    protected final Map<Integer, PlanetTexture> planetTextures = new TreeMap();
 
-    private final Color fancyTextColor = ColorTools.transparent(Color.cyan, 0.8f);
-    private final Color fancyInActiveTextColor = ColorTools.transparent(Color.cyan.darker(), 0.5f);
+    protected final Color fancyTextColor = ColorTools.transparent(Color.cyan, 0.8f);
+    protected final Color fancyInActiveTextColor = ColorTools.transparent(Color.cyan.darker(), 0.5f);
 
-    private final Color fancyActiveBorderColor = ColorTools.transparent(Color.cyan, 0.5f);
-    private final Color fancyInActiveBorderColor = ColorTools.transparent(Color.cyan.darker(), 0.3f);
+    protected final Color fancyActiveBorderColor = ColorTools.transparent(Color.cyan, 0.5f);
+    protected final Color fancyInActiveBorderColor = ColorTools.transparent(Color.cyan.darker(), 0.3f);
 
-    private final Color fancyActiveBackColor = ColorTools.transparent(Color.blue, 0.5f);
-    private final Color fancyInActiveBackColor = ColorTools.transparent(Color.blue.darker(), 0.3f);
+    protected final Color fancyActiveBackColor = ColorTools.transparent(Color.blue, 0.5f);
+    protected final Color fancyInActiveBackColor = ColorTools.transparent(Color.blue.darker(), 0.3f);
 
-    private final static HumanReadableLongConverter humanReadableLongConverter = new HumanReadableLongConverter();
+    protected final static HumanReadableLongConverter humanReadableLongConverter = new HumanReadableLongConverter();
 
-    private final Map<Player, List<Double>> historyPlanets = new TreeMap<>();
-    private final Map<Player, List<Double>> historyFleets = new TreeMap<>();
-    private final Map<Player, List<Double>> historyForces = new TreeMap<>();
+    protected final Map<Player, List<Double>> historyPlanets = new TreeMap<>();
+    protected final Map<Player, List<Double>> historyFleets = new TreeMap<>();
+    protected final Map<Player, List<Double>> historyForces = new TreeMap<>();
 
-    private boolean resetNeeded = false;
+    protected boolean resetNeeded = false;
 
     public FancyRendering() {
         this.textColor = fancyTextColor;
     }
 
-    private UniverseTexture getBackground(long universeSeed) {
+    protected Texture getBackground(long universeSeed) {
         Integer index = new Random(universeSeed).nextInt(10);
         if (!backgrounds.containsKey(index)) {
-            backgrounds.put(index, new UniverseTexture(size.width, size.height, universeSeed));
+            backgrounds.put(index, createBackground(universeSeed));
         }
 
         return backgrounds.get(index);
+    }
+
+    protected Texture createBackground(long universeSeed) {
+        return new BackgroundTexture(new MosaicNoise(), size.width, size.height, universeSeed, true);
     }
 
     @Override
@@ -212,7 +218,7 @@ public class FancyRendering extends SimpleRendering {
         drawPieChart(g, "Space", 10, this.size.width - size / 2 - 10, (int) ((start + step * 1) * size), size, forceFleetData(players));
     }
 
-    private void drawPieChart(Graphics g, String text, int textSize, int x, int y, int size, List<ValueAndColor> valuesAndColors) {
+    protected void drawPieChart(Graphics g, String text, int textSize, int x, int y, int size, List<ValueAndColor> valuesAndColors) {
         Graphics2D g2 = (Graphics2D) g;
 
         int sum = 0;
@@ -354,7 +360,7 @@ public class FancyRendering extends SimpleRendering {
         return result;
     }
 
-    private void reset() {
+    protected void reset() {
         resetNeeded = false;
 
         historyPlanets.clear();
@@ -364,6 +370,9 @@ public class FancyRendering extends SimpleRendering {
 
     @Override
     public void drawFleets(Graphics g, List<Fleet> fleets, double time) {
+        
+        final int base = 10;
+        
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(new BasicStroke(2));    
         
@@ -388,8 +397,8 @@ public class FancyRendering extends SimpleRendering {
             int ring = 0;
             while(forces > 0) {
                 
-                int currentForces = forces % 10;
-                forces /= 10;
+                int currentForces = forces % base;
+                forces /= base;
                 ring++;
                 
                 double length = ring * ring * 4;
@@ -398,7 +407,7 @@ public class FancyRendering extends SimpleRendering {
                 int[] two = getXY(-length / 2, 0, x, y, sinAngle, cosAngle);
                 int[] three = getXY(length / 2, length / 2, x, y, sinAngle, cosAngle);
 
-                g.setColor(ColorTools.transparent(fleet.getPlayer().getPlayerBackColor(), 0.4 + 0.6 * currentForces/10.0));
+                g.setColor(ColorTools.transparent(fleet.getPlayer().getPlayerBackColor(), 0.4 + 0.6 * ((double)currentForces)/base));
                 g.drawPolygon(new int[]{one[0], two[0], three[0]}, new int[]{one[1], two[1], three[1]}, 3);
             }
             
