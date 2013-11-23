@@ -5,10 +5,6 @@ import java.awt.Color;
 
 public class NoisyNoise extends CellNoiseType {
 
-    public NoisyNoise(int seed) {
-        super(seed);
-    }
-
     @Override
     public Color at(double x, double y, Color c1, Color c2) {
         noise(x, y);

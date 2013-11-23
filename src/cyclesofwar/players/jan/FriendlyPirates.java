@@ -18,6 +18,7 @@ public class FriendlyPirates extends Player {
 	@Override
 	protected void think() {
 		for(Planet p : getPlanetsOf(this))
+                    if(p.getForces() >= 1)
 			planetaryThink(p);
 	}
 

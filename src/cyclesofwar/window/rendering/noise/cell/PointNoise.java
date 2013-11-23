@@ -2,8 +2,7 @@ package cyclesofwar.window.rendering.noise.cell;
 
 public class PointNoise extends CellNoiseType {
 
-    public PointNoise(int seed) {
-        super(seed);
+    public PointNoise() {
         zoom = zoom / 2;
     }
 

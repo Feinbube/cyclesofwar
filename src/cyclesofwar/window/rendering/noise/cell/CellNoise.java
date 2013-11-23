@@ -2,10 +2,6 @@ package cyclesofwar.window.rendering.noise.cell;
 
 public class CellNoise extends CellNoiseType {
 
-    public CellNoise(int seed) {
-        super(seed);
-    }
-
     @Override
     protected double getNoise(double x, double y) {
         double sum = 1;

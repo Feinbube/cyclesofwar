@@ -7,8 +7,7 @@ public abstract class CellNoiseType extends Noise {
     CellNoiseImpl cellNoise = null;
     CellDataStruct cellDataStruct = null;
 
-    public CellNoiseType(int seed) {
-        super(seed);
+    public CellNoiseType() {
         zoom = 5 * zoom;
     }
 
