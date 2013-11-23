@@ -382,18 +382,25 @@ public class FancyRendering extends SimpleRendering {
             double sinAngle = yDiff / dist;
             double cosAngle = xDiff / dist;
 
-            double length = Math.sqrt(fleet.getForce()) * 5;
+            int forces = fleet.getForce();
+            int ring = 0;
+            while(forces > 0) {
+                
+                int currentForces = forces % 10;
+                forces /= 10;
+                ring++;
+                
+                double length = ring * ring * 4;
 
-            int[] one = getXY(length / 2, -length / 2, x, y, sinAngle, cosAngle);
-            int[] two = getXY(-length / 2, 0, x, y, sinAngle, cosAngle);
-            int[] three = getXY(length / 2, length / 2, x, y, sinAngle, cosAngle);
+                int[] one = getXY(length / 2, -length / 2, x, y, sinAngle, cosAngle);
+                int[] two = getXY(-length / 2, 0, x, y, sinAngle, cosAngle);
+                int[] three = getXY(length / 2, length / 2, x, y, sinAngle, cosAngle);
 
-            g.setColor(ColorTools.transparent(fleet.getPlayer().getPlayerBackColor(), 0.4 + 0.2 * fleet.getForce()/MaxRenderedFleet));
-            g.drawPolygon(new int[]{one[0], two[0], three[0]}, new int[]{one[1], two[1], three[1]}, 3);
-
-            if (fleet.getForce() == MaxRenderedFleet) {
-                //drawText(g2, (int) x, (int) y, fleet.getForce() + "", getPlayerTextColor(fleet.getPlayer()), null, HAlign.CENTER, VAlign.CENTER, 10);
+                g.setColor(ColorTools.transparent(fleet.getPlayer().getPlayerBackColor(), 0.4 + 0.6 * currentForces/10.0));
+                g.drawPolygon(new int[]{one[0], two[0], three[0]}, new int[]{one[1], two[1], three[1]}, 3);
             }
+            
+            //drawText(g2, (int) x, (int) y, fleet.getForce() + "", getPlayerTextColor(fleet.getPlayer()), null, HAlign.CENTER, VAlign.CENTER, 10);
         }
     }
 

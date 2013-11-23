@@ -77,7 +77,7 @@ public class ConfigManager extends WindowAdapter {
 	}
 	
         public String getRendering() {
-            if (properties == null || !properties.containsKey("rendering")) {
+            if (properties == null || !properties.containsKey("rendering") || properties.getProperty("rendering") == null) {
                     return "Fancy";
             } else {
                     return new String(properties.getProperty("rendering"));
