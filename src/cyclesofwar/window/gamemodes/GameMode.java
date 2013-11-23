@@ -11,7 +11,7 @@ import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.window.GameModes;
 import cyclesofwar.window.GamePanel;
-import cyclesofwar.window.rendering.*;
+import cyclesofwar.window.rendering.Rendering;
 
 public abstract class GameMode {
 
@@ -19,8 +19,7 @@ public abstract class GameMode {
 
 	private final Object renderingLock = new Object();
 
-	protected Random random = new Random();
-	protected Rendering rendering = new FancyRendering();
+	protected Random random = new Random();	
 
 	public GameMode(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
@@ -34,10 +33,14 @@ public abstract class GameMode {
 	}
 
 	protected abstract void updateGame();
+        
+        protected Rendering getRendering() {
+            return this.gamePanel.getRendering();
+        }
 
 	public void paintComponent(Graphics g, Dimension size) {
 		synchronized (renderingLock) {
-			rendering.setSize(size);
+			this.getRendering().setSize(size);
 
 			paintGame(g);
 
@@ -103,6 +106,10 @@ public abstract class GameMode {
 		gamePanel.toggleSelection(player);
 	}
 	
+        protected void setSelectedRendering(String selectedRendering) {
+		gamePanel.setSelectedRendering(selectedRendering);
+	}
+        
 	protected void setSelectedNumberOfRounds(int selectedNumberOfRounds) {
 		gamePanel.setSelectedNumberOfRounds(selectedNumberOfRounds);
 	}
@@ -115,6 +122,10 @@ public abstract class GameMode {
 		gamePanel.setSelectedUniverseSizeFactor(selectedUniverseSizeFactor);
 	}
 	
+        protected String getSelectedRendering() {
+		return gamePanel.getSelectedRendering();
+	}
+        
 	protected int getSelectedNumberOfRounds() {
 		return gamePanel.getSelectedNumberOfRounds();
 	}
@@ -133,6 +144,10 @@ public abstract class GameMode {
 	
 	protected List<Integer> getPossibleNumbersOfRounds() {
 		return gamePanel.possibleNumbersOfRounds;
+	}
+        
+        protected List<String> getPossibleRenderings() {
+		return gamePanel.possibleRenderings;
 	}
 	
 	protected List<Double> getPossibleValuesForUniverseSizeFactor() {

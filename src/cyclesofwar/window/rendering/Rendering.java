@@ -57,6 +57,7 @@ public abstract class Rendering {
     
     public abstract void drawTitleScreen(Graphics g);
     public abstract void drawMainMenu(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers,
+            List<String> possibleRenderings, String selectedRendering,
             List<Integer> possibleNumbersOfRounds, Integer selectedNumberOfRounds, List<Integer> possiblePlanetsPerPlayer,
             Integer selectedNumberOfPlanetsPerPlayer, List<Double> possibleUniverseSizes, double selectedUniverseSize);
     public abstract void drawStatistics(Graphics g, TournamentBook tournament, String s, boolean showDetails);

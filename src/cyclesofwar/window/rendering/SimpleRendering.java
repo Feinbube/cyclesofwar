@@ -254,6 +254,7 @@ public class SimpleRendering extends Rendering {
 
     @Override
     public void drawMainMenu(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers,
+            List<String> possibleRenderings, String selectedRendering,
             List<Integer> possibleNumbersOfRounds, Integer selectedNumberOfRounds, List<Integer> possiblePlanetsPerPlayer,
             Integer selectedNumberOfPlanetsPerPlayer, List<Double> possibleUniverseSizes, double selectedUniverseSize) {
         drawBackground(g, 0);
@@ -271,6 +272,10 @@ public class SimpleRendering extends Rendering {
         int left = 0;
         left = Math.max(
                 left,
+                drawText(g, marginLeft, size.height - marginTop - g.getFontMetrics(f).getHeight() - 230, "chose rendering style:",
+                        textColor, null, f));
+        left = Math.max(
+                left,
                 drawText(g, marginLeft, size.height - marginTop - g.getFontMetrics(f).getHeight() - 190, "chose number of matches:",
                         textColor, null, f));
         left = Math.max(
@@ -282,6 +287,7 @@ public class SimpleRendering extends Rendering {
                 drawText(g, marginLeft, size.height - marginTop - g.getFontMetrics(f).getHeight() - 110, "chose universe size factor:",
                         textColor, null, f));
 
+        drawSelection(g, "rendering", possibleRenderings, selectedRendering, marginLeft, marginTop + 230, left);
         drawSelection(g, "rounds", possibleNumbersOfRounds, selectedNumberOfRounds, marginLeft, marginTop + 190, left);
         drawSelection(g, "planets", possiblePlanetsPerPlayer, selectedNumberOfPlanetsPerPlayer, marginLeft, marginTop + 150, left);
         drawSelection(g, "sizefactors", possibleUniverseSizes, selectedUniverseSize, marginLeft, marginTop + 110, left);
@@ -298,7 +304,7 @@ public class SimpleRendering extends Rendering {
     }
 
     protected <T> void drawSelection(Graphics g, String id, List<T> possibleValues, T selectedValue, int marginLeft, int marginTop, int left) {
-        int borderSize = (int) (size.width * 7.0 / 1000);
+        int borderSize = (int) (size.height * 7.0 / 1000);
         int w = size.width - marginLeft * 3 - left;
         int tile = (int) (w / (double) (possibleValues.size() - 1));
         for (int i = 0; i < possibleValues.size(); i++) {

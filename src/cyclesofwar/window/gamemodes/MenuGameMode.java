@@ -7,9 +7,9 @@ import cyclesofwar.Player;
 import cyclesofwar.window.GameModes;
 import cyclesofwar.window.GamePanel;
 
-public class PlayerSelectionGameMode extends GameMode {
+public class MenuGameMode extends GameMode {
 
-	public PlayerSelectionGameMode(GamePanel gamePanel) {
+	public MenuGameMode(GamePanel gamePanel) {
 		super(gamePanel);
 	}
 
@@ -19,7 +19,8 @@ public class PlayerSelectionGameMode extends GameMode {
 
 	@Override
 	protected void paintGame(Graphics g) {
-		rendering.drawMainMenu(g, getSelectedPlayers(), getAllPlayers(), getPossibleNumbersOfRounds(), getSelectedNumberOfRounds(),
+		getRendering().drawMainMenu(g, getSelectedPlayers(), getAllPlayers(), 
+                                getPossibleRenderings(), getSelectedRendering(), getPossibleNumbersOfRounds(), getSelectedNumberOfRounds(),
 				getPossibleNumbersOfPlanetsPerPlayer(), getSelectedNumberOfPlanetsPerPlayer(), getPossibleValuesForUniverseSizeFactor(),
 				getSelectedUniverseSizeFactor());
 	}
@@ -42,12 +43,12 @@ public class PlayerSelectionGameMode extends GameMode {
 
 	@Override
 	protected void mouseReleasedGame(int x, int y) {
-		Player player = rendering.getPlayer(x, y);
+		Player player = getRendering().getPlayer(x, y);
 		if (player != null) {
 			this.toggleSelection(player);
 		}
 
-		String buttonCaption = rendering.getButtonCaption(x, y);
+		String buttonCaption = getRendering().getButtonCaption(x, y);
 		if (buttonCaption != null) {
                     switch (buttonCaption) {
                         case "Live Mode":
@@ -64,6 +65,12 @@ public class PlayerSelectionGameMode extends GameMode {
                             break;
                     }
 
+                        for (String s : getPossibleRenderings()) {
+				if (("rendering" + s).equals(buttonCaption)) {
+					this.setSelectedRendering(s);
+				}
+			}
+                    
 			for (Integer i : getPossibleNumbersOfRounds()) {
 				if (("rounds" + i).equals(buttonCaption)) {
 					this.setSelectedNumberOfRounds(i);

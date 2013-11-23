@@ -363,51 +363,41 @@ public class FancyRendering extends SimpleRendering {
     @Override
     public void drawFleets(Graphics g, List<Fleet> fleets, double time) {
         Graphics2D g2 = (Graphics2D)g;
+        g2.setStroke(new BasicStroke(2));    
         
         for (Fleet fleet : fleets) {
             
             double x = getX(g, fleet.getX());
             double y = getY(g, fleet.getY());
-            int d = fleet.getForce();
 
-            if (d > MaxRenderedFleet) {
-                d = MaxRenderedFleet;
-            }
+            // double localTime = time - fleet.getTimeToTarget();
 
-            double localTime = time - fleet.getTimeToTarget();
+            double xDiff = fleet.getTarget().getX() - fleet.getX();
+            double yDiff = fleet.getTarget().getY() - fleet.getY();
 
-            g2.setStroke(new BasicStroke(2));
-            g2.setColor(ColorTools.transparent(fleet.getPlayer().getPlayerBackColor(), 0.4 + 0.2 * d/MaxRenderedFleet));
-            drawArrowFormation(g2, fleet, x, y, d);
+            xDiff *= 2.0;
 
-            if (d == MaxRenderedFleet) {
-                drawText(g2, (int) x, (int) y, fleet.getForce() + "", getPlayerTextColor(fleet.getPlayer()), null, HAlign.CENTER,
-                        VAlign.CENTER, 10);
+            double dist = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+            double sinAngle = yDiff / dist;
+            double cosAngle = xDiff / dist;
+
+            double length = Math.sqrt(fleet.getForce()) * 5;
+
+            int[] one = getXY(length / 2, -length / 2, x, y, sinAngle, cosAngle);
+            int[] two = getXY(-length / 2, 0, x, y, sinAngle, cosAngle);
+            int[] three = getXY(length / 2, length / 2, x, y, sinAngle, cosAngle);
+
+            g.setColor(ColorTools.transparent(fleet.getPlayer().getPlayerBackColor(), 0.4 + 0.2 * fleet.getForce()/MaxRenderedFleet));
+            g.drawPolygon(new int[]{one[0], two[0], three[0]}, new int[]{one[1], two[1], three[1]}, 3);
+
+            if (fleet.getForce() == MaxRenderedFleet) {
+                //drawText(g2, (int) x, (int) y, fleet.getForce() + "", getPlayerTextColor(fleet.getPlayer()), null, HAlign.CENTER, VAlign.CENTER, 10);
             }
         }
     }
 
     protected int[] getXY(double localx, double localy, double x, double y, double sinAngle, double cosAngle) {
         return new int[]{(int) (x - (localx * cosAngle + localy * sinAngle)), (int) (y + (-localx * sinAngle + localy * cosAngle))};
-    }
-
-    protected void drawArrowFormation(Graphics g, Fleet fleet, double x, double y, int d) {
-        double xDiff = fleet.getTarget().getX() - fleet.getX();
-        double yDiff = fleet.getTarget().getY() - fleet.getY();
-
-        xDiff *= 2.0;
-
-        double dist = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-
-        double sinAngle = yDiff / dist;
-        double cosAngle = xDiff / dist;
-
-        double length = Math.sqrt(d) * 5;
-
-        int[] one = getXY(length / 2, -length / 2, x, y, sinAngle, cosAngle);
-        int[] two = getXY(-length / 2, 0, x, y, sinAngle, cosAngle);
-        int[] three = getXY(length / 2, length / 2, x, y, sinAngle, cosAngle);
-
-        g.drawPolygon(new int[]{one[0], two[0], three[0]}, new int[]{one[1], two[1], three[1]}, 3);
     }
 }

@@ -76,6 +76,14 @@ public class ConfigManager extends WindowAdapter {
 		}
 	}
 	
+        public String getRendering() {
+            if (properties == null || !properties.containsKey("rendering")) {
+                    return "Fancy";
+            } else {
+                    return new String(properties.getProperty("rendering"));
+            }
+        }
+        
 	public int getNumberOfRounds() {
 		if (properties == null || !properties.containsKey("matches")) {
 			return Arena.matchesInOneOnOneTournamentPerPlayer;
@@ -144,6 +152,7 @@ public class ConfigManager extends WindowAdapter {
 		properties.setProperty("y", "" + e.getWindow().getY());
 		properties.setProperty("width", "" + e.getWindow().getSize().width);
 		properties.setProperty("height", "" + e.getWindow().getSize().height);
+                properties.setProperty("rendering", "" + panel.getSelectedRendering());
 		properties.setProperty("matches", "" + panel.getSelectedNumberOfRounds());
 		properties.setProperty("planetsperplayer", "" + panel.getSelectedNumberOfPlanetsPerPlayer());
 		properties.setProperty("universesizefactor", "" + panel.getSelectedUniverseSizeFactor());

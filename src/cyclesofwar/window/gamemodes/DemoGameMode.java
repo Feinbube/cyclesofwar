@@ -9,7 +9,6 @@ import cyclesofwar.window.GameModes;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import cyclesofwar.window.GamePanel;
-import cyclesofwar.window.rendering.SimpleRendering;
 import java.util.Arrays;
 import java.util.List;
 
@@ -105,27 +104,27 @@ public class DemoGameMode extends GameMode {
     protected void paintGame(Graphics g) {
         
         if (state == DemoStates.TITLETOARENA) {
-            rendering.drawTitleScreen(g);
+            getRendering().drawTitleScreen(g);
         } else if (state == DemoStates.ARENA) {
-            rendering.drawUniverse(g, universe);
-            rendering.drawPlayers(g, universe.getPlayers());
-            // rendering.drawSeed(g, universe.getSeed());
-            rendering.drawFps(g);
+            getRendering().drawUniverse(g, universe);
+            getRendering().drawPlayers(g, universe.getPlayers());
+            // getRendering().drawSeed(g, universe.getSeed());
+            getRendering().drawFps(g);
         } else if (state == DemoStates.ARENASTATS) {
-            rendering.drawStatistics(g, oneOnOneTournament, "1-On-1 Tournament", true);
+            getRendering().drawStatistics(g, oneOnOneTournament, "1-On-1 Tournament", true);
         } else if (state == DemoStates.TITLETOTOURNAMENT) {
-            rendering.drawTitleScreen(g);
+            getRendering().drawTitleScreen(g);
         } else if (state == DemoStates.TOURNAMENT) {
-            rendering.drawUniverse(g, universe);
-            rendering.drawPlayers(g, universe.getPlayers());
-            // rendering.drawSeed(g, universe.getSeed());
-            rendering.drawFps(g);
+            getRendering().drawUniverse(g, universe);
+            getRendering().drawPlayers(g, universe.getPlayers());
+            // getRendering().drawSeed(g, universe.getSeed());
+            getRendering().drawFps(g);
         } else if (state == DemoStates.TOURNAMENTSTATS) {
-            rendering.drawStatistics(g, lastManStandingTournament, "Last Man Standing Tournament", false);
+            getRendering().drawStatistics(g, lastManStandingTournament, "Last Man Standing Tournament", false);
         }
         
         if (state != DemoStates.TITLETOARENA && state != DemoStates.TITLETOTOURNAMENT) {
-            rendering.drawControlInfo(g, "Join the action: svn://code.hpi.uni-potsdam.de/cyclesofwar", 16);
+            getRendering().drawControlInfo(g, "Join the action: svn://code.hpi.uni-potsdam.de/cyclesofwar", 16);
         }
     }
 

@@ -53,24 +53,24 @@ public class LiveGameMode extends GameMode {
 
 	@Override
 	protected void paintGame(Graphics g) {
-		rendering.drawUniverse(g, universe);
-                rendering.drawPlayers(g, universe.getPlayers());
-                rendering.drawFps(g);
+		getRendering().drawUniverse(g, universe);
+                getRendering().drawPlayers(g, universe.getPlayers());
+                getRendering().drawFps(g);
 	}
 
 	@Override
 	protected void drawControls(Graphics g) {
 		if (!getShowControls()) {
-			rendering.drawControlInfo(g, "F1/1 toggle info");
+			getRendering().drawControlInfo(g, "F1/1 toggle info");
 		} else {
 			String pauseString = pause ? "continue" : "pause";
-			rendering.drawControlInfo(g, "[Key Mapping] ESC: Menue ... +/-: game speed (" + ((int) (speedUp * 10)) / 10.0 + ") ... SPACE: "
+			getRendering().drawControlInfo(g, "[Key Mapping] ESC: Menue ... +/-: game speed (" + ((int) (speedUp * 10)) / 10.0 + ") ... SPACE: "
 					+ pauseString + " ... 5: new combat ... 6: replay ... 7: switch planets");
-			rendering.drawSeed(g, universe.getSeed());
+			getRendering().drawSeed(g, universe.getSeed());
 		}
 
 		if (pause && !universe.isGameOver()) {
-			rendering.drawInfo(g, "press SPACE to resume");
+			getRendering().drawInfo(g, "press SPACE to resume");
 		}
 	}
 
