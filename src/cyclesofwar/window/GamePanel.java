@@ -25,7 +25,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	private static final long serialVersionUID = 1L;
 
-	public final List<String> possibleRenderings = Arrays.asList("Simple", "Fancy", "Galaxy", "Organic", "Neural");
+	public final List<String> possibleRenderings = Arrays.asList("Simple", "Fancy", "Galaxy", "Organic", "Neural", "Cloud");
         public final List<Integer> possibleNumbersOfRounds = Arrays.asList(2, 5, 10, 20, 50, 75, 100, 250, 500);
 	public final List<Integer> possibleNumbersOfPlanetsPerPlayer = Arrays.asList(1, 2, 5, 10, 20, 25, 50);
 	public final List<Double> possibleValuesForUniverseSizeFactor = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0);
@@ -137,6 +137,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
                         renderingImpl = new OrganicRendering();
                     } else if (rendering.equals("Neural")) {
                         renderingImpl = new NeuralRendering();
+                    } else if (rendering.equals("Cloud")) {
+                        renderingImpl = new CloudRendering();
                     }
                 }
                 
@@ -233,7 +235,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		gameMode.keyReleased(arg0);
+		gameMode.keyPressed(arg0);
 
 		if (arg0.getKeyCode() == KeyEvent.VK_1 || arg0.getKeyCode() == KeyEvent.VK_F1) {
 			showControls = !showControls;
@@ -242,17 +244,17 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		gameMode.mouseReleased(arg0);
+		gameMode.mouseReleased(arg0.getLocationOnScreen().x - this.getLocationOnScreen().x, arg0.getLocationOnScreen().y - this.getLocationOnScreen().y);
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		gameMode.mousePressed(arg0);
+		gameMode.mousePressed(arg0.getLocationOnScreen().x - this.getLocationOnScreen().x, arg0.getLocationOnScreen().y - this.getLocationOnScreen().y);
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		gameMode.mouseMoved(arg0);
+		gameMode.mouseMoved(arg0.getLocationOnScreen().x - this.getLocationOnScreen().x, arg0.getLocationOnScreen().y - this.getLocationOnScreen().y);
 	}
 
 	@Override

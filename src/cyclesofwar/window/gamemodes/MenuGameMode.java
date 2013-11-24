@@ -30,19 +30,19 @@ public class MenuGameMode extends GameMode {
 	}
 
 	@Override
-	protected void keyPressedGame(KeyEvent arg0) {
+	public void keyPressed(KeyEvent arg0) {
 	}
 
 	@Override
-	protected void mouseMovedGame(int x, int y) {
+	public void mouseMoved(int x, int y) {
 	}
 
 	@Override
-	protected void mousePressedGame(int x, int y) {
+	public void mousePressed(int x, int y) {
 	}
 
 	@Override
-	protected void mouseReleasedGame(int x, int y) {
+	public void mouseReleased(int x, int y) {
 		Player player = getRendering().getPlayer(x, y);
 		if (player != null) {
 			this.toggleSelection(player);
