@@ -413,6 +413,8 @@ public class FancyRendering extends SimpleRendering {
             
             //drawText(g2, (int) x, (int) y, fleet.getForce() + "", getPlayerTextColor(fleet.getPlayer()), null, HAlign.CENTER, VAlign.CENTER, 10);
         }
+        
+        g2.setStroke(new BasicStroke(1));
     }
 
     protected int[] getXY(double localx, double localy, double x, double y, double sinAngle, double cosAngle) {

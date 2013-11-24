@@ -133,22 +133,22 @@ public class DemoGameMode extends GameMode {
     }
 
     @Override
-    protected void keyPressedGame(KeyEvent arg0) {
+    public void keyPressed(KeyEvent arg0) {
         if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
             this.switchTo(GameModes.PLAYERSELECTION);
         }
     }
 
     @Override
-    protected void mousePressedGame(int x, int y) {
+    public void mousePressed(int x, int y) {
     }
 
     @Override
-    protected void mouseReleasedGame(int x, int y) {
+    public void mouseReleased(int x, int y) {
     }
 
     @Override
-    protected void mouseMovedGame(int x, int y) {
+    public void mouseMoved(int x, int y) {
     }
 
     @Override

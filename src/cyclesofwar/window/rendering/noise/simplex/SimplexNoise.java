@@ -1,7 +1,6 @@
 package cyclesofwar.window.rendering.noise.simplex;
 
 import cyclesofwar.window.rendering.noise.Noise;
-import cyclesofwar.window.rendering.noise.Noise;
 
 public final class SimplexNoise extends Noise {
 
