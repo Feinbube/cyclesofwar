@@ -12,6 +12,7 @@ import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.window.HumanReadableLongConverter;
 import cyclesofwar.window.rendering.noise.cell.MosaicNoise;
+import cyclesofwar.window.rendering.noise.simplex.NebulaNoise;
 import cyclesofwar.window.rendering.textures.ColorTools;
 import cyclesofwar.window.rendering.textures.PlanetTexture;
 import cyclesofwar.window.rendering.textures.Texture;
@@ -59,7 +60,7 @@ public class FancyRendering extends SimpleRendering {
     }
 
     protected Texture createBackground(long universeSeed) {
-        return new BackgroundTexture(new MosaicNoise(), size.width, size.height, universeSeed, true);
+        return new BackgroundTexture(new NebulaNoise((int)universeSeed), size.width, size.height, universeSeed, true);
     }
 
     @Override
