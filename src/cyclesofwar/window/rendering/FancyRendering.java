@@ -29,14 +29,14 @@ public class FancyRendering extends SimpleRendering {
     protected final Map<Integer, Texture> backgrounds = new TreeMap<>();
     protected final Map<Integer, PlanetTexture> planetTextures = new TreeMap();
 
-    protected final Color fancyTextColor = ColorTools.transparent(Color.cyan, 0.8f);
-    protected final Color fancyInActiveTextColor = ColorTools.transparent(Color.cyan.darker(), 0.5f);
+    protected Color fancyTextColor = ColorTools.transparent(Color.cyan, 0.8f);
+    protected Color fancyInActiveTextColor = ColorTools.transparent(Color.cyan.darker(), 0.5f);
 
-    protected final Color fancyActiveBorderColor = ColorTools.transparent(Color.cyan, 0.5f);
-    protected final Color fancyInActiveBorderColor = ColorTools.transparent(Color.cyan.darker(), 0.3f);
+    protected Color fancyActiveBorderColor = ColorTools.transparent(Color.cyan, 0.5f);
+    protected Color fancyInActiveBorderColor = ColorTools.transparent(Color.cyan.darker(), 0.3f);
 
-    protected final Color fancyActiveBackColor = ColorTools.transparent(Color.blue, 0.5f);
-    protected final Color fancyInActiveBackColor = ColorTools.transparent(Color.blue.darker(), 0.3f);
+    protected Color fancyActiveBackColor = ColorTools.transparent(Color.blue, 0.5f);
+    protected Color fancyInActiveBackColor = ColorTools.transparent(Color.blue.darker(), 0.3f);
 
     protected final static HumanReadableLongConverter humanReadableLongConverter = new HumanReadableLongConverter();
 
@@ -113,10 +113,7 @@ public class FancyRendering extends SimpleRendering {
         for (int i = 0; i < planets.size(); i++) {
             Planet planet = planets.get(i);
 
-            if (!planetTextures.containsKey(i) || !planetTextures.get(i).getColor().equals(planet.getPlayer().getPlayerBackColor())) {
-                final int planetSize = planetSize(size.width, planet.getProductionRatePerSecond());
-                planetTextures.put(i, new PlanetTexture(planetSize, planetSize, i, planet.getPlayer().getPlayerBackColor()));
-            }
+            updatePlanetTexture(i, planet);
 
             PlanetTexture planetTexture = planetTextures.get(i);
 
@@ -129,6 +126,13 @@ public class FancyRendering extends SimpleRendering {
             drawText(g, x, y, ((int) planet.getForces()) + "", Color.WHITE, null, HAlign.CENTER, VAlign.CENTER, 10);
         }
     }
+
+	protected void updatePlanetTexture(int i, Planet planet) {
+		if (!planetTextures.containsKey(i) || !planetTextures.get(i).getColor().equals(planet.getPlayer().getPlayerBackColor())) {
+		    final int planetSize = planetSize(size.width, planet.getProductionRatePerSecond());
+		    planetTextures.put(i, new PlanetTexture(planetSize, planetSize, i, planet.getPlayer().getPlayerBackColor()));
+		}
+	}
 
     public void drawPlayerNames(Graphics g, List<Player> players) {
         int left = borderSize;

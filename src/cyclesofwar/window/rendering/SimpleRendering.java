@@ -88,7 +88,7 @@ public class SimpleRendering extends Rendering {
     @Override
     public void drawTitleScreen(Graphics g) {
         drawBackground(g, 0);
-        drawText(g, size.width / 2, size.height / 2, "Cycles of War", textColor, null, HAlign.CENTER, VAlign.CENTER,
+        drawText(g, size.width / 2, size.height / 2, gameTitle, textColor, null, HAlign.CENTER, VAlign.CENTER,
                 getFont(Font.BOLD, 48));
     }
 

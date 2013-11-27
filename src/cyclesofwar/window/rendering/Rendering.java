@@ -46,6 +46,8 @@ public abstract class Rendering {
     protected final List<Tag> tags = new ArrayList<>();
     protected final static Fps fps = new Fps();
     
+    protected String gameTitle = "Cycles of War";
+    
     public Rendering() {
     }
 
