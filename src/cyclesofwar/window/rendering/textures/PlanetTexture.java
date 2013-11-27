@@ -11,7 +11,7 @@ public class PlanetTexture extends Texture {
 
     private static final int SEED_CUT = 16;
 
-    private final Color color;
+    protected final Color color;
 
     public PlanetTexture(final int width, final int height, final long seed, final Color color) {
         super(width, height, seed);
@@ -33,7 +33,7 @@ public class PlanetTexture extends Texture {
         return result;
     }
 
-    private float getDistance(float x, float y, float midX, float midY) {
+    protected float getDistance(float x, float y, float midX, float midY) {
         float x2 = x - midX;
         x2 *= x2;
 

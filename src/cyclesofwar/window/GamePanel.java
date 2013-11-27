@@ -25,7 +25,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	private static final long serialVersionUID = 1L;
 
-	public final List<String> possibleRenderings = Arrays.asList("Simple", "Fancy", "Galaxy", "Organic", "Neural", "Cloud");
+	public final List<String> possibleRenderings = Arrays.asList("Simple", "Fancy", "Galaxy", "Organic", "Neural", "Cloud", "Pretty");
         public final List<Integer> possibleNumbersOfRounds = Arrays.asList(2, 5, 10, 20, 50, 75, 100, 250, 500);
 	public final List<Integer> possibleNumbersOfPlanetsPerPlayer = Arrays.asList(1, 2, 5, 10, 20, 25, 50);
 	public final List<Double> possibleValuesForUniverseSizeFactor = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0);
@@ -61,7 +61,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 		this.selectedPlayers = lastPlayers;
 		this.allPlayers = allPlayers;
 
-                setSelectedRendering(rendering);
+        setSelectedRendering("Pretty");
 		setSelectedNumberOfRounds(numbersOfRounds);
 		setSelectedNumberOfPlanetsPerPlayer(numberOfPlanetsPerPlayer);
 		setSelectedUniverseSizeFactor(universeSizeFactor);
@@ -139,6 +139,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
                         renderingImpl = new NeuralRendering();
                     } else if (rendering.equals("Cloud")) {
                         renderingImpl = new CloudRendering();
+                    } else if (rendering.equals("Pretty")) {
+                        renderingImpl = new PrettyRendering();
                     }
                 }
                 
