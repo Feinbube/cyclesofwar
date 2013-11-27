@@ -20,15 +20,17 @@ import cyclesofwar.window.gamemodes.*;
 import cyclesofwar.window.rendering.*;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class GamePanel extends JPanel implements KeyListener, MouseInputListener, ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
-	public final List<String> possibleRenderings = Arrays.asList("Simple", "Fancy", "Galaxy", "Organic", "Neural", "Cloud", "Pretty");
-        public final List<Integer> possibleNumbersOfRounds = Arrays.asList(2, 5, 10, 20, 50, 75, 100, 250, 500);
-	public final List<Integer> possibleNumbersOfPlanetsPerPlayer = Arrays.asList(1, 2, 5, 10, 20, 25, 50);
-	public final List<Double> possibleValuesForUniverseSizeFactor = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0);
+        private final List<Integer> possibleNumbersOfRounds = Arrays.asList(2, 5, 10, 20, 50, 75, 100, 250, 500);
+	private final List<Integer> possibleNumbersOfPlanetsPerPlayer = Arrays.asList(1, 2, 5, 10, 20, 25, 50);
+	private final List<Double> possibleValuesForUniverseSizeFactor = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0);
         
         private String rendering;
 	private double universeSizeFactor;
@@ -37,9 +39,9 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	private GameMode gameMode;
 
+        private final Map<String, Rendering> renderings;
         private Rendering renderingImpl;
         
-	private final TitleScreenGameMode titleScreen;
 	private final LiveGameMode liveGame;
 	private final ArenaGameMode arenaGame;
 	private final TournamentGameMode tournamentGame;
@@ -61,12 +63,21 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 		this.selectedPlayers = lastPlayers;
 		this.allPlayers = allPlayers;
 
-        setSelectedRendering("Pretty");
+                renderings = new LinkedHashMap<>();
+                renderings.put("Simple", new SimpleRendering());
+                renderings.put("Fancy", new FancyRendering());
+                renderings.put("Galaxy", new GalaxyRendering());
+                // renderings.put("Organic", new OrganicRendering());
+                // renderings.put("Neural", new NeuralRendering());
+                // renderings.put("Cloud", new CloudRendering());
+                renderings.put("Pretty", new PrettyRendering());
+                renderings.put("Shuffle", new ShuffleRendering(new ArrayList(renderings.values())));               
+                
+                setSelectedRendering(rendering);
 		setSelectedNumberOfRounds(numbersOfRounds);
 		setSelectedNumberOfPlanetsPerPlayer(numberOfPlanetsPerPlayer);
 		setSelectedUniverseSizeFactor(universeSizeFactor);
 
-		titleScreen = new TitleScreenGameMode(this);
 		liveGame = new LiveGameMode(this);
 		arenaGame = new ArenaGameMode(this);
 		tournamentGame = new TournamentGameMode(this);
@@ -111,6 +122,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
         public Rendering getRendering() {
             return renderingImpl;
         }
+        
 	public void toggleSelection(Player player) {
 		if (selectedPlayers.contains(player)) {
 			selectedPlayers.remove(player);
@@ -122,28 +134,12 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	}                   
 
 	public void setSelectedRendering(String rendering) {
-                if(!possibleRenderings.contains(rendering)) {
-                    rendering = possibleRenderings.get(0);
+                if(!renderings.containsKey(rendering)) {
+                    rendering = renderings.keySet().iterator().next();
+                }                                
+                if(this.rendering != rendering || renderingImpl == null) { 
+                    this.renderingImpl = renderings.get(rendering);
                 }
-                
-                if(this.rendering != rendering || renderingImpl == null) {
-                    if(rendering.equals("Simple")) {
-                        renderingImpl = new SimpleRendering();
-                    } else if (rendering.equals("Fancy")) {
-                        renderingImpl = new FancyRendering();
-                    } else if (rendering.equals("Galaxy")) {
-                        renderingImpl = new GalaxyRendering();
-                    } else if (rendering.equals("Organic")) {
-                        renderingImpl = new OrganicRendering();
-                    } else if (rendering.equals("Neural")) {
-                        renderingImpl = new NeuralRendering();
-                    } else if (rendering.equals("Cloud")) {
-                        renderingImpl = new CloudRendering();
-                    } else if (rendering.equals("Pretty")) {
-                        renderingImpl = new PrettyRendering();
-                    }
-                }
-                
                 this.rendering = rendering;
 	}
 	
@@ -282,4 +278,20 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 	}
+
+        public List<Integer> getPossibleNumbersOfPlanetsPerPlayer() {
+            return possibleNumbersOfPlanetsPerPlayer;
+        }
+
+        public List<Integer> getPossibleNumbersOfRounds() {
+            return possibleNumbersOfRounds;
+        }
+
+        public List<String> getPossibleRenderings() {
+            return new ArrayList(renderings.keySet());
+        }
+
+        public List<Double> getPossibleValuesForUniverseSizeFactor() {
+            return possibleValuesForUniverseSizeFactor;
+        }
 }
