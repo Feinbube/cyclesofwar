@@ -3,7 +3,6 @@ package cyclesofwar.window.gamemodes;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Random;
 
@@ -120,19 +119,19 @@ public abstract class GameMode {
 	}
 
 	protected List<Integer> getPossibleNumbersOfPlanetsPerPlayer() {
-		return gamePanel.possibleNumbersOfPlanetsPerPlayer;
+		return gamePanel.getPossibleNumbersOfPlanetsPerPlayer();
 	}
 	
 	protected List<Integer> getPossibleNumbersOfRounds() {
-		return gamePanel.possibleNumbersOfRounds;
+		return gamePanel.getPossibleNumbersOfRounds();
 	}
         
         protected List<String> getPossibleRenderings() {
-		return gamePanel.possibleRenderings;
+		return gamePanel.getPossibleRenderings();
 	}
 	
 	protected List<Double> getPossibleValuesForUniverseSizeFactor() {
-		return gamePanel.possibleValuesForUniverseSizeFactor;
+		return gamePanel.getPossibleValuesForUniverseSizeFactor();
 	}
 	
 	protected int getThreadCount() {
