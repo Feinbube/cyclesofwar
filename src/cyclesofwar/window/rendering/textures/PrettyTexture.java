@@ -13,8 +13,8 @@ public class PrettyTexture extends Texture {
 
     @Override
     protected BufferedImage generate() {
-        //JuliaFractal julia = new JuliaFractal();
-        //return julia.getImage(width, height);
-         return this.fillColor(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB), Color.PINK);
+        JuliaFractal julia = new JuliaFractal();
+        return julia.getImage(width, height);
+        // return this.fillColor(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB), Color.PINK);
     }
 }
