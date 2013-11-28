@@ -11,7 +11,6 @@ import cyclesofwar.Planet;
 import cyclesofwar.Player;
 import cyclesofwar.Universe;
 import cyclesofwar.window.HumanReadableLongConverter;
-import cyclesofwar.window.rendering.noise.cell.MosaicNoise;
 import cyclesofwar.window.rendering.noise.simplex.NebulaNoise;
 import cyclesofwar.window.rendering.textures.ColorTools;
 import cyclesofwar.window.rendering.textures.PlanetTexture;
