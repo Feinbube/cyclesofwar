@@ -55,9 +55,8 @@ public class PrettyRendering extends FancyRendering {
             final int x = (int)getX(g, fleet.getX());
             final int y = (int)getY(g, fleet.getY());
          
-            final int s = 3 + (int) (4 * Math.log10(fleet.getForce()));
-
-            drawHeart(g, x, y, s);
+            final int s = 6 + (int) (4 * Math.log10(fleet.getForce()));
+            drawHeart(g, x, y, (int)(s*Math.abs(Math.sin(fleet.getTimeToTarget()/3))));
 		}
     }
 
