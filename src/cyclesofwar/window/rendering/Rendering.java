@@ -54,8 +54,12 @@ public abstract class Rendering {
     public abstract Font getFont(int style, int fontSize);
     
     public abstract void drawBackground(Graphics g, long universeSeed);
-    public abstract void drawPlanets(Graphics g, List<Planet> planets);
+    public abstract void drawPlanet(Graphics g, Planet planet, int id);    
     public abstract void drawFleets(Graphics g, List<Fleet> fleets, double time);
+    
+    public abstract void drawSelectedPlanet(Graphics g, Planet planet);
+    public abstract void drawSelectedForce(Graphics g, double selectedForceRatio);
+    public abstract double getUpdatedSelectedForce(int x, int y);
     
     public abstract void drawTitleScreen(Graphics g);
     public abstract void drawMainMenu(Graphics g, List<Player> selectedPlayers, List<Player> allPlayers,
@@ -91,6 +95,8 @@ public abstract class Rendering {
     }
 
     public void drawUniverse(Graphics g, Universe universe) {
+        tags.clear();
+        
         if (this.universeSize != universe.getSize()) {
             this.universeSize = universe.getSize();
         }
@@ -102,6 +108,18 @@ public abstract class Rendering {
             drawFleets(g, universe.getAllFleets(), universe.getNow());
         } else {
             drawGameOverScreen(g, universe.getWinner().getName());
+        }
+    }
+    
+    public void drawPlanets(Graphics g, List<Planet> planets) {
+        for(int i=0; i<planets.size(); i++) {
+            drawPlanet(g, planets.get(i), i);
+            
+            final int x = (int) getX(g, planets.get(i).getX());
+            final int y = (int) getY(g, planets.get(i).getY());
+            
+            int maxPlanetSize = planetSize(size.width, Planet.MaximumProductionRatePerSecond);
+            remember(x - maxPlanetSize / 2, y - maxPlanetSize / 2, maxPlanetSize, maxPlanetSize, planets.get(i));
         }
     }
 
@@ -361,11 +379,15 @@ public abstract class Rendering {
         return getTagAtPosition(List.class, x, y);
     }
 
+    public Planet getPlanet(int x, int y) {
+        return (Planet) getTagAtPosition(Planet.class, x, y);
+    }
+    
     public Player getPlayer(int x, int y) {
         return (Player) getTagAtPosition(Player.class, x, y);
     }
 
-    public String getButtonCaption(int x, int y) {
+    public String getButtonTag(int x, int y) {
         return getTagAtPosition(String.class, x, y);
     }
 }

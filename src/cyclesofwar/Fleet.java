@@ -58,7 +58,7 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 			throw new IllegalArgumentException("fleet must have a target");
 		}
 
-		if (target == start) {
+		if (target.equals(start)) {
 			throw new IllegalArgumentException("start and target are not allowed to be identical");
 		}
 

@@ -63,7 +63,9 @@ public class Arena {
 	 */
 	public static List<Player> registeredPlayers(){
 		ArrayList<Player> result = new ArrayList<>();
-		
+	
+                result.add(new GoldenPlayer());
+                
 		// Training
 		result.add(new B00_Idle());
 		result.add(new B01_ChaseMe());

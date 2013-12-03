@@ -25,7 +25,7 @@ public class Universe {
     private boolean gameOver = true;
     private Player winner = null;
 
-    private Player currentPlayer = Player.NonePlayer;
+    private Player currentPlayer = Player.GoldenPlayer;
 
     private final SortedMap<Double, Fleet> fleetsAtDestination = new TreeMap<>();
     private final List<Fleet> newFleets = new ArrayList<>();
@@ -75,7 +75,7 @@ public class Universe {
     }
 
     private Planet createStarterPlanet(int planetId, Player player) {
-        Planet planet = suiteablePlanet(planetId, 5);
+        Planet planet = suiteablePlanet(planetId, Planet.MaximumProductionRatePerSecond);
         planet.setPlayer(player);
         planets.add(planet);
         return planet;
@@ -95,10 +95,21 @@ public class Universe {
             return;
         }
 
+        currentPlayer = Player.GoldenPlayer;
+        
         now += elapsedSeconds;
         nothingHappenedCounter++;
         currentRound++;
 
+        for (Fleet newFleet : newFleets) {
+            fleets.add(newFleet);
+        }
+        newFleets.clear();
+
+        for (Planet planet : planets) {
+            planet.commit();
+        }
+        
         for (Planet planet : planets) {
             planet.update(elapsedSeconds);
         }
@@ -135,26 +146,16 @@ public class Universe {
 //            } catch (Exception ex) {
 //                throw new PlayerDisqualifiedException(currentPlayer, ex);
 //            }
-
         }
         
         this.random.setSeed(roundSeed);
-        currentPlayer = NonePlayer.NonePlayer;
+        currentPlayer = Player.GoldenPlayer;
 
         if (nothingHappenedCounter > 1000 || currentRound > 100000) {
             gameOver = true;
-            winner = NonePlayer.NonePlayer;
+            winner = Player.NonePlayer;
             return;
-        }
-
-        for (Fleet newFleet : newFleets) {
-            fleets.add(newFleet);
-        }
-        newFleets.clear();
-
-        for (Planet planet : planets) {
-            planet.commit();
-        }
+        }        
     }
 
     private boolean justOnePlayerLeft() {
@@ -194,7 +195,7 @@ public class Universe {
 
     List<Fleet> getFleetsOf(Player player) {
         List<Fleet> result = filterFleetsOf(fleets, player);
-        if (currentPlayer == player) {
+        if (currentPlayer.equals(player)) {
             result.addAll(filterFleetsOf(newFleets, player));
         }
 
@@ -204,38 +205,59 @@ public class Universe {
     private List<Fleet> filterFleetsOf(List<Fleet> fleets, Player player) {
         List<Fleet> result = new ArrayList<>();
         for (Fleet fleet : fleets) {
-            if (fleet.getPlayer() == player) {
+            if (fleet.getPlayer().equals(player)) {
                 result.add(fleet);
             }
         }
         return result;
     }
 
-    Fleet sendFleet(Planet origin, int force, Planet target) {
-        if (target == null) {
+    public Fleet sendPlayerFleet(Planet planet, int force, Planet target) {
+        if(!planet.getPlayer().equals(Player.GoldenPlayer)) {
             return null;
         }
 
+        return sendFleet(planet, force, target);
+    }
+
+    Fleet sendFleetUpTo(Planet planet, double force, Planet target) {
+        if (target == null) {
+            return null;
+        }
+        
+        int forcesToSend = (int) Math.min(force, planet.getForces());
+        if (forcesToSend > 0) {
+            return sendFleet(planet, forcesToSend, target);
+        } else {
+            return null;
+        }
+    }
+    
+    Fleet sendFleet(Planet origin, int force, Planet target) {
+        if (!currentPlayer.isMyPlanet(origin)) {
+            throw new IllegalArgumentException("Fleet must be send from owned planet. (Sender: " + currentPlayer + "; Owner: " + origin.getPlayer());
+        }
+        
+        if (target == null) {
+            throw new IllegalArgumentException("Target planet must not be null!");
+        }
+
         if (force > origin.getForces()) {
-            throw new IllegalArgumentException("fleet size (" + force + ") exceeds planetary forces (" + origin.getForces() + ")");
+            throw new IllegalArgumentException("Fleet size (" + force + ") exceeds planetary forces (" + origin.getForces() + ")");
         }
 
         if (force < 1) {
-            throw new IllegalArgumentException("fleet size must be at least 1, was: " + force);
-        }
+            throw new IllegalArgumentException("Fleet size must be at least 1, was: " + force);
+        }        
 
-        if (!currentPlayer.isMyPlanet(origin)) {
-            throw new IllegalArgumentException("fleet must be send from owned planet");
-        }
-
-        Fleet newFleet = new Fleet(this, currentPlayer, force, origin, target);
+        Fleet newFleet = new Fleet(this, origin.getPlayer(), force, origin, target);
         newFleets.add(newFleet);
         origin.setNewForces(origin.getNewForces() - newFleet.getForce());
         nothingHappenedCounter = 0;
 
         return newFleet;
     }
-
+    
     public double getRandomDouble() {
         return random.nextDouble();
     }
@@ -316,5 +338,15 @@ public class Universe {
         Player result = Player.NonePlayer;
         result.setUniverse(this);
         return result;
+    }
+    
+    public Player getGoldenPlayer() {
+        for(Player player : players) {
+            if(player.equals(Player.GoldenPlayer)) {
+                return player;
+            }
+        }
+        
+        return null;
     }
 }

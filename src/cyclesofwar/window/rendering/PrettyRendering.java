@@ -14,7 +14,6 @@ import cyclesofwar.window.rendering.textures.Texture;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.util.ArrayList;
 
 public class PrettyRendering extends FancyRendering {
 

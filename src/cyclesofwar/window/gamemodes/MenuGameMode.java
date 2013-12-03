@@ -48,9 +48,12 @@ public class MenuGameMode extends GameMode {
 			this.toggleSelection(player);
 		}
 
-		String buttonCaption = getRendering().getButtonCaption(x, y);
-		if (buttonCaption != null) {
-                    switch (buttonCaption) {
+		String buttonTag = getRendering().getButtonTag(x, y);
+		if (buttonTag != null) {
+                    switch (buttonTag) {
+                        case "Play Mode":
+                            this.switchTo(GameModes.PLAY);
+                            break;
                         case "Live Mode":
                             this.switchTo(GameModes.LIVE);
                             break;
@@ -66,25 +69,25 @@ public class MenuGameMode extends GameMode {
                     }
 
                         for (String s : getPossibleRenderings()) {
-				if (("rendering" + s).equals(buttonCaption)) {
+				if (("rendering" + s).equals(buttonTag)) {
 					this.setSelectedRendering(s);
 				}
 			}
                     
 			for (Integer i : getPossibleNumbersOfRounds()) {
-				if (("rounds" + i).equals(buttonCaption)) {
+				if (("rounds" + i).equals(buttonTag)) {
 					this.setSelectedNumberOfRounds(i);
 				}
 			}
 			
 			for (Integer i : getPossibleNumbersOfPlanetsPerPlayer()) {
-				if (("planets" + i).equals(buttonCaption)) {
+				if (("planets" + i).equals(buttonTag)) {
 					this.setSelectedNumberOfPlanetsPerPlayer(i);
 				}
 			}
 			
 			for (Double d : getPossibleValuesForUniverseSizeFactor()) {
-				if (("sizefactors" + d).equals(buttonCaption)) {
+				if (("sizefactors" + d).equals(buttonTag)) {
 					this.setSelectedUniverseSizeFactor(d);
 				}
 			}
