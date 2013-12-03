@@ -42,8 +42,8 @@ public class ShuffleRendering extends Rendering {
     }
 
     @Override
-    public void drawPlanets(Graphics g, List<Planet> planets) {
-        selected.drawPlanets(g, planets);
+    public void drawPlanet(Graphics g, Planet planet, int id) {
+        selected.drawPlanet(g, planet, id);
     }
 
     @Override
@@ -123,12 +123,27 @@ public class ShuffleRendering extends Rendering {
     }
     
     @Override
-    public String getButtonCaption(int x, int y) {
-        return selected.getButtonCaption(x, y);
+    public String getButtonTag(int x, int y) {
+        return selected.getButtonTag(x, y);
     }
     
     @Override
     public Player getPlayer(int x, int y) {
         return selected.getPlayer(x, y);
+    }
+
+    @Override
+    public void drawSelectedPlanet(Graphics g, Planet planet) {
+        selected.drawSelectedPlanet(g, planet);
+    }
+
+    @Override
+    public void drawSelectedForce(Graphics g, double selectedForceRatio) {
+        selected.drawSelectedForce(g, selectedForceRatio);
+    }
+
+    @Override
+    public double getUpdatedSelectedForce(int x, int y) {
+        return selected.getUpdatedSelectedForce(x, y);
     }
 }

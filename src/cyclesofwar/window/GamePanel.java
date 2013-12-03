@@ -20,11 +20,12 @@ import cyclesofwar.window.gamemodes.*;
 import cyclesofwar.window.rendering.*;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class GamePanel extends JPanel implements KeyListener, MouseInputListener, ActionListener {
+public class GamePanel extends JPanel implements KeyListener, MouseInputListener, ActionListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -42,6 +43,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
         private final Map<String, Rendering> renderings;
         private Rendering renderingImpl;
         
+        private final PlayGameMode playGame;
 	private final LiveGameMode liveGame;
 	private final ArenaGameMode arenaGame;
 	private final TournamentGameMode tournamentGame;
@@ -78,6 +80,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 		setSelectedNumberOfPlanetsPerPlayer(numberOfPlanetsPerPlayer);
 		setSelectedUniverseSizeFactor(universeSizeFactor);
 
+                playGame = new PlayGameMode(this);
 		liveGame = new LiveGameMode(this);
 		arenaGame = new ArenaGameMode(this);
 		tournamentGame = new TournamentGameMode(this);
@@ -94,7 +97,9 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	public void switchTo(GameModes gameMode) {
 		this.gameMode.pause();
 
-		if (gameMode == GameModes.LIVE) {
+		if (gameMode == GameModes.PLAY) {
+			this.gameMode = playGame;
+                } else if (gameMode == GameModes.LIVE) {
 			this.gameMode = liveGame;
 		} else if (gameMode == GameModes.ARENA) {
 			this.gameMode = arenaGame;
@@ -180,6 +185,9 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 	}
 
 	private void resetGames() {
+                if (playGame != null) {
+			playGame.reset();
+		}
 		if (liveGame != null) {
 			liveGame.reset();
 		}
@@ -265,6 +273,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
+            mousePressed(arg0);
 	}
 
 	@Override
@@ -277,6 +286,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
+            mouseMoved(arg0);
 	}
 
         public List<Integer> getPossibleNumbersOfPlanetsPerPlayer() {

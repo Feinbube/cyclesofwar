@@ -35,6 +35,11 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 	 * empty planets
 	 */
 	public static Player NonePlayer = new NonePlayer();
+        
+        /*
+        * this player is used for a real human who wants to play the game's interactive mode
+        */
+        public static Player GoldenPlayer = new GoldenPlayer();
 
 	private Universe universe;
 
@@ -180,7 +185,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 	 * return true if this is the owner of planet
 	 */
 	public boolean isMyPlanet(Planet planet) {
-		return planet.getPlayer() == this;
+		return planet.getPlayer().equals(this);
 	}
 
 	/*
@@ -217,7 +222,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 	 * return true if this is the owner of fleet
 	 */
 	public boolean isMyFleet(Fleet fleet) {
-		return fleet.getPlayer() == this;
+		return fleet.getPlayer().equals(this);
 	}
 
 	/*
@@ -233,7 +238,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 	public List<Fleet> getFleetsWithTarget(Planet target) {
 		List<Fleet> result = new ArrayList<>();
 		for (Fleet fleet : this.getAllFleets()) {
-			if (fleet.getTarget() == target) {
+			if (fleet.getTarget().equals(target)) {
 				result.add(fleet);
 			}
 		}
@@ -259,16 +264,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 	 * throws an exception if sender does not own the planet
 	 */
 	public Fleet sendFleetUpTo(Planet planet, double force, Planet target) {
-		if(target == null) {
-			return null;
-		}
-		
-		int forcesToSend = (int) Math.min(force, planet.getForces());
-		if (forcesToSend > 0) {
-			return sendFleet(planet, forcesToSend, target);
-		} else {
-			return null;
-		}
+            return universe.sendFleetUpTo(planet, force, target);		
 	}
 
 	// random
@@ -304,7 +300,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 	 */
         static <T extends GameObject> boolean containsItemOf(List<T> list, Player player, boolean shallBelongTo) {
             for (T gameObject : list) {
-                    if ((gameObject.getPlayer() == player) == shallBelongTo) {
+                    if ((gameObject.getPlayer().equals(player)) == shallBelongTo) {
                             return true;
                     }
             }
@@ -327,7 +323,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 	static <T extends GameObject> List<T> filter(List<T> list, Player player, boolean shallBelongTo) {
 		ArrayList<T> result = new ArrayList<>();
 		for (T gameObject : list) {
-			if ((gameObject.getPlayer() == player) == shallBelongTo) {
+			if ((gameObject.getPlayer().equals(player)) == shallBelongTo) {
 				result.add(gameObject);
 			}
 		}

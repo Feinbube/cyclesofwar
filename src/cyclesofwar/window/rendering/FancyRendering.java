@@ -108,30 +108,26 @@ public class FancyRendering extends SimpleRendering {
     }
 
     @Override
-    public void drawPlanets(Graphics g, List<Planet> planets) {
-        for (int i = 0; i < planets.size(); i++) {
-            Planet planet = planets.get(i);
+    public void drawPlanet(Graphics g, Planet planet, int id) {
+        updatePlanetTexture(id, planet);
 
-            updatePlanetTexture(i, planet);
+        PlanetTexture planetTexture = planetTextures.get(id);
 
-            PlanetTexture planetTexture = planetTextures.get(i);
+        final int x = (int) getX(g, planet.getX());
+        final int y = (int) getY(g, planet.getY());
+        final int uX = x - (planetTexture.getWidth() >> 1);
+        final int uY = y - (planetTexture.getHeight() >> 1);
 
-            final int x = (int) getX(g, planet.getX());
-            final int y = (int) getY(g, planet.getY());
-            final int uX = x - (planetTexture.getWidth() >> 1);
-            final int uY = y - (planetTexture.getHeight() >> 1);
-
-            g.drawImage(planetTexture.getImage(), uX, uY, null);
-            drawText(g, x, y, ((int) planet.getForces()) + "", Color.WHITE, null, HAlign.CENTER, VAlign.CENTER, 10);
-        }
+        g.drawImage(planetTexture.getImage(), uX, uY, null);
+        drawText(g, x, y, ((int) planet.getForces()) + "", Color.WHITE, null, HAlign.CENTER, VAlign.CENTER, 10);
     }
 
-	protected void updatePlanetTexture(int i, Planet planet) {
-		if (!planetTextures.containsKey(i) || !planetTextures.get(i).getColor().equals(planet.getPlayer().getPlayerBackColor())) {
-		    final int planetSize = planetSize(size.width, planet.getProductionRatePerSecond());
-		    planetTextures.put(i, new PlanetTexture(planetSize, planetSize, i, planet.getPlayer().getPlayerBackColor()));
-		}
-	}
+    protected void updatePlanetTexture(int id, Planet planet) {
+            if (!planetTextures.containsKey(id) || !planetTextures.get(id).getColor().equals(planet.getPlayer().getPlayerBackColor())) {
+                final int planetSize = planetSize(size.width, planet.getProductionRatePerSecond());
+                planetTextures.put(id, new PlanetTexture(planetSize, planetSize, id, planet.getPlayer().getPlayerBackColor()));
+            }
+    }
 
     public void drawPlayerNames(Graphics g, List<Player> players) {
         int left = borderSize;

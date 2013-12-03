@@ -11,55 +11,57 @@ import cyclesofwar.Fleet;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 import cyclesofwar.tournament.TournamentBook;
+import java.awt.BasicStroke;
+import java.awt.Graphics2D;
 
 public class SimpleRendering extends Rendering {
-    
+
     protected class Star {
 
-	double x;
-	double y;
-	Color c;
-	double d;
+        double x;
+        double y;
+        Color c;
+        double d;
 
-	Star(Random random) {
-		super();
+        Star(Random random) {
+            super();
 
-		x = random.nextDouble();
-		y = random.nextDouble();
-		c = Color.getHSBColor(0, 0, (float) random.nextDouble());
-		d = random.nextDouble();
-	}
+            x = random.nextDouble();
+            y = random.nextDouble();
+            c = Color.getHSBColor(0, 0, (float) random.nextDouble());
+            d = random.nextDouble();
+        }
     }
 
     protected final int StarCount = 1000;
     protected final List<Star> stars = new ArrayList<>();
-    
+
     protected Color textColor = Color.YELLOW;
-    
+
     public SimpleRendering() {
         stars.clear();
         for (int i = 0; i < StarCount; i++) {
             stars.add(new Star(random));
-        }        
+        }
     }
 
     @Override
     public Font getFont(int style, int fontSize) {
-        return new Font("Courier New", style, (int)getScaled(fontSize));
+        return new Font("Courier New", style, (int) getScaled(fontSize));
     }
 
     @Override
     protected void applyNewSize() {
     }
-    
+
     @Override
     public void drawBackground(Graphics g, long universeSeed) {
         g.setColor(Color.black);
         g.fillRect(0, 0, size.width, size.height);
 
-        drawStars(g);       
+        drawStars(g);
     }
-    
+
     @Override
     public void drawSeed(Graphics g, long seed) {
         drawText(g, size.width - 5, 5, "seed: " + seed, textColor, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
@@ -69,7 +71,7 @@ public class SimpleRendering extends Rendering {
     protected void drawUpdatedFps(Graphics g) {
         drawText(g, size.width - 10, 0, fps + "fps", textColor, null, HAlign.RIGHT, VAlign.BOTTOM, 12);
     }
-    
+
     @Override
     public void drawControlInfo(Graphics g, String s) {
         drawControlInfo(g, s, 12);
@@ -100,7 +102,7 @@ public class SimpleRendering extends Rendering {
         drawText(g, size.width / 2, size.height / 3 + 100, winnerName + " has won!", textColor, null, HAlign.CENTER, VAlign.CENTER,
                 getFont(Font.PLAIN, 32));
     }
-    
+
     protected void drawStars(Graphics g) {
         for (Star star : stars) {
             g.setColor(star.c);
@@ -113,21 +115,80 @@ public class SimpleRendering extends Rendering {
     }
 
     @Override
-    public void drawPlanets(Graphics g, List<Planet> planets) {
-        for (Planet planet : planets) {
-            final int x = (int) getX(g, planet.getX());
-            final int y = (int) getY(g, planet.getY());
-            final int planetSize = planetSize(size.width, planet.getProductionRatePerSecond());
-            
-            final int uX = x - (planetSize >> 1);
-            final int uY = y - (planetSize >> 1);
+    public void drawPlanet(Graphics g, Planet planet, int id) {
+        final int x = (int) getX(g, planet.getX());
+        final int y = (int) getY(g, planet.getY());
+        final int planetSize = planetSize(size.width, planet.getProductionRatePerSecond());
 
-            g.setColor(planet.getPlayer().getPlayerBackColor());
-            g.fillOval(uX, uY, planetSize, planetSize);
+        final int uX = x - (planetSize >> 1);
+        final int uY = y - (planetSize >> 1);
 
-            drawText(g, x, y, ((int) planet.getForces()) + "", getPlayerTextColor(planet.getPlayer()), null, HAlign.CENTER, VAlign.CENTER,
-                    10);
+        g.setColor(planet.getPlayer().getPlayerBackColor());
+        g.fillOval(uX, uY, planetSize, planetSize);
+
+        drawText(g, x, y, ((int) planet.getForces()) + "", getPlayerTextColor(planet.getPlayer()), null, HAlign.CENTER, VAlign.CENTER, 10);
+    }
+
+    @Override
+    public void drawSelectedPlanet(Graphics g, Planet planet) {
+        if (planet == null) {
+            return;
         }
+
+        final int x = (int) getX(g, planet.getX());
+        final int y = (int) getY(g, planet.getY());
+        final int planetSize = planetSize(size.width, planet.getProductionRatePerSecond());
+
+        final int uX = x - (planetSize >> 1);
+        final int uY = y - (planetSize >> 1);
+
+        g.setColor(Player.GoldenPlayer.getPlayerForeColor());
+        ((Graphics2D) g).setStroke(new BasicStroke(4));
+        int margin = (int) (0.1 * planetSize) + 2;
+        g.drawRoundRect(uX - margin, uY - margin, planetSize + 2 * margin, planetSize + 2 * margin, 10, 10);
+        ((Graphics2D) g).setStroke(new BasicStroke(1));
+    }
+
+    public void drawSelectedForce(Graphics g, double selectedForceRatio) {
+        g.setColor(textColor.darker());
+
+        int stepY = 40;
+        int height = stepY * 4;
+        int minY = size.height - height - borderSize - 20;
+
+        int x = size.width - this.borderSize + borderSize / 4;
+        drawMarker(g, x, minY + 0 * stepY, "0%", (int) (this.borderSize / 1.5), 3);
+        drawMarker(g, x, minY + 1 * stepY, "25%", (int) (this.borderSize / 1.5), 1);
+        drawMarker(g, x, minY + 2 * stepY, "50%", (int) (this.borderSize / 1.5), 5);
+        drawMarker(g, x, minY + 3 * stepY, "75%", (int) (this.borderSize / 1.5), 1);
+        drawMarker(g, x, minY + 4 * stepY, "100%", (int) (this.borderSize / 1.5), 3);
+
+        g.setColor(Color.WHITE);
+        int y = (int)(selectedForceRatio * height) + minY;
+        g.fillRect(x, y, (int) (this.borderSize / 1.5), 3);
+    }
+
+    protected void drawMarker(Graphics g, int x, int y, String s, int width, int height) {
+        Font f = getFont(Font.PLAIN, 12);
+
+        drawText(g, x, y, s, this.textColor, null, HAlign.RIGHT, VAlign.CENTER, f);
+        g.setColor(textColor);
+        g.fillRect(x, y - height / 2, width, height);
+    }
+
+    @Override
+    public double getUpdatedSelectedForce(int x, int y) {
+        int stepY = 40;
+        int height = stepY * 4;
+        int minY = size.height - height - borderSize - 20;
+        int maxY = height + minY;
+        int minX = size.width - this.borderSize;
+
+        if (y < minY || y > maxY || x < minX) {
+            return -1;
+        }
+
+        return (y - minY) / (double) (maxY - minY);
     }
 
     @Override
@@ -243,8 +304,9 @@ public class SimpleRendering extends Rendering {
         int row = 0;
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
-            if(!player.isAlive())
+            if (!player.isAlive()) {
                 continue;
+            }
 
             drawText(g, 5, row * (h + 4) + 5, shortInfo(player), getPlayerTextColor(player), player.getPlayerBackColor(), HAlign.LEFT,
                     VAlign.CENTER, 12);
@@ -295,12 +357,13 @@ public class SimpleRendering extends Rendering {
         drawText(g, marginLeft, size.height - marginTop - 100, "chose game mode:", textColor, null, f);
 
         int borderSize = (int) (size.width * 7.0 / 1000);
-        
-        int wSteps = (size.width-marginLeft*2) / 5;     
-        drawBigButton(g, "Live Mode", "LIVE", marginLeft + wSteps, size.height - marginTop, HAlign.CENTER, 22, borderSize, textColor);
-        drawBigButton(g, "Tournament Mode", "TOURNAMENT", marginLeft + wSteps*2, size.height - marginTop,HAlign.CENTER, 20, borderSize, textColor);
-        drawBigButton(g, "Arena Mode", "ARENA",  marginLeft + wSteps*3, size.height - marginTop, HAlign.CENTER, 22, borderSize, textColor);
-        drawBigButton(g, "Demo Mode","DEMO", marginLeft + wSteps*4, size.height - marginTop, HAlign.CENTER, 22, borderSize, textColor);
+
+        int wSteps = (size.width - marginLeft * 2) / 6;
+        drawBigButton(g, "Play Mode", "PLAY!", marginLeft + wSteps, size.height - marginTop, HAlign.CENTER, 22, borderSize, textColor);
+        drawBigButton(g, "Live Mode", "LIVE", marginLeft + wSteps * 2, size.height - marginTop, HAlign.CENTER, 22, borderSize, textColor);
+        drawBigButton(g, "Tournament Mode", "ARENA", marginLeft + wSteps * 3, size.height - marginTop, HAlign.CENTER, 22, borderSize, textColor);
+        drawBigButton(g, "Arena Mode", "DUEL", marginLeft + wSteps * 4, size.height - marginTop, HAlign.CENTER, 22, borderSize, textColor);
+        drawBigButton(g, "Demo Mode", "DEMO", marginLeft + wSteps * 5, size.height - marginTop, HAlign.CENTER, 22, borderSize, textColor);
     }
 
     protected <T> void drawSelection(Graphics g, String id, List<T> possibleValues, T selectedValue, int marginLeft, int marginTop, int left) {
@@ -337,13 +400,13 @@ public class SimpleRendering extends Rendering {
                 drawBorder(g, posX, posY, w, h);
             }
             posX += w + 12;
-        }     
-    }    
+        }
+    }
 
-     protected void drawBigButton(Graphics g, String id, String caption, int x, int y, HAlign hAlign, int fontSize, int buttonBorderSize, Color c) {
+    protected void drawBigButton(Graphics g, String id, String caption, int x, int y, HAlign hAlign, int fontSize, int buttonBorderSize, Color c) {
         drawButton(g, id, caption, x, y, hAlign, fontSize, buttonBorderSize, c);
     }
-    
+
     protected void drawButton(Graphics g, String id, String caption, int x, int y, HAlign hAlign, int fontSize, int buttonBorderSize, Color c) {
         Font f = getFont(Font.BOLD, fontSize);
 

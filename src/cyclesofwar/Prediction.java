@@ -130,7 +130,7 @@ public class Prediction extends GameObject {
     
     private void updateFleet(Player player, int force) {
 
-        if (this.planetOwner == player) {
+        if (this.planetOwner.equals(player)) {
             this.forces += force;
         } else {
             this.forces -= force;

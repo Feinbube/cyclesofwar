@@ -131,7 +131,7 @@ public class Advise extends GameObject {
 
     private void updateFleet(Player player, int force) {
 
-        if (this.planet.getPlayer() == player) {
+        if (this.planet.getPlayer().equals(player)) {
             this.forces += force;
         } else {
             this.forces -= force;

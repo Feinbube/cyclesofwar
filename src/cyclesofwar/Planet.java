@@ -11,6 +11,8 @@ import java.util.*;
  */
 public class Planet extends GameObject {
 
+    public final static int MaximumProductionRatePerSecond = 5;
+    
     private final int id;
 
     private double forces;
@@ -38,7 +40,7 @@ public class Planet extends GameObject {
      * gets the forces currently residing on the planet
      */
     public double getForces() {
-        if (universe.getCurrentPlayer() == player) {
+        if (universe.getCurrentPlayer().equals(player)) {
             return newForces;
         } else {
             return forces;
@@ -88,7 +90,7 @@ public class Planet extends GameObject {
         this.id = id;
 
         if (productionRatePerSecond <= 0) {
-            productionRatePerSecond = random.nextInt(3) + 1;
+            productionRatePerSecond = random.nextInt(Planet.MaximumProductionRatePerSecond-2) + 1;
         }
 
         this.productionRatePerSecond = productionRatePerSecond;
@@ -115,7 +117,7 @@ public class Planet extends GameObject {
     }
 
     void land(Fleet fleet) {
-        if (player == fleet.getPlayer()) {
+        if (player.equals(fleet.getPlayer())) {
             forces += fleet.getForce();
         } else {
             forces -= fleet.getForce();
@@ -251,7 +253,7 @@ public class Planet extends GameObject {
      * returns true if the planet is not owned by no player
      */
     public boolean isFree() {
-        return player == Player.NonePlayer;
+        return player.equals(Player.NonePlayer);
     }
 
     void calculateDistancesAndTimes() {

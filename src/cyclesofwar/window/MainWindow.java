@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 
 import cyclesofwar.Arena;
 import java.awt.Window;
+import java.awt.event.MouseMotionListener;
 import java.lang.reflect.Method;
 
 public class MainWindow {
@@ -29,6 +30,7 @@ public class MainWindow {
         panel.setFocusTraversalKeysEnabled(false);
 
         f.addMouseListener((MouseListener) panel);
+        f.addMouseMotionListener((MouseMotionListener) panel);
 
         f.setBounds(configManager.getX(), configManager.getY(), configManager.getWidth(), configManager.getHeight());
 
