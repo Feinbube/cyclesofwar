@@ -164,7 +164,7 @@ public class SimpleRendering extends Rendering {
         drawMarker(g, x, minY + 4 * stepY, "100%", (int) (this.borderSize / 1.5), 3);
 
         g.setColor(Color.WHITE);
-        int y = (int)(selectedForceRatio * height) + minY;
+        int y = (int) (selectedForceRatio * height) + minY;
         g.fillRect(x, y, (int) (this.borderSize / 1.5), 3);
     }
 
@@ -233,10 +233,9 @@ public class SimpleRendering extends Rendering {
     }
 
     protected void drawArrowFormation(Graphics g, Fleet fleet, double x, double y, int d, boolean filled, double time) {
-        double xDiff = fleet.getTarget().getX() - fleet.getX();
-        double yDiff = fleet.getTarget().getY() - fleet.getY();
 
-        xDiff *= 2.0;
+        double xDiff = getX(g, fleet.getTarget().getX()) - x;
+        double yDiff = getY(g, fleet.getTarget().getY()) - y;
 
         double dist = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 

@@ -8,8 +8,8 @@ import java.awt.image.DataBufferInt;
 
 public class GalaxyTexture extends Texture {
 
-    private static final int SEED_CUT = 16;
-    private static final Color[] NEBULA_COLORS = {
+    protected static final int SEED_CUT = 16;
+    protected static final Color[] NEBULA_COLORS = {
         new Color(64, 64, 255),
         Color.CYAN,
         Color.RED,
@@ -36,7 +36,7 @@ public class GalaxyTexture extends Texture {
         return image;
     }
 
-    private void galaxy(BufferedImage image, int seed) {
+    protected void galaxy(BufferedImage image, int seed) {
         int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
         final int height = image.getHeight();
@@ -51,7 +51,7 @@ public class GalaxyTexture extends Texture {
         this.galaxyRing(pixels, xMid, yMid, (int) (0.2 * radius), 0.1, Color.WHITE, seed);
     }
 
-    private void galaxyRing(int[] pixels, int xMid, int yMid, int radius, double radiusFraction, Color color, int seed) {
+    protected void galaxyRing(int[] pixels, int xMid, int yMid, int radius, double radiusFraction, Color color, int seed) {
         final int[] IN = pixels.clone();
         final int iRadius = (int) (radiusFraction * radius);
         final int outer = radius - iRadius;

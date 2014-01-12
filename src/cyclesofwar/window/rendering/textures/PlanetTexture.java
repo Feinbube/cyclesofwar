@@ -2,14 +2,13 @@ package cyclesofwar.window.rendering.textures;
 
 import cyclesofwar.window.rendering.noise.Noise;
 import cyclesofwar.window.rendering.noise.simplex.FractualBrownianMotionNoise;
-import cyclesofwar.window.rendering.noise.simplex.SimplexNoise;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 public class PlanetTexture extends Texture {
 
-    private static final int SEED_CUT = 16;
+    protected static final int SEED_CUT = 16;
 
     protected final Color color;
 
@@ -64,11 +63,11 @@ public class PlanetTexture extends Texture {
         float value = 0.5f;
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                double NOISE = noise.at(x, y);
 
                 float d = getDistance(x, y, w2, height / 2.0f);
 
                 if (d < w2 - w7) { // planet
+                    double NOISE = noise.at(x, y);
 
                     // continents
                     Color c = NOISE < value
@@ -77,7 +76,7 @@ public class PlanetTexture extends Texture {
 
                     // darker at the edges
                     float d2 = getDistance(x, y, width / 4.0f, height / 4.0f); // spot not in the middle of the planet :)
-                    d2 = (float)Math.pow(d2, 1.11);
+                    d2 = (float) Math.pow(d2, 1.11);
                     c = ColorTools.interpolate(c, Color.BLACK, d2 * 2.0f / width - 0.35f);
 
                     // atmosphere
