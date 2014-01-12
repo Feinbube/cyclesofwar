@@ -69,9 +69,10 @@ public class GamePanel extends JPanel implements KeyListener, MouseInputListener
                 renderings.put("Simple", new SimpleRendering());
                 renderings.put("Fancy", new FancyRendering());
                 renderings.put("Galaxy", new GalaxyRendering());
-                // renderings.put("Organic", new OrganicRendering());
+                renderings.put("Organic", new OrganicRendering());
                 // renderings.put("Neural", new NeuralRendering());
                 // renderings.put("Cloud", new CloudRendering());
+                renderings.put("Big Planet", new BigPlanetRendering());
                 renderings.put("Pretty", new PrettyRendering());
                 renderings.put("Shuffle", new ShuffleRendering(new ArrayList(renderings.values())));               
                 

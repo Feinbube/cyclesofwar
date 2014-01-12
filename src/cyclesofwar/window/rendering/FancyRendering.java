@@ -59,7 +59,7 @@ public class FancyRendering extends SimpleRendering {
     }
 
     protected Texture createBackground(long universeSeed) {
-        return new BackgroundTexture(new NebulaNoise((int)universeSeed), size.width, size.height, universeSeed, true);
+        return new BackgroundTexture(new NebulaNoise((int) universeSeed), size.width, size.height, universeSeed, true);
     }
 
     @Override
@@ -123,10 +123,10 @@ public class FancyRendering extends SimpleRendering {
     }
 
     protected void updatePlanetTexture(int id, Planet planet) {
-            if (!planetTextures.containsKey(id) || !planetTextures.get(id).getColor().equals(planet.getPlayer().getPlayerBackColor())) {
-                final int planetSize = planetSize(size.width, planet.getProductionRatePerSecond());
-                planetTextures.put(id, new PlanetTexture(planetSize, planetSize, id, planet.getPlayer().getPlayerBackColor()));
-            }
+        if (!planetTextures.containsKey(id) || !planetTextures.get(id).getColor().equals(planet.getPlayer().getPlayerBackColor())) {
+            final int planetSize = planetSize(size.width, planet.getProductionRatePerSecond());
+            planetTextures.put(id, new PlanetTexture(planetSize, planetSize, id, planet.getPlayer().getPlayerBackColor()));
+        }
     }
 
     public void drawPlayerNames(Graphics g, List<Player> players) {
@@ -370,23 +370,20 @@ public class FancyRendering extends SimpleRendering {
 
     @Override
     public void drawFleets(Graphics g, List<Fleet> fleets, double time) {
-        
+
         final int base = 10;
-        
-        Graphics2D g2 = (Graphics2D)g;
-        g2.setStroke(new BasicStroke(2));    
-        
+
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(2));
+
         for (Fleet fleet : fleets) {
-            
+
             double x = getX(g, fleet.getX());
             double y = getY(g, fleet.getY());
 
             // double localTime = time - fleet.getTimeToTarget();
-
-            double xDiff = fleet.getTarget().getX() - fleet.getX();
-            double yDiff = fleet.getTarget().getY() - fleet.getY();
-
-            xDiff *= 2.0;
+            double xDiff = getX(g, fleet.getTarget().getX()) - x;
+            double yDiff = getY(g, fleet.getTarget().getY()) - y;
 
             double dist = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
@@ -395,25 +392,25 @@ public class FancyRendering extends SimpleRendering {
 
             int forces = fleet.getForce();
             int ring = 0;
-            while(forces > 0) {
-                
+            while (forces > 0) {
+
                 int currentForces = forces % base;
                 forces /= base;
                 ring++;
-                
+
                 double length = ring * ring * 4;
 
                 int[] one = getXY(length / 2, -length / 2, x, y, sinAngle, cosAngle);
                 int[] two = getXY(-length / 2, 0, x, y, sinAngle, cosAngle);
                 int[] three = getXY(length / 2, length / 2, x, y, sinAngle, cosAngle);
 
-                g.setColor(ColorTools.transparent(fleet.getPlayer().getPlayerBackColor(), 0.4 + 0.6 * ((double)currentForces)/base));
+                g.setColor(ColorTools.transparent(fleet.getPlayer().getPlayerBackColor(), 0.4 + 0.6 * ((double) currentForces) / base));
                 g.drawPolygon(new int[]{one[0], two[0], three[0]}, new int[]{one[1], two[1], three[1]}, 3);
             }
-            
+
             //drawText(g2, (int) x, (int) y, fleet.getForce() + "", getPlayerTextColor(fleet.getPlayer()), null, HAlign.CENTER, VAlign.CENTER, 10);
         }
-        
+
         g2.setStroke(new BasicStroke(1));
     }
 
