@@ -16,7 +16,7 @@ public class BigPlanetRendering extends FancyRendering {
 
     @Override
     protected Texture createBackground(long universeSeed) {
-        return new BigPlanetTexture(size.width, size.height, universeSeed);
+        return new BigPlanetTexture(size.width, size.height, universeSeed, 1.0);
     }
 
     @Override

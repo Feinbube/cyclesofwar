@@ -1,7 +1,6 @@
 package cyclesofwar.window.rendering.textures;
 
 import cyclesofwar.window.rendering.noise.Noise;
-import cyclesofwar.window.rendering.noise.cell.PointNoise;
 import cyclesofwar.window.rendering.noise.simplex.*;
 import static cyclesofwar.window.rendering.textures.GalaxyTexture.NEBULA_COLORS;
 import java.awt.Color;
@@ -10,8 +9,8 @@ import java.awt.image.DataBufferInt;
 
 public class BigPlanetTexture extends GalaxyTexture {
 
-    public BigPlanetTexture(final int width, final int height, final long seed) {
-        super(width, height, seed);
+    public BigPlanetTexture(final int width, final int height, final long seed, final double scale) {
+        super(width, height, seed, scale);
     }
 
     @Override
@@ -54,7 +53,7 @@ public class BigPlanetTexture extends GalaxyTexture {
 
         float w2 = width / 2.0f;
         float h2 = height / 2.0f;
-        float planetwidth = w2 - width / 7;
+        float planetwidth = (int) ((w2 - width / 7) * scale);
 
         Noise noise = new FractualBrownianMotionNoise(SEED);
         noise.zoom /= 5;
@@ -115,9 +114,8 @@ public class BigPlanetTexture extends GalaxyTexture {
 
                     // cities at night
                     // ??
-
                     pixels[y * width + x] = c.hashCode();
-                } else if (d <= planetwidth + w2 / 100) { // outer atmosphere
+                } else if (d <= planetwidth + (w2 / 100) * scale) { // outer atmosphere
                     Color c = atmosphere;
 
                     // darker at the edges

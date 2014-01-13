@@ -9,8 +9,10 @@ import cyclesofwar.window.rendering.textures.GalaxyTexture;
 import cyclesofwar.window.rendering.textures.PlanetTexture;
 import cyclesofwar.window.rendering.textures.Texture;
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 public class GalaxyRendering extends FancyRendering {
@@ -21,6 +23,7 @@ public class GalaxyRendering extends FancyRendering {
     double cosAngle;
 
     double scale = 0.5;
+    double sqrtScale;
 
     @Override
     public void drawUniverse(Graphics g, Universe universe) {
@@ -28,24 +31,15 @@ public class GalaxyRendering extends FancyRendering {
         angle = time / 30;
         sinAngle = Math.sin(angle);
         cosAngle = Math.cos(angle);
-        scale = 1.0 / (1.0 + time / universe.getAllPlanets().size());
+        scale = 2.0 / (2.0 + time / universe.getAllPlanets().size());
+        sqrtScale = Math.pow(scale, 0.7);
 
         super.drawUniverse(g, universe);
     }
 
     @Override
-    protected double getX(Graphics g, double x) {
-        return ((size.width - borderSize * 2) * x / universeSize) + borderSize;
-    }
-
-    @Override
-    protected double getY(Graphics g, double y) {
-        return ((size.width - borderSize * 2) * y / universeSize) + borderSize;
-    }
-
-    @Override
     protected Texture createBackground(long universeSeed) {
-        return new GalaxyTexture(size.width, size.height, universeSeed);
+        return new GalaxyTexture(size.width, size.height, universeSeed, 1.0);
     }
 
     @Override
@@ -69,8 +63,17 @@ public class GalaxyRendering extends FancyRendering {
 
         int uX = xy[0] - (planetTexture.getWidth() >> 1);
         int uY = xy[1] - (planetTexture.getHeight() >> 1);
-        
-        g.drawImage(planetTexture.getImage(), uX, uY, null);
+
+        BufferedImage planetImage = new BufferedImage(planetTexture.getWidth(), planetTexture.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = (Graphics2D) planetImage.createGraphics();
+        g2.translate(planetTexture.getWidth() / 2, planetTexture.getHeight() / 2);
+        g2.scale(sqrtScale, sqrtScale);
+        g2.rotate(time / (10 + (20 * id) % 21));
+        g2.translate(-planetTexture.getWidth() / 2, -planetTexture.getHeight() / 2);
+        g2.drawImage(planetTexture.getImage(), 0, 0, null);
+
+        g.drawImage(planetImage, uX, uY, null);
+        drawText(g, uX + planetImage.getWidth() / 2, uY + planetTexture.getHeight() / 2, ((int) planet.getForces()) + "", Color.WHITE, null, HAlign.CENTER, VAlign.CENTER, 10);
     }
 
     @Override
@@ -133,8 +136,10 @@ public class GalaxyRendering extends FancyRendering {
     }
 
     protected int[] getXY(double x, double y) {
+        //double scale = 1.0;
         x = x * scale - size.width / 2 * scale;
-        y = y * scale - size.width / 2 * scale;
+        y = y * scale * size.width / (double) size.height - size.width / 2 * scale;
+
         return new int[]{(int) (size.width / 2 + (x * cosAngle + y * sinAngle)), (int) (size.height / 2 + (-x * sinAngle + y * cosAngle))};
     }
 }
