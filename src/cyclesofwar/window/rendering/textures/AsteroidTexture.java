@@ -19,7 +19,6 @@ public class AsteroidTexture extends PlanetTexture {
     protected BufferedImage generate() {
         BufferedImage result = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
 
-        this.pitchBlack(result);
         this.cellTexture(result, this.color);
 
         return result;
@@ -30,16 +29,8 @@ public class AsteroidTexture extends PlanetTexture {
         Graphics2D canvas = image.createGraphics();
         final int SEED = this.random.nextInt(Integer.MAX_VALUE >> SEED_CUT);
 
-        drawLegs(canvas, color);
         drawBody(canvas, color);
         paintBody(pixels, color, SEED);
-    }
-
-    protected void drawLegs(Graphics2D canvas, Color color) {
-
-        for (float i = 0; i < 360.0; i += 360.0 / (random.nextInt(10) + 10)) {
-
-        }
     }
 
     protected double r() {
@@ -149,7 +140,12 @@ public class AsteroidTexture extends PlanetTexture {
                     double PointNOISE = pointNoise.at(sphereX + SEED, sphereY + SEED);
 
                     Color c = ColorTools.interpolate(color, color.darker().darker().darker(), NOISE);
-                    c = ColorTools.interpolate(c, Color.BLACK, PointNOISE);
+                    c = ColorTools.interpolate(c, Color.DARK_GRAY.darker(), PointNOISE);
+                    
+                    // darker at the edges
+                    float d2 = getDistance(x, y, width / 3.0f, height / 3.0f); // spot not in the middle of the planet :)
+                    d2 = (float) Math.pow(d2, 1.11);
+                    c = ColorTools.interpolate(c, Color.BLACK, d2 * 2.0f / width - 0.5f);
 
                     pixels[y * width + x] = c.hashCode();
                 }
