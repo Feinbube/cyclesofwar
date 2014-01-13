@@ -8,6 +8,8 @@ import java.awt.image.DataBufferInt;
 
 public class GalaxyTexture extends Texture {
 
+    double scale;
+    
     protected static final int SEED_CUT = 16;
     protected static final Color[] NEBULA_COLORS = {
         new Color(64, 64, 255),
@@ -17,8 +19,10 @@ public class GalaxyTexture extends Texture {
         Color.MAGENTA
     };
 
-    public GalaxyTexture(final int width, final int height, final long seed) {
+    public GalaxyTexture(final int width, final int height, final long seed, double scale) {
         super(width, height, seed);
+        
+        this.scale = scale;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class GalaxyTexture extends Texture {
 
         final int height = image.getHeight();
         final int width = image.getWidth();
-        final int radius = Math.min(height, width) / 2;
+        final int radius = (int)(Math.min(height, width) / 2 * scale);
 
         final int xMid = width / 2;
         final int yMid = height / 2;
