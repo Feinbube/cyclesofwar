@@ -50,13 +50,13 @@ public class Zerg extends Player
   @Override
   public Color getPlayerBackColor() 
   {
-    return Color.WHITE;
+    return new Color(0xF5, 0x5A, 0x0C);
   }
 
   @Override
   public Color getPlayerForeColor() 
   {
-    return Color.BLACK;
+    return new Color(0x91, 0x8D, 0x8C);
   }
 
   @Override
