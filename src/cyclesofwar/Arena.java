@@ -31,7 +31,7 @@ public class Arena {
 	/*
 	 * the number of matches per player for the daily one-on-one tournament
 	 */
-	public static final int matchesInOneOnOneTournamentPerPlayer = 10;
+	public static final int matchesInOneOnOneTournamentPerPlayer = 100;
         
         /*
 	 * the number of planets per player for the daily tournaments
@@ -55,7 +55,7 @@ public class Arena {
                 result.add(new FriendlyPirates()); // Jan
 		result.add(new Cratters()); // Martin
 		result.add(new SpaceMenace()); // Theo
-		result.add(new Zerg()); // AndreasG
+		result.add(new Zerg()); // Andi
 
 		return result;
 	}
