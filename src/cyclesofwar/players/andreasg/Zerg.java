@@ -50,15 +50,15 @@ public class Zerg extends Player
                 sent_to.add(t);
                 sendFleet(p, 1, t);
               }
-            else if (!isMine(t) && x > y * 1.4)
+            else if (!isMine(t) && x > y * 2.0)
               {
                 sent_to.add(t);
-                sendFleet(p, (int)(y * 1.1 + 1), t);
+                sendFleet(p, (int)(y * 1.5 + 1), t);
               }
-            else if (!isMine(t) && x > 66)
-              {
-                sendFleet(p, 44, t);
-              }
+            //else if (!isMine(t) && x > 66)
+            //  {
+            //    sendFleet(p, 44, t);
+            //  }
 
             if (++i > max_i)
               break;
