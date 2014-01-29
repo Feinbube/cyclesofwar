@@ -1,6 +1,7 @@
 package cyclesofwar.players.andreasg;
 import java.awt.Color;
 import java.util.List;
+import java.util.ArrayList;
 
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
@@ -22,6 +23,8 @@ public class Zerg extends Player
   {
     int spread_count = 3;
 
+    List<Planet> sent_to = new ArrayList<Planet>();
+
     int c = 0;
     for (Planet p : getPlanets())
       {
@@ -34,12 +37,28 @@ public class Zerg extends Player
             int x = (int)p.getForces();
             int y = (int)t.getForces();
 
+            if (sent_to.contains(t))
+              continue;
+
             if (t.isFree() && x > y * 1.1)
-              sendFleet(p, y + 1, t);
-            //else if (isMine(t) && x > y * 1.2)
-            //  sendFleet(p, 1, t);
-            else if (!isMine(t) && x > y * 1.2 || x > 50)
-              sendFleet(p, (int)(x * 0.7 + 1), t);
+              {
+                sendFleet(p, y + 1, t);
+                sent_to.add(t);
+              }
+            else if (isMine(t) && x > 33 && y < 15)
+              {
+                sent_to.add(t);
+                sendFleet(p, 1, t);
+              }
+            else if (!isMine(t) && x > y * 1.4)
+              {
+                sent_to.add(t);
+                sendFleet(p, (int)(y * 1.1 + 1), t);
+              }
+            else if (!isMine(t) && x > 66)
+              {
+                sendFleet(p, 44, t);
+              }
 
             if (++i > max_i)
               break;
