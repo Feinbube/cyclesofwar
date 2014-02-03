@@ -32,16 +32,16 @@ public class Arena {
 	 * the number of matches per player for the daily one-on-one tournament
 	 */
 	public static final int matchesInOneOnOneTournamentPerPlayer = 100;
-        
-        /*
+	
+	/*
 	 * the number of planets per player for the daily tournaments
 	 */
-        public static final int planetsPerPlayer = 10;
-        
-        /*
+	public static final int planetsPerPlayer = 10;
+	
+	/*
 	 * the universe size factor for the daily tournaments
 	 */
-        public static final double universeSizeFactor = 1.0;
+	public static final double universeSizeFactor = 1.0;
 	
 	/*
 	 * please register your champion here for the daily tournament
@@ -50,12 +50,12 @@ public class Arena {
 		ArrayList<Player> result = new ArrayList<>();
 
 		result.add(new AttackLargestPlayer()); // Robert
-                result.add(new DumbVirus()); // Peter	
-                result.add(new Jane()); // Frank
-                result.add(new FriendlyPirates()); // Jan
+		result.add(new DumbVirus()); // Peter	
+		result.add(new Jane()); // Frank
+		result.add(new FriendlyPirates()); // Jan
 		result.add(new Cratters()); // Martin
 		result.add(new SpaceMenace()); // Theo
-		result.add(new Zerg()); // Andi
+		result.add(new Zerglings()); // Andi
 
 		return result;
 	}
@@ -66,24 +66,24 @@ public class Arena {
 	public static List<Player> registeredPlayers(){
 		ArrayList<Player> result = new ArrayList<>();
 	
-                result.add(new GoldenPlayer());
-                
+		result.add(new GoldenPlayer());
+		
 		// Training
 		result.add(new B00_Idle());
 		result.add(new B01_ChaseMe());
 		result.add(new B02_Wave());
 		result.add(new B03_BigGun());
 		result.add(new B04_Random());
-                result.add(new B05_Worm());
+		result.add(new B05_Worm());
 		result.add(new B06_PowersOf2());
 		result.add(new B07_Sniper());
 		result.add(new B08_NewLeader());
-                result.add(new B09_CloseBond());
+		result.add(new B09_CloseBond());
 		result.add(new B10_Front());
 		result.add(new B11_Cells());       
-                result.add(new B12_Closest());                
+		result.add(new B12_Closest());		
 		result.add(new B13_Rabbit());
-                result.add(new B14_BraveRabbit());
+		result.add(new B14_BraveRabbit());
 
 		
 		// Martin
@@ -106,10 +106,10 @@ public class Arena {
 		result.add(new Petra());
 		result.add(new HanTzu());
 		result.add(new Jane());
-                
-                // Gene
-                result.add(new G02_Wave());
-                result.add(new G04_Random());
+		
+		// Gene
+		result.add(new G02_Wave());
+		result.add(new G04_Random());
 
 		// Peter
 		result.add(new DumbVirus());
@@ -119,7 +119,8 @@ public class Arena {
 		result.add(new FriendlyPirates());
 
 		// AndreasG
-		result.add(new Zerg());
+		result.add(new Zerglings());
+		result.add(new Hydralisks());
 
 		return result;
 	}
