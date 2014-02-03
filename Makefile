@@ -18,6 +18,9 @@ run: all
 nogui: all
 	@java $(JFLAGS) cyclesofwar.console.OneOnOneTournamentConsole
 
+noguilms: all
+	@java $(JFLAGS) cyclesofwar.console.LastManStandingTournamentConsole
+
 clean:
 	@rm -f $(JOBJ) *.time *.ooo *.lms ranking.new
 
