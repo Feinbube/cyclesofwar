@@ -1,10 +1,12 @@
 package cyclesofwar.players.andreasg;
 import java.awt.Color;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Comparator;
 
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
@@ -12,64 +14,220 @@ import cyclesofwar.Fleet;
 
 public class Hydralisks extends Player 
 {
+  
+  private List<Action> actions;
+  private List<DistressBeacon> beacons;
 
-  public class PlanetEvent
-  {
-    public long timestamp;
-    public long forces;
-    public Player player;
+  private List<AvailableForces> troops;
+ 
+  private Planet thePlanetThatIAmCurrentlySortingFor;
 
-    public PlanetEvent(long timestamp, long forces, Player player)
-    {
-      this.timestamp = timestamp;
-      this.forces = forces;
-      this.player = player;
-    }
-  }
-
-  public class PlanetTimeline
-  {
-    public Planet p;
-    public List<PlanetEvent> events;
-
-    public double score;
-
-    public PlanetTimeline(Planet p)
-    {
-      this.p = p;
-      this.events = new ArrayList<PlanetEvent>();
-    }
-  }
-
-  private Map<Planet, PlanetTimeline> timelines;
-  private List<Planet> mine;
-
-  private long groundForces;
-  private long airForces;
-  private long production;
+  private int round = 0;
 
   @Override
   protected void think() 
   {
-    init();
+    debug("Round" + ++round + ": " + getPlanetsOf(this).size() + "p" + getFleetsOf(this).size() + "f");
+    actions = new ArrayList<Action>();
+    beacons = new ArrayList<DistressBeacon>();
+    troops =  new ArrayList<AvailableForces>();
 
-    double max_score = 0;
-    Planet p = null;
+    for (Planet p : getPlanetsOf(this))
+      simulateMyPlanet(p);
 
-    for (Entry<Planet, PlanetTimeline> e : timelines.entrySet())
+    for (DistressBeacon b : beacons)
+      tryToSendHelp(b);
+
+    spread();
+    evacuate();
+
+    for (Action a : actions)
+      a.execute();
+  }
+
+  private void simulateMyPlanet(Planet p)
+  {
+    double forces = p.getForces();
+    double free_forces = forces;
+    double production = p.getProductionRatePerRound();
+
+    int lastevent = 0;
+
+    List<Fleet> fleets = Fleet.sortedBy(Fleet.ArrivalTimeComparator, getFleetsWithTarget(p));
+    for (Fleet f : fleets)
       {
-        PlanetTimeline t = e.getValue();
-        if (t.score > max_score)
+        forces += production * (f.getRoundsToTarget() - lastevent);
+        lastevent = f.getRoundsToTarget();
+        if (f.getPlayer() == this)
+          forces += f.getForce();
+        else
           {
-            max_score = t.score;
-            p = t.p;
+            forces -= f.getForce();
+            if (forces <= 0)
+              {
+                debug("  distress: " + p + " needs " + -forces + " by " + f.getRoundsToTarget());
+                beacons.add(new DistressBeacon(this, p, -forces, f.getRoundsToTarget()));
+                return;
+              }
+            if (forces - 15 < free_forces) 
+              free_forces = forces - 15;
           }
       }
 
-    if (max_score > 0)
-      attack(p);
+    if (free_forces >= 1)
+      {
+        debug("  available forces from " + p + ": " + free_forces);
+        troops.add(new AvailableForces(this, p, free_forces, false));
+      }
   }
+
+  private void tryToSendHelp(DistressBeacon b)
+  {
+    if (b.roundsRemaining < 2)
+      troops.add(new AvailableForces(this, b.from, b.from.getForces(), true));
+
+    int troops_in_range = 0;
+
+    for (AvailableForces a : troops)
+      if (a.from.getRoundsTo(b.from) < b.roundsRemaining)
+        troops_in_range += (int)a.forces;
+
+    if (troops_in_range < b.forcesRequired)
+      return;
+    
+    thePlanetThatIAmCurrentlySortingFor = b.from;
+    Collections.sort(troops);
+    for (AvailableForces a : troops)
+      {
+        if (a.from == b.from)
+          continue;
+
+        debug("  help from " + b.from + " " + a.from.getRoundsTo(b.from));
+        if (a.forces > Math.ceil(b.forcesRequired))
+          {
+            actions.add(new Action(this, a.from, b.from, (int)Math.ceil(b.forcesRequired)));
+            a.forces -= Math.ceil(b.forcesRequired);
+            b.forcesRequired = 0;
+            break;
+          }
+        actions.add(new Action(this, a.from, b.from, (int)Math.floor(a.forces)));
+        a.forces = 0;
+      }
+  }
+
+  private void spread()
+  {
+    for (AvailableForces a : troops)
+      {
+        if (a.forces < 1)
+          continue;
+        
+        int dist = 0;
+        for (Planet p : a.from.getOthersByDistance())
+          {
+            if (p.getPlayer() == this)
+              continue;
+
+            if (a.forces > 100 || possibleConquer(a, p))
+              {
+                debug("  spreading from " + p + " with " + Math.floor(a.forces));
+                actions.add(new Action(this, a.from, p, (int)Math.floor(a.forces)));
+                a.forces = 0;
+              }
+
+            if (++dist > 2)
+              break;
+          }
+      }
+  }
+
+  private void evacuate()
+  {
+    for (AvailableForces a : troops)
+      {
+        if (!a.evacuation)
+          continue;
+
+        for (Planet p : a.from.getOthersByDistance())
+          if (p.getPlayer() == this && p != a.from)
+            {
+              actions.add(new Action(this, a.from, p, (int)Math.floor(a.forces)));
+              a.forces = 0;
+              break;
+            }
+      }
+  }
+
+  private boolean possibleConquer(AvailableForces a, Planet p)
+  {
+    Player owner = p.getPlayer();
+    double forces = p.getForces();
+
+    int myArrival = a.from.getRoundsTo(p);
+    int lastevent = 0;
   
+    List<Fleet> fleets = Fleet.sortedBy(Fleet.ArrivalTimeComparator, getFleetsWithTarget(p));    
+    for (Fleet f : fleets)
+      {
+        if (f.getRoundsToTarget() > myArrival && myArrival != 0)
+          {
+            myArrival = 0;
+            if (owner != Player.NonePlayer)
+              forces += p.getProductionRatePerRound() * (myArrival - lastevent);
+
+            lastevent = myArrival;
+            if (owner == this)
+              forces += a.forces;
+            else
+              {
+                forces -= a.forces;
+                if (forces <= 0)
+                  {
+                    owner = this;
+                    forces = -forces;
+                  }
+              }
+          }
+
+        if (owner != Player.NonePlayer)
+          forces += p.getProductionRatePerRound() * (f.getRoundsToTarget() - lastevent);
+
+        lastevent = f.getRoundsToTarget();
+        if (f.getPlayer() == owner)
+          forces += f.getForce();
+        else
+          {
+            forces -= f.getForce();
+            if (forces <= 0)
+              {
+                owner = f.getPlayer();
+                forces = -forces;
+              }
+          }
+      }
+
+    if (myArrival != 0)
+      {
+        if (owner != Player.NonePlayer)
+          forces += p.getProductionRatePerRound() * (myArrival - lastevent);
+
+        lastevent = myArrival;
+        if (owner == this)
+          forces += a.forces;
+        else
+          {
+            forces -= a.forces;
+            if (forces <= 0)
+              {
+                owner = this;
+                forces = -forces;
+              }
+          }
+      }
+
+    return (owner == this);
+  }
+
   @Override
   public Color getPlayerBackColor() 
   {
@@ -88,82 +246,94 @@ public class Hydralisks extends Player
     return "Andi";
   }
 
-  private void init()
+  public Planet helper1()
   {
-    timelines = new HashMap<Planet, PlanetTimeline>();
-    mine = new ArrayList<Planet>();
-    groundForces = 0;
-    airForces = 0;
-    production = 0;
-
-    for (Planet p : getAllPlanets())
-      {
-        timelines.put(p, new PlanetTimeline(p));  
-        if (p.getPlayer().equals(this))
-          {
-            mine.add(p);
-            groundForces += p.getForces();
-            production += p.getProductionRatePerRound();
-          }
-      }
-
-    for (Fleet f : getAllFleets())
-      {
-        timelines.get(f.getTarget()).events.add(new PlanetEvent(f.getRoundsToTarget(), f.getForce(), f.getPlayer()));
-        if (f.getPlayer().equals(this))
-          airForces += f.getForce();
-      }
-
-    for (Entry<Planet, PlanetTimeline> e : timelines.entrySet())
-      e.getValue().score = appraise(e.getKey(), e.getValue());
+    return thePlanetThatIAmCurrentlySortingFor;
   }
 
-  private double appraise(Planet p, PlanetTimeline t)
+  private void debug(String str)
   {
-    double production = p.getProductionRatePerRound();
-
-    List<Planet> neighbors = p.getOthersByDistance();
-
-    double value = production;
-    double effort = p.getForces() / groundForces;
-
-    Player owner = p.getPlayer();
-    double forces = p.getForces();
-    long lastevent = 0;
-    for (PlanetEvent e : t.events)
-      {
-        forces += production * (e.timestamp - lastevent);
-        if (e.player == owner)
-          forces += e.forces;
-        else
-          {
-            forces -= e.forces;
-            if (forces < 0)
-              {
-                owner = e.player;
-                forces = -forces;
-              }
-          }
-
-        lastevent = e.timestamp;
-      }
-
-    if (owner == this)
-      return 0;
-
-    double distance = 0;
-    for (Planet m : mine)
-      distance += m.getRoundsTo(p);
-    distance /= mine.size();
-
-    return value / (effort * distance);
+    //System.out.println(str);
   }
 
-  public void attack(Planet p)
-  { 
-    for (Planet m : mine)
-      if (m.getForces() > 10 && p != m)
-        sendFleet(m, (int)(m.getForces() / 2), p);
+  private static class AvailableForces implements Comparable<AvailableForces>
+  {
+    
+    private Hydralisks me;
+
+    private Planet from;
+    private double forces;
+
+    private boolean evacuation;
+
+    public AvailableForces(Hydralisks me, Planet from, double forces, boolean evacuation)
+    {
+      this.me = me;
+      this.from = from;
+      this.forces = forces;
+      this.evacuation = evacuation;
+    }
+
+	  public static Comparator<AvailableForces> ArrivalTimeComparator = new Comparator<AvailableForces>() 
+    {
+		  @Override
+		  public int compare(AvailableForces a, AvailableForces b) 
+      {
+			  return Double.compare(a.from.getDistanceTo(a.me.helper1()), b.from.getDistanceTo(b.me.helper1()));
+		  }
+	  };
+        
+    @Override
+    public int compareTo(AvailableForces other) 
+    {
+      return ArrivalTimeComparator.compare(this, other);
+    }
+
+  }
+
+  private class DistressBeacon
+  {
+    
+    private Player me;
+
+    private Planet from;
+    private double forcesRequired;
+    private int roundsRemaining;
+
+    public DistressBeacon(Player me, Planet from, double forcesRequired, int roundsRemaining)
+    {
+      this.me = me;
+      this.from = from;
+      this.forcesRequired = forcesRequired;
+      this.roundsRemaining = roundsRemaining;
+    }
+
+  }
+
+  private class Action
+  {
+
+    private Player me;
+  
+    private Planet from;
+    private Planet to;
+    private int forces;
+
+    public Action(Player me, Planet from, Planet to, int forces)
+    {
+      this.me = me;
+      this.from = from;
+      this.to = to;
+      this.forces = forces;
+    }
+
+    public void execute()
+    {
+      if (forces > 0)
+        me.sendFleet(from, forces, to);
+    }
+
   }
 
 }
+
