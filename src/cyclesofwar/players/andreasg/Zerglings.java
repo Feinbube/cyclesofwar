@@ -7,7 +7,7 @@ import cyclesofwar.Planet;
 import cyclesofwar.Player;
 import cyclesofwar.Fleet;
 
-public class Zerg extends Player 
+public class Zerglings extends Player 
 {
 
   protected boolean isMine(Planet t)
@@ -55,10 +55,6 @@ public class Zerg extends Player
                 sent_to.add(t);
                 sendFleet(p, (int)(y * 1.5 + 1), t);
               }
-            //else if (!isMine(t) && x > 66)
-            //  {
-            //    sendFleet(p, 44, t);
-            //  }
 
             if (++i > max_i)
               break;
@@ -75,7 +71,7 @@ public class Zerg extends Player
   @Override
   public Color getPlayerForeColor() 
   {
-    return new Color(0x91, 0x8D, 0x8C);
+    return Color.WHITE;
   }
 
   @Override
