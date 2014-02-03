@@ -55,7 +55,7 @@ public class Arena {
 		result.add(new FriendlyPirates()); // Jan
 		result.add(new Cratters()); // Martin
 		result.add(new SpaceMenace()); // Theo
-		result.add(new Zerglings()); // Andi
+		result.add(new Hydralisks()); // Andi
 
 		return result;
 	}

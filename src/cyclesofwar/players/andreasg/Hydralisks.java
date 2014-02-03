@@ -32,6 +32,8 @@ public class Hydralisks extends Player
     public Planet p;
     public List<PlanetEvent> events;
 
+    public double score;
+
     public PlanetTimeline(Planet p)
     {
       this.p = p;
@@ -40,6 +42,7 @@ public class Hydralisks extends Player
   }
 
   private Map<Planet, PlanetTimeline> timelines;
+  private List<Planet> mine;
 
   private long groundForces;
   private long airForces;
@@ -50,7 +53,21 @@ public class Hydralisks extends Player
   {
     init();
 
+    double max_score = 0;
+    Planet p = null;
 
+    for (Entry<Planet, PlanetTimeline> e : timelines.entrySet())
+      {
+        PlanetTimeline t = e.getValue();
+        if (t.score > max_score)
+          {
+            max_score = t.score;
+            p = t.p;
+          }
+      }
+
+    if (max_score > 0)
+      attack(p);
   }
   
   @Override
@@ -74,6 +91,7 @@ public class Hydralisks extends Player
   private void init()
   {
     timelines = new HashMap<Planet, PlanetTimeline>();
+    mine = new ArrayList<Planet>();
     groundForces = 0;
     airForces = 0;
     production = 0;
@@ -83,6 +101,7 @@ public class Hydralisks extends Player
         timelines.put(p, new PlanetTimeline(p));  
         if (p.getPlayer().equals(this))
           {
+            mine.add(p);
             groundForces += p.getForces();
             production += p.getProductionRatePerRound();
           }
@@ -96,20 +115,55 @@ public class Hydralisks extends Player
       }
 
     for (Entry<Planet, PlanetTimeline> e : timelines.entrySet())
-      appraise(e.getKey(), e.getValue());
+      e.getValue().score = appraise(e.getKey(), e.getValue());
   }
 
-  private void appraise(Planet p, PlanetTimeline t)
+  private double appraise(Planet p, PlanetTimeline t)
   {
     double production = p.getProductionRatePerRound();
-    Player owner = p.getPlayer();
 
     List<Planet> neighbors = p.getOthersByDistance();
 
+    double value = production;
+    double effort = p.getForces() / groundForces;
+
+    Player owner = p.getPlayer();
+    double forces = p.getForces();
+    long lastevent = 0;
     for (PlanetEvent e : t.events)
       {
-        
+        forces += production * (e.timestamp - lastevent);
+        if (e.player == owner)
+          forces += e.forces;
+        else
+          {
+            forces -= e.forces;
+            if (forces < 0)
+              {
+                owner = e.player;
+                forces = -forces;
+              }
+          }
+
+        lastevent = e.timestamp;
       }
+
+    if (owner == this)
+      return 0;
+
+    double distance = 0;
+    for (Planet m : mine)
+      distance += m.getRoundsTo(p);
+    distance /= mine.size();
+
+    return value / (effort * distance);
+  }
+
+  public void attack(Planet p)
+  { 
+    for (Planet m : mine)
+      if (m.getForces() > 10 && p != m)
+        sendFleet(m, (int)(m.getForces() / 2), p);
   }
 
 }
