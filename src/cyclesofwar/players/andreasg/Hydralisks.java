@@ -12,6 +12,10 @@ import cyclesofwar.Planet;
 import cyclesofwar.Player;
 import cyclesofwar.Fleet;
 
+/* todo: do not send more troops than necessary
+ *
+ */
+
 public class Hydralisks extends Player 
 {
   
@@ -66,25 +70,25 @@ public class Hydralisks extends Player
             if (forces <= 0)
               {
                 debug("  distress: " + p + " needs " + -forces + " by " + f.getRoundsToTarget());
-                beacons.add(new DistressBeacon(this, p, -forces, f.getRoundsToTarget()));
+                beacons.add(new DistressBeacon(p, -forces, f.getRoundsToTarget()));
                 return;
               }
-            if (forces - 15 < free_forces) 
-              free_forces = forces - 15;
+            if (forces < free_forces) 
+              free_forces = forces;
           }
       }
 
     if (free_forces >= 1)
       {
-        debug("  available forces from " + p + ": " + free_forces);
-        troops.add(new AvailableForces(this, p, free_forces, false));
+        debug("  available forces from " + p + ": " + free_forces * 0.95);
+        troops.add(new AvailableForces(p, free_forces * 0.95, false));
       }
   }
 
   private void tryToSendHelp(DistressBeacon b)
   {
     if (b.roundsRemaining < 2)
-      troops.add(new AvailableForces(this, b.from, b.from.getForces(), true));
+      troops.add(new AvailableForces(b.from, b.from.getForces(), true));
 
     int troops_in_range = 0;
 
@@ -105,12 +109,12 @@ public class Hydralisks extends Player
         debug("  help from " + b.from + " " + a.from.getRoundsTo(b.from));
         if (a.forces > Math.ceil(b.forcesRequired))
           {
-            actions.add(new Action(this, a.from, b.from, (int)Math.ceil(b.forcesRequired)));
+            actions.add(new Action(a.from, b.from, (int)Math.ceil(b.forcesRequired)));
             a.forces -= Math.ceil(b.forcesRequired);
             b.forcesRequired = 0;
             break;
           }
-        actions.add(new Action(this, a.from, b.from, (int)Math.floor(a.forces)));
+        actions.add(new Action(a.from, b.from, (int)Math.floor(a.forces)));
         a.forces = 0;
       }
   }
@@ -131,7 +135,7 @@ public class Hydralisks extends Player
             if (a.forces > 100 || possibleConquer(a, p))
               {
                 debug("  spreading from " + p + " with " + Math.floor(a.forces));
-                actions.add(new Action(this, a.from, p, (int)Math.floor(a.forces)));
+                actions.add(new Action(a.from, p, (int)Math.floor(a.forces)));
                 a.forces = 0;
               }
 
@@ -151,7 +155,7 @@ public class Hydralisks extends Player
         for (Planet p : a.from.getOthersByDistance())
           if (p.getPlayer() == this && p != a.from)
             {
-              actions.add(new Action(this, a.from, p, (int)Math.floor(a.forces)));
+              actions.add(new Action(a.from, p, (int)Math.floor(a.forces)));
               a.forces = 0;
               break;
             }
@@ -165,8 +169,34 @@ public class Hydralisks extends Player
 
     int myArrival = a.from.getRoundsTo(p);
     int lastevent = 0;
-  
+
     List<Fleet> fleets = Fleet.sortedBy(Fleet.ArrivalTimeComparator, getFleetsWithTarget(p));    
+
+    for (Fleet f : fleets)
+      {
+        if (owner != Player.NonePlayer)
+          forces += p.getProductionRatePerRound() * (f.getRoundsToTarget() - lastevent);
+
+        lastevent = f.getRoundsToTarget();
+        if (f.getPlayer() == owner)
+          forces += f.getForce();
+        else
+          {
+            forces -= f.getForce();
+            if (forces <= 0)
+              {
+                owner = f.getPlayer();
+                forces = -forces;
+              }
+          }
+      }
+
+    if (owner == this)
+      return false;
+
+    owner = p.getPlayer();
+    forces = p.getForces();
+
     for (Fleet f : fleets)
       {
         if (f.getRoundsToTarget() > myArrival && myArrival != 0)
@@ -259,16 +289,13 @@ public class Hydralisks extends Player
   private static class AvailableForces implements Comparable<AvailableForces>
   {
     
-    private Hydralisks me;
-
     private Planet from;
     private double forces;
 
     private boolean evacuation;
 
-    public AvailableForces(Hydralisks me, Planet from, double forces, boolean evacuation)
+    public AvailableForces(Planet from, double forces, boolean evacuation)
     {
-      this.me = me;
       this.from = from;
       this.forces = forces;
       this.evacuation = evacuation;
@@ -279,7 +306,9 @@ public class Hydralisks extends Player
 		  @Override
 		  public int compare(AvailableForces a, AvailableForces b) 
       {
-			  return Double.compare(a.from.getDistanceTo(a.me.helper1()), b.from.getDistanceTo(b.me.helper1()));
+			  return Double.compare(
+          a.from.getDistanceTo(((Hydralisks)a.from.getPlayer()).helper1()), 
+          b.from.getDistanceTo(((Hydralisks)b.from.getPlayer()).helper1()));
 		  }
 	  };
         
@@ -294,15 +323,12 @@ public class Hydralisks extends Player
   private class DistressBeacon
   {
     
-    private Player me;
-
     private Planet from;
     private double forcesRequired;
     private int roundsRemaining;
 
-    public DistressBeacon(Player me, Planet from, double forcesRequired, int roundsRemaining)
+    public DistressBeacon(Planet from, double forcesRequired, int roundsRemaining)
     {
-      this.me = me;
       this.from = from;
       this.forcesRequired = forcesRequired;
       this.roundsRemaining = roundsRemaining;
@@ -313,15 +339,12 @@ public class Hydralisks extends Player
   private class Action
   {
 
-    private Player me;
-  
     private Planet from;
     private Planet to;
     private int forces;
 
-    public Action(Player me, Planet from, Planet to, int forces)
+    public Action(Planet from, Planet to, int forces)
     {
-      this.me = me;
       this.from = from;
       this.to = to;
       this.forces = forces;
@@ -330,7 +353,7 @@ public class Hydralisks extends Player
     public void execute()
     {
       if (forces > 0)
-        me.sendFleet(from, forces, to);
+        from.getPlayer().sendFleet(from, forces, to);
     }
 
   }
