@@ -67,7 +67,7 @@ public class Hydralisks extends Player
         else
           {
             forces -= f.getForce();
-            if (forces <= 0)
+            if (forces <= -0.1)
               {
                 debug("  distress: " + p + " needs " + -forces + " by " + f.getRoundsToTarget());
                 beacons.add(new DistressBeacon(p, -forces, f.getRoundsToTarget()));
@@ -183,7 +183,7 @@ public class Hydralisks extends Player
         else
           {
             forces -= f.getForce();
-            if (forces <= 0)
+            if (forces <= -0.1)
               {
                 owner = f.getPlayer();
                 forces = -forces;
