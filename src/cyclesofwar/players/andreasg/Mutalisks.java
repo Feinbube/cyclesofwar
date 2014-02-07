@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.Comparator;
 
@@ -14,71 +16,47 @@ import cyclesofwar.Fleet;
 
 import cyclesofwar.players.andreasg.helper.*;
 
-/* This class has probably reached its end of life and is soon to be
- * superceded by the Mutalisks. It is kept for historical reasons as 
- * the first Bot I could make that could *almost* beat Frank's Jane
- *
- * last training score: 
- *   1,Andi's Hydralisks,1979,2100
- *   2,Frank's Jane,52,100
- *   3,Jan's FriendlyPirates,22,100
- *   4,Theo's SpaceMenace,11,100
- *   5,B14_BraveRabbit,10,100
- *   6,B10_Front,6,100
- *   7,B12_Closest,6,100
- *   8,B13_Rabbit,4,100
- *   9,B08_NewLeader,3,100
- *   10,B11_Cells,3,100
- *   11,B05_Worm,2,100
- *   12,B09_CloseBond,1,100
- *   13,Martin's Cratters,1,100
- *   14,B00_Idle,0,100
- *   15,B01_ChaseMe,0,100
- *   16,B02_Wave,0,100
- *   17,B03_BigGun,0,100
- *   18,B04_Random,0,100
- *   19,B06_PowersOf2,0,100
- *   20,B07_Sniper,0,100
- *   21,Robert's AttackLargestPlayer,0,100
- *   22,Peter's DumbVirus,0,100
- *   23,Nobody,0,2100
- */ 
+/* This is my current top player, based on the things I learned
+ * while developing Zerglings and Hydralisks.
+ */
 
-public class Hydralisks extends AndreasG 
+public class Mutalisks extends AndreasG 
 {
  
   private Actions actions;
-
-  private List<DistressBeacon> beacons;
+  private DistressBeacons beacons;
 
   private List<AvailableForces> troops;
  
-  private int round = 0;
-
   @Override
   protected void think() 
   {
     debug("Round" + ++round + ": " + getPlanetsOf(this).size() + "p" + getFleetsOf(this).size() + "f");
 
     actions = new Actions();
+    beacons = new DistressBeacons();
 
-    beacons = new ArrayList<DistressBeacon>();
     troops =  new ArrayList<AvailableForces>();
 
     for (Planet p : getPlanetsOf(this))
       contactPlanet(p);
 
-    for (DistressBeacon b : beacons)
+    for (DistressBeacon b : beacons.get())
       tryToSendHelp(b);
 
     spread();
 
     actions.execute();
-    evacuate();
+    beacons.evacuate();
   }
 
   private void contactPlanet(Planet p)
   {
+    //PlanetSimulationResult r = new PlanetSimulationResult(p);
+
+    //if (r.beacon != null)
+    //  beacons.add(r.beacon);
+
     double forces = p.getForces();
     double free_forces = forces;
     double production = p.getProductionRatePerRound();
@@ -88,6 +66,7 @@ public class Hydralisks extends AndreasG
     List<Fleet> fleets = Fleet.sortedBy(Fleet.ArrivalTimeComparator, getFleetsWithTarget(p));
     for (Fleet f : fleets)
       {
+        debug("  fleet " + f + " will arrive at " + p + " in " + f.getRoundsToTarget());
         forces += production * (f.getRoundsToTarget() - lastevent);
         lastevent = f.getRoundsToTarget();
         if (f.getPlayer() == this)
@@ -98,7 +77,7 @@ public class Hydralisks extends AndreasG
             if (forces < 0)
               {
                 debug("  distress: " + p + " needs " + -forces + " by " + f.getRoundsToTarget());
-                beacons.add(new DistressBeacon(p, -forces, f.getRoundsToTarget()));
+                beacons.add(p, -forces, f.getRoundsToTarget());
                 return;
               }
             if (forces < free_forces) 
@@ -153,30 +132,44 @@ public class Hydralisks extends AndreasG
       {
         if (a.forces < 1)
           continue;
-        
-        int dist = 0;
+       
+        List<Planet> cluster = new ArrayList<Planet>();
+        cluster.add(a.from);
         for (Planet p : a.from.getOthersByDistance())
           {
+            if (cluster.size() >= 1)
+              break;
             if (p.getPlayer() == this)
+              cluster.add(p);
+          }
+
+        Map<Double, Planet> cluster_targets = new TreeMap<Double, Planet>();
+        for (Planet p : a.from.getOthersByDistance())
+          {
+            double dist = 0;
+            for (Planet c : cluster)
+              dist += c.getDistanceTo(p) * c.getDistanceTo(p);
+            dist /= cluster.size();
+            cluster_targets.put(dist, p);
+          }
+
+        int dist = 0;
+        for (Entry<Double, Planet> e : cluster_targets.entrySet())
+          {
+            if (e.getValue().getPlayer() == this)
               continue;
 
-            if (a.forces > 100 || possibleConquer(a, p))
+            if (a.forces > 100 || possibleConquer(a, e.getValue()))
               {
-                debug("  spreading from " + p + " with " + Math.floor(a.forces));
-                actions.add(a.from, p, (int)Math.floor(a.forces));
+                debug("  spreading from " + e.getValue() + " with " + Math.floor(a.forces));
+                actions.add(a.from, e.getValue(), (int)Math.floor(a.forces));
                 a.forces = 0;
               }
 
-            if (++dist > 2)
+            if (++dist > 1)
               break;
           }
       }
-  }
-
-  private void evacuate()
-  {
-    for (DistressBeacon b : beacons)
-      b.evacuate();
   }
 
   private boolean possibleConquer(AvailableForces a, Planet p)

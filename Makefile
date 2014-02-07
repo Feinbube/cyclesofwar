@@ -21,8 +21,13 @@ nogui: all
 noguilms: all
 	@java $(JFLAGS) cyclesofwar.console.LastManStandingTournamentConsole
 
+training: all
+	@java $(JFLAGS) cyclesofwar.console.TrainingConsole
+
 clean:
 	@rm -f $(JOBJ) *.time *.ooo *.lms ranking.new
+	@# this gets rid of compiled subclass artefacts:
+	@$(shell find src/ -type f -name '*.class' -delete) 
 
 demo: updatereadonly clean all run
 
