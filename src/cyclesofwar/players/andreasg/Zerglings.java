@@ -7,16 +7,37 @@ import cyclesofwar.Planet;
 import cyclesofwar.Player;
 import cyclesofwar.Fleet;
 
-public class Zerglings extends Player 
-{
+/* This class has probably reached its end of life and has been
+ * superceded by the Hydralisks, which do an overall better job.
+ *
+ * last training score: 
+ *   1,Theo's SpaceMenace,97,100
+ *   2,Jan's FriendlyPirates,95,100
+ *   3,Frank's Jane,93,100
+ *   4,Robert's AttackLargestPlayer,73,100
+ *   5,Andi's Zerglings,1237,2100
+ *   6,B13_Rabbit,48,100
+ *   7,B14_BraveRabbit,48,100
+ *   8,B12_Closest,44,100
+ *   9,B11_Cells,36,100
+ *   10,B09_CloseBond,29,100
+ *   11,Martin's Cratters,24,100
+ *   12,B06_PowersOf2,18,100
+ *   13,B05_Worm,16,100
+ *   14,B10_Front,15,100
+ *   15,B08_NewLeader,10,100
+ *   16,B04_Random,5,100
+ *   17,B07_Sniper,2,100
+ *   18,Peter's DumbVirus,1,100
+ *   19,B00_Idle,0,100
+ *   20,B01_ChaseMe,0,100
+ *   21,B02_Wave,0,100
+ *   22,B03_BigGun,0,100
+ *   23,Nobody,209,2100
+ */ 
 
-  protected boolean isMine(Planet t)
-  {
-    for (Planet x : getPlanets())
-      if (x == t)
-        return true;
-    return false;
-  }
+public class Zerglings extends AndreasG 
+{
 
   @Override
   protected void think() 
@@ -45,12 +66,12 @@ public class Zerglings extends Player
                 sendFleet(p, y + 1, t);
                 sent_to.add(t);
               }
-            else if (isMine(t) && x > 33 && y < 15)
+            else if (t.getPlayer() == this && x > 33 && y < 15)
               {
                 sent_to.add(t);
                 sendFleet(p, 1, t);
               }
-            else if (!isMine(t) && x > y * 2.0)
+            else if (t.getPlayer() != this && x > y * 2.0)
               {
                 sent_to.add(t);
                 sendFleet(p, (int)(y * 1.5 + 1), t);
@@ -62,22 +83,4 @@ public class Zerglings extends Player
       }
   }
   
-  @Override
-  public Color getPlayerBackColor() 
-  {
-    return new Color(0xF5, 0x5A, 0x0C);
-  }
-
-  @Override
-  public Color getPlayerForeColor() 
-  {
-    return Color.WHITE;
-  }
-
-  @Override
-  public String getCreatorsName() 
-  {
-    return "Andi";
-  }
-
 }
