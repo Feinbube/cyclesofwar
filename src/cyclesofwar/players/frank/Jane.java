@@ -24,22 +24,18 @@ public class Jane extends Player {
 
             for (Planet other : planet.getOthersByDistance()) {
 
-                if (planet.getForces() < 1) {
-                    break;
-                }
-
-                if (overproduction + 1 < planet.getForces() || overproduction < 2) {
+                if (planet.getForces() < 1 || overproduction < 1) {
                     break;
                 }
 
                 double attackBalance = this.getPrediction(other, planet.getTimeTo(other)).getBalance();
 
-                if (this.getOtherPlayers().size() > 1 && -attackBalance > overproduction) {
+                if (-attackBalance > overproduction) {
                     break;
                 }
 
                 if (attackBalance < 0) {
-                    int force = (int) Math.min(-attackBalance, overproduction - 1);
+                    int force = (int) Math.min(-attackBalance, overproduction);
                     this.sendFleet(planet, force, other);
                     overproduction -= force;
                 }
