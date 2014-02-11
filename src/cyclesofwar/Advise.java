@@ -3,7 +3,7 @@ package cyclesofwar;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
+/**
  *  This is an advise how to keep planet until a the given point in time, given no new fleet is created.
  *  
  *  It takes into account all existing fleets and simulates what happens to the planet, when they arrive.
@@ -22,21 +22,21 @@ public class Advise extends GameObject {
     private double forces;
     private double time;
    
-    /* 
+    /** 
      * the planet this prediction is foretelling
      */
     public Planet getPlanet() {
         return planet;
     }
     
-    /*
+    /**
      * the forces that are needed on this planet at startTime to survive until endTime
      */
     public double getForcesToKeep() {
         return forcesToKeep;
     }
     
-    /*
+    /**
      * the start time that this advise is based on 
      * (it is assumed that the planet is owned by you at that time)
      */
@@ -44,7 +44,7 @@ public class Advise extends GameObject {
         return startTime;
     }
     
-    /*
+    /**
      * the end time that this advise is based on 
      * (if no new fleets are created and you had the required forces at start time,
      * the planet will still be yours at this point in time)

@@ -1,4 +1,4 @@
-/* 
+/** 
  Copyright 1994, 2002 by Steven Worley
  This software may be modified and redistributed without restriction
  provided this comment header remains intact in the source code.
@@ -41,7 +41,7 @@
  computation. The book lists the details of this tuning.
  */
 
-/*
+/**
  * Edited by: Carl-Johan Rosén, Linköping University
  * Date: 2006-02-23
  * Contact: cj dot rosen at gmail dot com
@@ -56,7 +56,7 @@ package cyclesofwar.window.rendering.noise.cell;
 
 public class CellNoiseImpl {    
 
-    /*
+    /**
      * A hardwired lookup table to quickly determine how many feature points 
      * should be in each spatial cube. We use a table so we don't need to 
      * multiple slower tests. A random number indexed into this array will 
@@ -77,7 +77,7 @@ public class CellNoiseImpl {
         2, 4, 4, 5, 3, 2, 2, 2, 1, 4, 2, 3, 3, 4, 2, 5, 4, 2, 4, 2, 2, 2, 4,
         5, 3, 2};
 
-    /*
+    /**
      * This constant is manipulated to make sure that the mean value of 
      * F[0] is 1.0. This makes an easy natural 'scale' size of the cellular 
      * features.
@@ -86,13 +86,13 @@ public class CellNoiseImpl {
      */
     private double DENSITY_ADJUSTMENT, DENSITY_ADJUSTMENT_INV;
 
-    /* This is the largest number possible to represent with a 32 bit 
+    /** This is the largest number possible to represent with a 32 bit 
      * unsigned integer. It's used in the overflow control function u32 
      * below.
      */
     private final long b32;
 
-    /*
+    /**
      * Distance measure type constants
      */
     public static final int EUCLIDEAN = 1;
@@ -100,7 +100,7 @@ public class CellNoiseImpl {
     public static final int MANHATTAN = 3;
     public static final int QUADRATIC = 4;
     
-    /*
+    /**
      * Constructor.
      */
     public CellNoiseImpl() {
@@ -111,7 +111,7 @@ public class CellNoiseImpl {
 
     public void noise(CellDataStruct cd) {
         if (cd.dim == 3) {
-            /*
+            /**
              * Adjustment variable to make F[0] average at 1.0 when using 
              * EUCLIDEAN distance in 3D.
              */
@@ -119,7 +119,7 @@ public class CellNoiseImpl {
             DENSITY_ADJUSTMENT_INV = 1.0 / DENSITY_ADJUSTMENT;
             noise3D(cd);
         } else if (cd.dim == 2) {
-            /*
+            /**
              * Adjustment variable to make F[0] average at 1.0 when using 
              * EUCLIDEAN distance in 2D.
              */
@@ -129,7 +129,7 @@ public class CellNoiseImpl {
         }
     }
 
-    /*
+    /**
      * Noise function for three dimensions. Coordinating the search on the 
      * above cube level. Deciding in which cubes to search.
      */
@@ -152,13 +152,13 @@ public class CellNoiseImpl {
         int_at[1] = (int) Math.floor(new_at[1]);
         int_at[2] = (int) Math.floor(new_at[2]);
 
-        /*
+        /**
          * The center cube. It's very likely that the closest feature 
          * point will be found in this cube.
          */
         AddSamples(int_at[0], int_at[1], int_at[2], new_at, cd);
 
-        /*
+        /**
          * We test if the cubes are even possible contributors by examining 
          * the combinations of the sum of the squared distances from the 
          * cube's lower or upper corners.
@@ -173,7 +173,7 @@ public class CellNoiseImpl {
         y2 *= y2;
         z2 *= z2;
 
-        /*
+        /**
          * The 6 facing neighbours of center cube. These are the closest 
          * and most likely to have a close feature point.
          */
@@ -196,7 +196,7 @@ public class CellNoiseImpl {
             AddSamples(int_at[0], int_at[1], int_at[2] + 1, new_at, cd);
         }
 
-        /*
+        /**
          * The 12 edge cubes. These are next closest.
          */
         if (x2 + y2 < cd.F[cd.max_order - 1]) {
@@ -236,7 +236,7 @@ public class CellNoiseImpl {
             AddSamples(int_at[0], int_at[1] + 1, int_at[2] - 1, new_at, cd);
         }
 
-        /*
+        /**
          * The 8 corner cubes. 
          */
         if (x2 + y2 + z2 < cd.F[cd.max_order - 1]) {
@@ -272,7 +272,7 @@ public class CellNoiseImpl {
         }
     }
 
-    /*
+    /**
      * Noise function for two dimensions. Coordinating the search on the 
      * above square level. Deciding in which squares to search.
      */
@@ -293,13 +293,13 @@ public class CellNoiseImpl {
         int_at[0] = (int) Math.floor(new_at[0]);
         int_at[1] = (int) Math.floor(new_at[1]);
 
-        /*
+        /**
          * The center cube. It's very likely that the closest feature 
          * point will be found in this cube.
          */
         AddSamples(int_at[0], int_at[1], new_at, cd);
 
-        /*
+        /**
          * We test if the cubes are even possible contributors by examining 
          * the combinations of the sum of the squared distances from the 
          * cube's lower or upper corners.
@@ -311,7 +311,7 @@ public class CellNoiseImpl {
         x2 *= x2;
         y2 *= y2;
 
-        /*
+        /**
          * The 4 facing neighbours of center square. These are the closest 
          * and most likely to have a close feature point.
          */
@@ -328,7 +328,7 @@ public class CellNoiseImpl {
             AddSamples(int_at[0], int_at[1] + 1, new_at, cd);
         }
 
-        /*
+        /**
          * The 4 edge squares. These are next closest.
          */
         if (x2 + y2 < cd.F[cd.max_order - 1]) {
@@ -351,7 +351,7 @@ public class CellNoiseImpl {
         }
     }
 
-    /*
+    /**
      * Generating the sample points in the grid
      * 3D
      */
@@ -360,7 +360,7 @@ public class CellNoiseImpl {
         int count, i, j, index;
         long seed, this_id;
 
-        /*
+        /**
          * Generating a random seed, based on the cube's ID number. The seed might be 
          * better if it were a nonlinear hash like Perlin uses for noise, but we do very 
          * well with this faster simple one.
@@ -368,17 +368,17 @@ public class CellNoiseImpl {
          */
         seed = u32(u32(702395077 * xi) + u32(915488749 * yi) + u32(2120969693 * zi));
 
-        /* Number of feature points in this cube. */
+        /** Number of feature points in this cube. */
         count = Poisson_count[(int) (0xFF & (seed >> 24))];
 
-        /* Churn the seed with good Knuth LCG. */
+        /** Churn the seed with good Knuth LCG. */
         seed = u32(1402024253 * seed + 586950981);
 
         for (j = 0; j < count; j++) {
             this_id = seed;
             seed = u32(1402024253 * seed + 586950981);
 
-            /* Compute the 0..1 feature point location's xyz. */
+            /** Compute the 0..1 feature point location's xyz. */
             fx = (seed + 0.5) / 4294967296.0;
             seed = u32(1402024253 * seed + 586950981);
             fy = (seed + 0.5) / 4294967296.0;
@@ -386,12 +386,12 @@ public class CellNoiseImpl {
             fz = (seed + 0.5) / 4294967296.0;
             seed = u32(1402024253 * seed + 586950981);
 
-            /* Delta from feature point to sample location. */
+            /** Delta from feature point to sample location. */
             dx = xi + fx - at[0];
             dy = yi + fy - at[1];
             dz = zi + fz - at[2];
 
-            /*
+            /**
              * Distance computation
              */
             if (cd.dist_type == CITYBLOCK) {
@@ -408,7 +408,7 @@ public class CellNoiseImpl {
                 d2 = dx * dx + dy * dy + dz * dz;
             }
 
-            /* Store points that are close enough to remember. */
+            /** Store points that are close enough to remember. */
             if (d2 < cd.F[cd.max_order - 1]) {
                 index = cd.max_order;
                 while (index > 0 && d2 < cd.F[index - 1]) {
@@ -430,7 +430,7 @@ public class CellNoiseImpl {
         }
     }
 
-    /*
+    /**
      * Generating the sample points in the grid
      * 2D
      */
@@ -439,7 +439,7 @@ public class CellNoiseImpl {
         int count, i, j, index;
         long seed, this_id;
 
-        /*
+        /**
          * Generating a random seed, based on the cube's ID number. The seed might be 
          * better if it were a nonlinear hash like Perlin uses for noise, but we do very 
          * well with this faster simple one.
@@ -447,13 +447,13 @@ public class CellNoiseImpl {
          */
         seed = u32(u32(702395077 * xi) + u32(915488749 * yi));
 
-        /* Number of feature points in this cube. */
+        /** Number of feature points in this cube. */
         count = Poisson_count[(int) (0xFF & (seed >> 24))];
 
-        /* Churn the seed with good Knuth LCG. */
+        /** Churn the seed with good Knuth LCG. */
         seed = u32(1402024253 * seed + 586950981);
 
-        /* Compute the 0..1 feature point location's xyz. */
+        /** Compute the 0..1 feature point location's xyz. */
         for (j = 0; j < count; j++) {
             this_id = seed;
             seed = u32(1402024253 * seed + 586950981);
@@ -463,11 +463,11 @@ public class CellNoiseImpl {
             fy = (seed + 0.5) / 4294967296.0;
             seed = u32(1402024253 * seed + 586950981);
 
-            /* Delta from feature point to sample location. */
+            /** Delta from feature point to sample location. */
             dx = xi + fx - at[0];
             dy = yi + fy - at[1];
 
-            /*
+            /**
              * Calculate distance.
              */
             if (cd.dist_type == CITYBLOCK) {
@@ -484,7 +484,7 @@ public class CellNoiseImpl {
                 d2 = dx * dx + dy * dy;
             }
 
-            /* Store points that are close enough to remember. */
+            /** Store points that are close enough to remember. */
             if (d2 < cd.F[cd.max_order - 1]) {
                 index = cd.max_order;
                 while (index > 0 && d2 < cd.F[index - 1]) {
@@ -504,7 +504,7 @@ public class CellNoiseImpl {
         }
     }
 
-    /*
+    /**
      * This function implements the unsigned 32 bit integer overflow 
      * used in the original C++ code. The integer is represented by 
      * a 64 bit signed integer in Java since Java doesn't implement 

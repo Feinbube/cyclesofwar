@@ -5,7 +5,7 @@ import java.awt.Color;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * For each planet, this bot waits until he has 30 forces. Then he keeps 10. 
  * Sends 10 to its nearest hostile neighbor. And distributes 5 to each of it's two closest allies.
  */

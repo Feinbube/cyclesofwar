@@ -2,7 +2,7 @@ package cyclesofwar;
 
 import java.util.Comparator;
 
-/*
+/**
  * the only way to actively interact with the universe is sending fleets from planets you own to other planets
  * 
  * every fleet has a position in the 2-dimensional universe. (position can be acquired using getX() and getY())
@@ -17,7 +17,7 @@ import java.util.Comparator;
  */
 public class Fleet extends GameObject implements Comparable<Fleet> {
     
-	/*
+	/**
 	 * chose a formation to make your fleet look unique just for rendering. does
 	 * not affect game logic at all
 	 */
@@ -65,14 +65,14 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 		return force;
 	}
 
-	/*
+	/**
 	 * get the planet this fleet is traveling to
 	 */
 	public Planet getTarget() {
 		return target;
 	}
 
-	/*
+	/**
 	 * gets the strength of the fleet
 	 */
 	public int getForce() {
@@ -107,7 +107,7 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 		this.target.land(this);
 	}
 
-	/*
+	/**
 	 * Deprecated. use getDistanceToTarget()
 	 */
 	@Deprecated
@@ -115,14 +115,14 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 		return getDistanceToTarget();
 	}
 
-	/*
+	/**
 	 * current distance of the fleet to the target planet
 	 */
 	public double getDistanceToTarget() {
 		return distanceToTarget;
 	}
 
-	/*
+	/**
 	 * Deprecated. use getTimeToTarget() instead
 	 */
 	@Deprecated
@@ -130,28 +130,28 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 		return getTimeToTarget();
 	}
 
-	/*
+	/**
 	 * time till the fleet arrives at the target planet in seconds
 	 */
 	public double getTimeToTarget() {
 		return timeToTarget;
 	}
 
-	/*
+	/**
 	 * rounds till the fleet arrives at the target planet in seconds
 	 */
 	public int getRoundsToTarget() {
 		return (int) (getTimeToTarget() * Universe.getRoundsPerSecond());
 	}
 
-	/*
+	/**
 	 * speed of the fleet in distance per second
 	 */
 	public static double getFlightSpeed() {
 		return Universe.getFlightSpeed();
 	}
 
-	/*
+	/**
 	 * chose a formation to make your fleet look unique just for rendering. does
 	 * not affect game logic at all
 	 */
@@ -159,7 +159,7 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 		return this.formation;
 	}
 
-	/*
+	/**
 	 * chose a formation to make your fleet look unique just for rendering. does
 	 * not affect game logic at all
 	 */
@@ -167,7 +167,7 @@ public class Fleet extends GameObject implements Comparable<Fleet> {
 		this.formation = formation;
 	}
 
-	/*
+	/**
 	 * used to sort fleets by arrival time. (ascending)
 	 * 
 	 * use Fleet.sortBy(fleets, ArrivalTimeComparator)

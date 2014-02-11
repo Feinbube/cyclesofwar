@@ -5,7 +5,7 @@ import java.awt.Color;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * For each planet, this bot waits until it can effort to send one fleet to each other planet.
  * Then it sends them :)
  */

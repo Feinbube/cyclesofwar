@@ -8,7 +8,7 @@ import java.util.List;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  */
 public class B10_Front extends Player {
 

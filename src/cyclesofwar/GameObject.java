@@ -18,14 +18,14 @@ public abstract class GameObject extends Sortable {
 		this.y = y;
 	}
 
-	/*
+	/**
 	 * gets the owner
 	 */
 	public Player getPlayer() {
 		return player;
 	}
 
-	/*
+	/**
 	 * horizontal coordinate in the 2-dimensional universe (0 means left,
 	 * sqrt(numberOfPlayers) means right)
 	 */
@@ -33,7 +33,7 @@ public abstract class GameObject extends Sortable {
 		return x;
 	}
 
-	/*
+	/**
 	 * vertical coordinate in the 2-dimensional universe (0 means top,
 	 * sqrt(numberOfPlayers) means bottom)
 	 */

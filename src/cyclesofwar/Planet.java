@@ -2,7 +2,7 @@ package cyclesofwar;
 
 import java.util.*;
 
-/*
+/**
  * the game is all about planets. get as much as you can ;)
  * 
  * every planet has a position in the 2-dimensional universe. (position can be acquired using getX() and getY())
@@ -25,7 +25,7 @@ public class Planet extends GameObject {
 
     private double lastTimeOwnershipChanged;
 
-    /*
+    /**
      * gets the unique id of a planet
      */
     public int getId() {
@@ -36,7 +36,7 @@ public class Planet extends GameObject {
         this.player = player;
     }
 
-    /*
+    /**
      * gets the forces currently residing on the planet
      */
     public double getForces() {
@@ -47,14 +47,14 @@ public class Planet extends GameObject {
         }
     }
 
-    /*
+    /**
      * gets the amount of forces that are added to the planet by second
      */
     public double getProductionRatePerSecond() {
         return productionRatePerSecond;
     }
 
-    /*
+    /**
      * gets the amount of forces that are added to the planet by round
      */
     public double getProductionRatePerRound() {
@@ -69,7 +69,7 @@ public class Planet extends GameObject {
     	return this.getActualProductionPerSecond() * Universe.getRoundDuration();
     }
 
-    /*
+    /**
      * gets the latest point in time when the ownership of that planet was changed
      */
     public double getLastTimeOwnershipChanged() {
@@ -129,7 +129,7 @@ public class Planet extends GameObject {
         }
     }
 
-    /*
+    /**
      * Deprecated. use getDistanceTo instead
      */
     @Deprecated
@@ -137,14 +137,14 @@ public class Planet extends GameObject {
         return getDistanceTo(other);
     }
 
-    /*
+    /**
      * distance from this planet to the other planet
      */
     public double getDistanceTo(Planet other) {
         return distances[other.getId()];
     }
 
-    /*
+    /**
      * Deprecated. use getTimeTo instead
      */
     @Deprecated
@@ -152,21 +152,21 @@ public class Planet extends GameObject {
         return getTimeTo(other);
     }
 
-    /*
+    /**
      * time needed to go from this planet to the other planet in seconds
      */
     public double getTimeTo(Planet other) {
         return times[other.getId()];                
     }
 
-    /*
+    /**
      * rounds needed to get from this planet to the other planet
      */
     public int getRoundsTo(Planet other) {
         return (int) Math.ceil(getTimeTo(other) * Universe.getRoundsPerSecond());
     }
 
-    /*
+    /**
      * all other planets in the universe (ascending)
      */
     public List<Planet> getOthers() {
@@ -177,7 +177,7 @@ public class Planet extends GameObject {
 
     private List<Planet> getOthersByDistanceCache;
 
-    /*
+    /**
      * all other planets ordered by distance (ascending)
      */
     public List<Planet> getOthersByDistance() {
@@ -188,7 +188,7 @@ public class Planet extends GameObject {
         return new ArrayList<>(getOthersByDistanceCache);
     }
 
-    /*
+    /**
      * sort others by distance to planet (ascending) for performance reasons it
      * is recommended to use filter(planet.getOthersByDistance())
      */
@@ -201,7 +201,7 @@ public class Planet extends GameObject {
         });
     }
 
-    /*
+    /**
      * sort others by distance to this planet (ascending)
      */
     public void sortOthersByDistance(List<Planet> others) {
@@ -210,7 +210,7 @@ public class Planet extends GameObject {
         others.addAll(newOthers);
     }
     
-    /*
+    /**
      * used to sort planets by force count (descending)
      * 
      * use Planet.sortBy(planets, ForceCountComparator)
@@ -223,7 +223,7 @@ public class Planet extends GameObject {
         }
     };
     
-    /*
+    /**
      * used to sort planets by production rate (descending)
      * 
      * use Planet.sortBy(planets, ProductivityComparator)
@@ -236,7 +236,7 @@ public class Planet extends GameObject {
         }
     };
     
-    /*
+    /**
      * used to sort planets by the most recent time the ownership has changed (descending)
      * 
      * use Planet.sortBy(planets, OwnershipChangeTimeComparator)
@@ -249,7 +249,7 @@ public class Planet extends GameObject {
         }
     };
 
-    /*
+    /**
      * returns true if the planet is not owned by no player
      */
     public boolean isFree() {

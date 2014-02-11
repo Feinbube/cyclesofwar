@@ -5,7 +5,7 @@ import java.awt.Color;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * For each planet, this bot attacks with it's full force if it has at least 31 forces there.
  * If the planet is going to be attacked in the next round, it 'flees' with all the forces it's got.
  * The weird thing is, that it always flees towards the closest hostile planet. 

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Sortable {
 
-    /*
+    /**
      * sorts a list using a comparator
      * e.g.: Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
      */
@@ -15,7 +15,7 @@ public class Sortable {
         Collections.sort(list, comparator);
     }
 
-    /*
+    /**
      * returns the minimum of a list using a comparator
      * e.g.: Fleet.min(Fleet.ArrivalTimeComparator, fleets);
      */
@@ -23,7 +23,7 @@ public class Sortable {
         return Collections.min(list, comparator);
     }
 
-    /*
+    /**
      * returns the maximum of a list using a comparator
      * e.g.: Fleet.max(Fleet.ArrivalTimeComparator, fleets);
      */
@@ -31,7 +31,7 @@ public class Sortable {
         return Collections.max(list, comparator);
     }
 
-    /*
+    /**
      * returns a new list with items sorted according to the comparator
      * e.g.: List<Fleet> sortedFleets = Fleet.sortedBy(Fleet.ArrivalTimeComparator, fleets);
      */

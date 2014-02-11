@@ -6,7 +6,7 @@ import java.util.List;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * This bot is winding itself through the galaxy like a worm.
  * The head decides for new targets and the tails is just following the rest of the body. 
  */

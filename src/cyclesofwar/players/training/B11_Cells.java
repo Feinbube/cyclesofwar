@@ -5,7 +5,7 @@ import java.awt.Color;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * This bot waits until all it's planets have enough forces. Then they all attack simultaneously.
  * Each of them attack it's the hostile planet closest to them.
  */

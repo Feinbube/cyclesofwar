@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/*
+/**
  * the player is the shaper of the universe. he has a number of planets and can send fleets to conquer even more of them
  * 
  * a player starts with a single planet
@@ -30,13 +30,13 @@ import java.util.List;
  */
 public abstract class Player extends Sortable implements Comparable<Player> {
 
-	/*
+	/**
 	 * this player means "no player". it is the Null-Object that is assigned to
 	 * empty planets
 	 */
 	public static Player NonePlayer = new NonePlayer();
         
-        /*
+        /**
         * this player is used for a real human who wants to play the game's interactive mode
         */
         public static Player GoldenPlayer = new GoldenPlayer();
@@ -47,29 +47,29 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		this.universe = universe;
 	}
 
-	/*
+	/**
 	 * think and act. check your planets. check the forces of other players.
 	 * send forces to win the game :)
 	 */
 	protected abstract void think();
 
-	/*
+	/**
 	 * the unique back color used by this player class
 	 */
 	public abstract Color getPlayerBackColor();
 
-	/*
+	/**
 	 * the unique fore color used by this player class
 	 */
 	public abstract Color getPlayerForeColor();
 
-	/*
+	/**
 	 * the name of the creator / programmer of this player class
 	 */
 	public abstract String getCreatorsName();
 
         private String name = null;
-	/*
+	/**
 	 * the unique name of this player class
 	 */
 	public String getName() {
@@ -82,7 +82,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
             return name;
 	}
 
-	/*
+	/**
 	 * get a new instance of this player class
 	 */
 	public Player freshOne() {
@@ -109,14 +109,14 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 
 	// Universe
 
-	/*
+	/**
 	 * returns the virtual elapsed time in seconds
 	 */
 	public double now() {
 		return universe.getNow();
 	}
 
-	/*
+	/**
 	 * Deprecated. use getRoundDuration() instead.
 	 */
 	@Deprecated
@@ -124,7 +124,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return getRoundDuration();
 	}
 
-	/*
+	/**
 	 * returns the duration of every round in seconds
 	 */
 	public double getRoundDuration() {
@@ -133,7 +133,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 
 	// Players
 
-	/*
+	/**
 	 * returns a list of all other players in the universe (including extinct
 	 * ones)
 	 */
@@ -143,7 +143,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return result;
 	}
 
-	/*
+	/**
 	 * returns a list of all other players in the universe (not including
 	 * extinct ones)
 	 */
@@ -160,35 +160,35 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 
 	// Planets
 
-	/*
+	/**
 	 * returns a list of all planets in the universe
 	 */
 	public List<Planet> getAllPlanets() {
 		return universe.getAllPlanets();
 	}
 
-	/*
+	/**
 	 * returns all planets of this player
 	 */
 	public List<Planet> getPlanets() {
 		return mineOnly(getAllPlanets());
 	}
 
-	/*
+	/**
 	 * returns all planets owned by player
 	 */
 	public List<Planet> getPlanetsOf(Player player) {
 		return filter(getAllPlanets(), player);
 	}
 
-	/*
+	/**
 	 * return true if this is the owner of planet
 	 */
 	public boolean isMyPlanet(Planet planet) {
 		return planet.getPlayer().equals(this);
 	}
 
-	/*
+	/**
 	 * returns all planets not owned by this player
 	 */
 	public List<Planet> getAllPlanetsButMine() {
@@ -197,42 +197,42 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 
 	// Fleets
 
-	/*
+	/**
 	 * returns a list of all fleets in the universe
 	 */
 	public List<Fleet> getAllFleets() {
 		return universe.getAllFleets();
 	}
 
-	/*
+	/**
 	 * return all fleets of this player
 	 */
 	public List<Fleet> getFleets() {
 		return mineOnly(getAllFleets());
 	}
 
-	/*
+	/**
 	 * returns all fleets owned by player
 	 */
 	public List<Fleet> getFleetsOf(Player player) {
 		return filter(getAllFleets(), player);
 	}
 
-	/*
+	/**
 	 * return true if this is the owner of fleet
 	 */
 	public boolean isMyFleet(Fleet fleet) {
 		return fleet.getPlayer().equals(this);
 	}
 
-	/*
+	/**
 	 * returns all fleets not owned by this player
 	 */
 	public List<Fleet> getAllEnemyFleets() {
 		return hostileOnly(getAllFleets(), this);
 	}
 
-	/*
+	/**
 	 * returns all fleets targeting the specified planet
 	 */
 	public List<Fleet> getFleetsWithTarget(Planet target) {
@@ -245,7 +245,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return result;
 	}
 
-	/*
+	/**
 	 * starts a fleet with size 'force' and the specified target planet from
 	 * planet
 	 * 
@@ -256,7 +256,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return universe.sendFleet(planet, force, target);
 	}
 
-	/*
+	/**
 	 * starts a fleet with size 'force' and the specified target planet from
 	 * planet if force is less than one or larger than forces on planet no fleet
 	 * will be sent
@@ -269,7 +269,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 
 	// random
 
-	/*
+	/**
 	 * returns a random double 0.0 to 1.0 (the normal random function) use this
 	 * to make sure that games can be replayed
 	 */
@@ -277,7 +277,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return universe.getRandomDouble();
 	}
 
-	/*
+	/**
 	 * returns a random int 0 to max-1 (the normal random function) use this to
 	 * make sure that games can be replayed
 	 */
@@ -285,7 +285,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return universe.getRandomInt(max);
 	}
         
-        /*
+        /**
          * shuffles a list
          */
         public <T> void shuffle(List<T> list){
@@ -294,7 +294,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 
         // checking functions
         
-        /*
+        /**
 	 * returns true if a planet/fleet in list that shallBelongTo: belong to player
 	 * !shallBelongTo: do not belong to player
 	 */
@@ -307,7 +307,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
             return false;
 	}
         
-        /*
+        /**
 	 * return true if at least one planet/fleet in list that does not belong to this player
 	 */
 	public <T extends GameObject> boolean containsHostileItem(List<T> list) {
@@ -316,7 +316,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
         
 	// filter functions
         
-	/*
+	/**
 	 * returns all planets/fleets in list that shallBelongTo: belong to player
 	 * !shallBelongTo: do not belong to player
 	 */
@@ -330,56 +330,56 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return result;
 	}
 
-	/*
+	/**
 	 * returns all planets/fleets in list that belong to player
 	 */
 	public static <T extends GameObject> List<T> filter(List<T> list, Player player) {
 		return filter(list, player, true);
 	}
 
-	/*
+	/**
 	 * returns all planets/fleets in list that belong to this player
 	 */
 	public <T extends GameObject> List<T> mineOnly(List<T> list) {
 		return filter(list, this, true);
 	}
 
-	/*
+	/**
 	 * returns all planets/fleets in list that do not belong to player
 	 */
 	public static <T extends GameObject> List<T> hostileOnly(List<T> list, Player player) {
 		return filter(list, player, false);
 	}
 
-	/*
+	/**
 	 * returns all planets/fleets in list that do not belong to this player
 	 */
 	public <T extends GameObject> List<T> hostileOnly(List<T> list) {
 		return filter(list, this, false);
 	}
 
-	/*
+	/**
 	 * returns all planets/fleets in list that do not belong to any player
 	 */
 	public <T extends GameObject> List<T> freeOnly(List<T> list) {
 		return filter(list, Player.NonePlayer, true);
 	}
 	
-	/*
+	/**
 	 * returns the first element of list or null if list is empty
 	 */
 	public static <T> T firstOrNull(List<T> list) {
 		return atIndexOrNull(list, 0);
 	}
         
-        /*
+        /**
 	 * returns the last element of list or null if list is empty
 	 */
 	public static <T> T lastOrNull(List<T> list) {
 		return atIndexOrNull(list, list.size()-1);
 	}
 	
-	/*
+	/**
 	 * returns a random element of list or null if list is empty
 	 */
 	public <T> T randomOrNull(List<T> list) {
@@ -388,7 +388,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return list.get(universe.getRandomInt(list.size()));
 	}
 
-	/*
+	/**
 	 * returns the first element of list or null if list does not have so many
 	 * elements
 	 */
@@ -400,7 +400,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		}
 	}
 
-	/*
+	/**
 	 * returns a new list that contains all elements that are in both lists
 	 */
 	public static <T> List<T> inBothLists(List<T> list1, List<T> list2) {
@@ -413,7 +413,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return result;
 	}
 	
-	/*
+	/**
 	 * returns a list containing up to the specified number of elements of list, starting from the first one
 	 */
 	public static <T> List<T> firstElements(List<T> list, int numberOfElements) {
@@ -424,7 +424,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return result;
 	}
 
-	/*
+	/**
 	 * get the total amount of ground forces of this player (troops on all
 	 * planets)
 	 */
@@ -436,7 +436,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return result;
 	}
 
-	/*
+	/**
 	 * get the total amount of ground forces of this player (troops on all
 	 * fleets)
 	 */
@@ -448,7 +448,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return result;
 	}
 
-	/*
+	/**
 	 * get the total amount of ground forces of this player (troops on all
 	 * planets + troops on all fleets)
 	 */
@@ -456,7 +456,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		return getGroundForce() + getSpaceForce();
 	}
 
-	/*
+	/**
 	 * Deprecated. use Planet.sortBy(Planet.ForceCountComparator, planets) instead
 	 */
 	@Deprecated
@@ -464,14 +464,14 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 		Planet.sortBy(Planet.ForceCountComparator, planets);
 	}
 
-	/*
+	/**
 	 * returns true if the player has fleets or planets left
 	 */
 	public boolean isAlive() {
 		return !this.getFleets().isEmpty() || !this.getPlanets().isEmpty();
 	}
         
-	/*
+	/**
 	 * get a prediction of the state of the planet at the given time
 	 * given no new fleet is created 
 	 */
@@ -479,14 +479,14 @@ public abstract class Player extends Sortable implements Comparable<Player> {
             return universe.getPrediction(planet, time);
 	}
         
-        /*
+        /**
 	 * get an advise how to keep a planet till the point in time
 	 */
 	public Advise getAdvise(Planet planet, double time){
 		return this.getAdvise(planet, 0.0, time);
 	}
         
-        /*
+        /**
 	 * get an advise how to keep a planet till the point in time (endTime)
          * given it has been acquired before (at startTime)
 	 */
@@ -494,7 +494,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
             return universe.getAdvise(planet, startTime, endTime);
 	}
 
-	/*
+	/**
 	 * returns the time of the when the last existing fleet (by anyone) lands on its target
 	 * given no new fleet is created  
 	 */
@@ -502,7 +502,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
             return universe.getlastFleetArrivalTime();
 	}
         
-        /*
+        /**
          * used to sort players by planet count (descending)
          * 
          * use Player.sortBy(PlanetCountComparator, players, )
@@ -516,7 +516,7 @@ public abstract class Player extends Sortable implements Comparable<Player> {
         };
         
         
-        /*
+        /**
          * used to sort players by force count (descending)
          * 
          * use Player.sortBy(ForceCountComparator, players, )

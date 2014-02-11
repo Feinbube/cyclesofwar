@@ -1,7 +1,7 @@
 package cyclesofwar;
 import java.awt.Color;
 
-/*
+/**
  * this player is used for a real human who wants to play the game's interactive mode
  */
 public class GoldenPlayer extends Player {
