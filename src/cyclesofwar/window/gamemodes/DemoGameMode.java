@@ -38,8 +38,8 @@ public class DemoGameMode extends GameMode {
     public DemoGameMode(GamePanel gamePanel) {
         super(gamePanel);
         
-        oneOnOneTournament = new TournamentBook(Arena.champions(), Arena.planetsPerPlayer, Arena.universeSizeFactor, 200);
-        lastManStandingTournament = new TournamentBook(Arena.champions(), Arena.planetsPerPlayer, Arena.universeSizeFactor, 200);        
+        oneOnOneTournament = new TournamentBook(Arena.champions(), 200);
+        lastManStandingTournament = new TournamentBook(Arena.champions(), 200);        
     }
 
     @Override
@@ -73,7 +73,7 @@ public class DemoGameMode extends GameMode {
         if (timecounter++ > titleBlendingTime) {
             timecounter = 0;
             this.state = state;
-            universe = new Universe(random.nextLong(), champions, Arena.planetsPerPlayer, Arena.universeSizeFactor);
+            universe = new Universe(random.nextLong(), champions, getSelectedNumberOfPlanetsPerPlayer(), getSelectedUniverseSizeFactor());
         }
     }
     

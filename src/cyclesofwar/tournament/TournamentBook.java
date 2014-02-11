@@ -12,28 +12,22 @@ public class TournamentBook {
     List<Universe> gamesPlayed = new ArrayList<>();
 
     List<TournamentRecord> records = new ArrayList<>();
-
-    int planetsPerPlayer;
-    double universeSizeFactor;
     int maxRecords;
 
-    public TournamentBook(List<Player> champions, int planetsPerPlayer, double universeSizeFactor, int maxRecords) {
-        this.champions = champions;
-
-        this.planetsPerPlayer = planetsPerPlayer;
-        this.universeSizeFactor = universeSizeFactor;
+    public TournamentBook(List<Player> champions, int maxRecords) {
+        this.champions = champions;        
         this.maxRecords = maxRecords;
     }
-
-    public TournamentBook(List<Player> champions, int planetsPerPlayer, double universeSizeFactor) {
-        this(champions, planetsPerPlayer, universeSizeFactor, Integer.MAX_VALUE);
+    
+    public TournamentBook(List<Player> champions) {
+        this(champions, Integer.MAX_VALUE);
     }
 
     public TournamentBook lightWeightClone() {
         return this;
     }
 
-	// getters
+    // getters
     public List<Player> getChampions() {
         return champions;
     }
@@ -66,7 +60,7 @@ public class TournamentBook {
         }
     }
 
-	// Rankings
+    // Rankings
     public List<Player> rankedPlayers() {
         List<Player> result = new ArrayList<>();
 

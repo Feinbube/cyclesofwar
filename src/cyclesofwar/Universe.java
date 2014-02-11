@@ -5,8 +5,8 @@ import java.util.*;
 public class Universe {
 
     private static final double speedOfLight = 0.05;
-    int planetCountPerPlayer = 10;
-    double universeSizeFactor = 1.0;
+    private final int planetCountPerPlayer;
+    private final double universeSizeFactor;
 
     private final List<Planet> planets = new ArrayList<>();
     private final List<Fleet> fleets = new ArrayList<>();
@@ -38,6 +38,9 @@ public class Universe {
         now = 0;
         currentRound = 0;
         nothingHappenedCounter = 0;
+        
+        this.universeSizeFactor = universeSizeFactor;
+        this.planetCountPerPlayer = planetCountPerPlayer;
 
         size = Math.sqrt(combatants.size()) * universeSizeFactor;
 
@@ -348,5 +351,13 @@ public class Universe {
         }
         
         return null;
+    }
+
+    public int getPlanetsPerPlayer() {
+        return planetCountPerPlayer;
+    }
+
+    public double getSizeFactor() {
+        return universeSizeFactor;
     }
 }
