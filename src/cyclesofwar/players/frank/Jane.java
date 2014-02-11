@@ -20,7 +20,7 @@ public class Jane extends Player {
                 continue;
             }
             
-            double overproduction = planet.getForces() - this.getAdvise(planet, this.getlastFleetArrivalTime()).getForcesToKeep();
+            double overproduction = planet.getForces() - new Advise(this, planet, this.getlastFleetArrivalTime()).getForcesToKeep();
 
             for (Planet other : planet.getOthersByDistance()) {
 
@@ -28,7 +28,7 @@ public class Jane extends Player {
                     break;
                 }
 
-                double attackBalance = this.getPrediction(other, planet.getTimeTo(other)).getBalance();
+                double attackBalance = new Prediction(this, other, planet.getTimeTo(other)).getBalance();
 
                 if (-attackBalance > overproduction) {
                     break;
