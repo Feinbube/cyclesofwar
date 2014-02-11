@@ -6,7 +6,7 @@ import cyclesofwar.Fleet;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * This bot waits for you to attack it. If you try to attack it, though, it's going to run from you. 
  * Chase it down ;)
  */

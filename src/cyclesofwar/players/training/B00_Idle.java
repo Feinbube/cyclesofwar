@@ -3,7 +3,7 @@ import java.awt.Color;
 
 import cyclesofwar.Player;
 
-/*
+/**
  * This bot does nothing at all. 
  * Easy prey ;)
  */

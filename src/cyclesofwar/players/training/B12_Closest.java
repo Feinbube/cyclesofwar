@@ -5,7 +5,7 @@ import java.awt.Color;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * Each planet of this bot that has more than 20 forces will attack the closest hostile planet.
  */
 public class B12_Closest extends Player {

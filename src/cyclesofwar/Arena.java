@@ -13,42 +13,42 @@ import cyclesofwar.players.andreasg.*;
 import cyclesofwar.players.training.*;
 import de.loewis.*;
 
-/*
+/**
  * here new players are registered and tournaments are configured
  */
 public class Arena {
   
-  /*
+  /**
    * seed for the random generators
    */
   public static final long tournamentSeed = 3141592;
   
-  /*
+  /**
    * the number of matches per round for the daily last-man-standing tournament
    */
   public static final int matchesInLastManStandingTournamentPerRound = 100;
   
-  /*
+  /**
    * the number of matches per player for the daily one-on-one tournament
    */
   public static final int matchesInOneOnOneTournamentPerPlayer = 100;
   
-  /*
+  /**
    * the number of matches per player for the daily one-on-one tournament
    */
   public static final int matchesInTrainingPerPlayer = 100;
   
-  /*
+  /**
    * the number of planets per player for the daily tournaments
    */
   public static final int planetsPerPlayer = 10;
   
-  /*
+  /**
    * the universe size factor for the daily tournaments
    */
   public static final double universeSizeFactor = 1.0;
   
-  /*
+  /**
    * please register your champion here for the daily tournament
    */
   public static List<Player> champions(){
@@ -65,7 +65,7 @@ public class Arena {
     return result;
   }
   
-  /*
+  /**
    * this list contains all known players. please register yours as well 
    */
   public static List<Player> registeredPlayers(){

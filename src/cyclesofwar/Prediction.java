@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/*
+/**
  *  This is a prediction of the state of a planet at the given time, given no new fleet is created.
  *  
  *  It takes into account all existing fleets and simulates what happens to the planet, when they arrive.
@@ -21,28 +21,28 @@ public class Prediction extends GameObject {
 
     private double time;
 
-    /* 
+    /** 
      * the planet this prediction is foretelling
      */
     public Planet getPlanet() {
         return planet;
     }
 
-    /*
+    /**
      * the owner of the planet at the considered time (use getTime()) 
      */
     public Player getPlanetOwner() {
         return planetOwner;
     }
 
-    /*
+    /**
      * the forces of the planet at the considered time (use getTime())
      */
     public double getForces() {
         return forces;
     }
 
-    /*
+    /**
      * returns a positive value equal to the number of forces of the player 
      * if the planet belongs to the player at the considered time (use getTime()) 
      * 
@@ -58,14 +58,14 @@ public class Prediction extends GameObject {
         }
     }
 
-    /*
+    /**
      * get the latest point in when the ownership of the planet has changed
      */
     public double getLastTimeOwnershipChanged() {
         return lastTimeOwnershipChanged;
     }
 
-    /*
+    /**
      * the time for which this prediction is foretelling the state of the planet
      */
     public double getTime() {
@@ -141,7 +141,7 @@ public class Prediction extends GameObject {
         }
     }
 
-    /*
+    /**
      * sort predictions by distance to specified planet
      */
     public static void sortByDistanceTo(List<Prediction> predictions, final Planet planet) {

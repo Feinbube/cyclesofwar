@@ -1,7 +1,7 @@
 package cyclesofwar;
 import java.awt.Color;
 
-/*
+/**
  * this player means "no player". it is the Null-Object that is assigned to empty planets 
  */
 public class NonePlayer extends Player {

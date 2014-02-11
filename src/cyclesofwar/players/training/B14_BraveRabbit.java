@@ -5,7 +5,7 @@ import java.awt.Color;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * For each planet, this bot attacks with it's full force if it has at least 31 forces there.
  */
 public class B14_BraveRabbit extends Player {

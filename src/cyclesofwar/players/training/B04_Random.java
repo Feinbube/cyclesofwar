@@ -5,7 +5,7 @@ import java.awt.Color;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * For each of it's planets, this bot fires fleets of 10 to random other planets.
  */
 public class B04_Random extends Player {

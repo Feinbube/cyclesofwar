@@ -6,7 +6,7 @@ import java.util.List;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * This bot is very similar to the worm bot. It's winding through the galaxy as well,
  * but the tail planets also attack the target of the head instead of following the rest of the body.
  */

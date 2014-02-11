@@ -5,7 +5,7 @@ import java.awt.Color;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * Every time there this bot has no active fleet, each of it's planets shoot half their forces
  * onto a random planet. (All of the planets of this bot shoot at the same time.)
  */

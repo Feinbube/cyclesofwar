@@ -4,7 +4,7 @@ import java.awt.Color;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * For each planet this bot waits until it has a population of 64 . 
  * Then it sends fleets to the neighboring planets.
  * Fleet sizes are 32 for the closest planet. 16 for the second closest. 8 for the third one. And so on. 

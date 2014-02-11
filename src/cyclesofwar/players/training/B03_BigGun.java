@@ -7,7 +7,7 @@ import cyclesofwar.Fleet.Formation;
 import cyclesofwar.Planet;
 import cyclesofwar.Player;
 
-/*
+/**
  * The core idea of this bot is a home planet that acts like a huge canon that fires onto enemy planets.
  * All planets that are conquered this way send fleets to the home planet to increase it's firing frequency.
  */
