@@ -472,29 +472,6 @@ public abstract class Player extends Sortable implements Comparable<Player> {
 	}
         
 	/**
-	 * get a prediction of the state of the planet at the given time
-	 * given no new fleet is created 
-	 */
-	public Prediction getPrediction(Planet planet, double time){
-            return universe.getPrediction(planet, time);
-	}
-        
-        /**
-	 * get an advise how to keep a planet till the point in time
-	 */
-	public Advise getAdvise(Planet planet, double time){
-		return this.getAdvise(planet, 0.0, time);
-	}
-        
-        /**
-	 * get an advise how to keep a planet till the point in time (endTime)
-         * given it has been acquired before (at startTime)
-	 */
-	public Advise getAdvise(Planet planet, double startTime, double endTime){
-            return universe.getAdvise(planet, startTime, endTime);
-	}
-
-	/**
 	 * returns the time of the when the last existing fleet (by anyone) lands on its target
 	 * given no new fleet is created  
 	 */

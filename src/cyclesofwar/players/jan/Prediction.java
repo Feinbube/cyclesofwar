@@ -1,5 +1,9 @@
-package cyclesofwar;
+package cyclesofwar.players.jan;
 
+import cyclesofwar.Fleet;
+import cyclesofwar.Planet;
+import cyclesofwar.Player;
+import cyclesofwar.Universe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,8 +14,9 @@ import java.util.List;
  *  
  *  It takes into account all existing fleets and simulates what happens to the planet, when they arrive.
  */
-public class Prediction extends GameObject {
+public class Prediction {
 
+    private final Player player;
     private final Planet planet;
     private final double productionRate;
     
@@ -72,8 +77,8 @@ public class Prediction extends GameObject {
         return time;
     }
 
-    Prediction(Universe universe, Player player, Planet planet, double time) {
-        super(universe, player, planet.getX(), planet.getY());
+    Prediction(Player player, Planet planet, double time) {
+        this.player = player;
         this.planet = planet;
         this.productionRate = planet.getProductionRatePerRound();
 
@@ -86,7 +91,6 @@ public class Prediction extends GameObject {
         this.time = 0.0;
     }
 
-    @Override
     protected void update(double elapsedSeconds) {
         reset();
 

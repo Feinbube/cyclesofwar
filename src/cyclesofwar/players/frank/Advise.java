@@ -1,4 +1,9 @@
-package cyclesofwar;
+package cyclesofwar.players.frank;
+
+import cyclesofwar.Fleet;
+import cyclesofwar.Planet;
+import cyclesofwar.Player;
+import cyclesofwar.Universe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +13,11 @@ import java.util.List;
  *  
  *  It takes into account all existing fleets and simulates what happens to the planet, when they arrive.
  */
-public class Advise extends GameObject {
+public class Advise {
 
     private double forcesToKeep;
     
+    private final Player player;
     private final Planet planet;
     private final double productionRate;
     private final Player planetOwner;
@@ -53,8 +59,8 @@ public class Advise extends GameObject {
         return endTime;
     }
 
-    Advise(Universe universe, Player player, Planet planet, double startTime, double endTime) {
-        super(universe, player, planet.getX(), planet.getY());
+    Advise(Player player, Planet planet, double startTime, double endTime) {
+        this.player = player;
         this.planet = planet;
         this.productionRate = this.planet.getProductionRatePerRound();
         this.startTime = startTime;
@@ -63,8 +69,8 @@ public class Advise extends GameObject {
         update(endTime);
     }
     
-    Advise(Universe universe, Player player, Planet planet, double time) {
-        this(universe, player, planet, 0.0, time);
+    Advise(Player player, Planet planet, double time) {
+        this(player, planet, 0.0, time);
     }
 
     private void reset() {
@@ -73,7 +79,6 @@ public class Advise extends GameObject {
         this.forcesToKeep = 0.0;
     }
 
-    @Override
     protected void update(double elapsedSeconds) {
         reset();
 

@@ -321,14 +321,6 @@ public class Universe {
         return players.contains(player);
     }
 
-    public Prediction getPrediction(Planet planet, double time) {
-        return new Prediction(this, currentPlayer, planet, time);
-    }
-
-    public Advise getAdvise(Planet planet, double startTime, double endTime) {
-        return new Advise(this, currentPlayer, planet, startTime, endTime);
-    }
-
     public double getlastFleetArrivalTime() {
         return Math.max(lastFleetArrivalTime, getlastFleetArrivalTime(newFleets));
     }
