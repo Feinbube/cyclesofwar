@@ -24,7 +24,7 @@ public class Planet extends GameObject {
     private double[] times;
 
     private double lastTimeOwnershipChanged;
-
+    
     /**
      * gets the unique id of a planet
      */
@@ -103,9 +103,7 @@ public class Planet extends GameObject {
 
     @Override
     protected void update(double elapsedSeconds) {
-        if (player != Player.NonePlayer) {
-            forces += productionRatePerSecond * elapsedSeconds;
-        }
+        forces = ruleEngine.getNewForces(this, elapsedSeconds);
     }
 
     void prepare() {
@@ -117,15 +115,11 @@ public class Planet extends GameObject {
     }
 
     void land(Fleet fleet) {
-        if (player.equals(fleet.getPlayer())) {
-            forces += fleet.getForce();
-        } else {
-            forces -= fleet.getForce();
-            if (forces < 0) {
-                forces = -forces;
-                this.player = fleet.getPlayer();
-                lastTimeOwnershipChanged = universe.getNow();
-            }
+        forces = ruleEngine.getForcesAfterLanding(this, fleet);
+        if (forces < 0) {
+            forces = -forces;
+            this.player = fleet.getPlayer();
+            lastTimeOwnershipChanged = universe.getNow();
         }
     }
 

@@ -1,5 +1,6 @@
 package cyclesofwar;
 
+import cyclesofwar.rules.*;
 import java.util.*;
 
 public class Universe {
@@ -32,12 +33,16 @@ public class Universe {
 
     private double lastFleetArrivalTime = 0.0;
     
+    RuleEngine ruleEngine;
+    
     public Universe(long seed, List<Player> combatants, int planetCountPerPlayer, double universeSizeFactor) {
         gameOver = true;
 
         now = 0;
         currentRound = 0;
         nothingHappenedCounter = 0;
+        
+        this.ruleEngine = new RuleEngine(this, new Rule[]{});
         
         this.universeSizeFactor = universeSizeFactor;
         this.planetCountPerPlayer = planetCountPerPlayer;
@@ -351,5 +356,9 @@ public class Universe {
 
     public double getSizeFactor() {
         return universeSizeFactor;
+    }
+
+    RuleEngine getRuleEngine() {
+        return ruleEngine;
     }
 }
