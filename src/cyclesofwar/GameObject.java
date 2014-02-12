@@ -1,8 +1,11 @@
 package cyclesofwar;
 
+import cyclesofwar.rules.RuleEngine;
+
 public abstract class GameObject extends Sortable {
 
 	protected Universe universe;
+        protected RuleEngine ruleEngine;
 
 	protected Player player;
 
@@ -11,6 +14,7 @@ public abstract class GameObject extends Sortable {
 
 	GameObject(Universe universe, Player player, double x, double y) {
 		this.universe = universe;
+                this.ruleEngine = universe.getRuleEngine();
 
 		this.player = player;
 
