@@ -10,18 +10,18 @@ public class DistressBeacon
 
   public Planet from;
   public double forcesRequired;
-  public int roundsRemaining;
+  public double secondsRemaining;
 
-  public DistressBeacon(Planet from, double forcesRequired, int roundsRemaining)
+  public DistressBeacon(Planet from, double forcesRequired, double secondsRemaining)
   {
     this.from = from;
     this.forcesRequired = forcesRequired;
-    this.roundsRemaining = roundsRemaining;
+    this.secondsRemaining = secondsRemaining;
   }
 
   public void evacuate()
   {
-    if (roundsRemaining > 1)
+    if (secondsRemaining > from.getPlayer().getRoundDuration())
       return;
     
     if (from.getForces() < 1)

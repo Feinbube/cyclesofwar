@@ -17,9 +17,9 @@ public class DistressBeacons
     _items = new ArrayList<DistressBeacon>();
   }
 
-  public void add(Planet from, double forcesRequired, int roundsRemaining)
+  public void add(Planet from, double forcesRequired, double secondsRemaining)
   {
-    _items.add(new DistressBeacon(from, forcesRequired, roundsRemaining));
+    _items.add(new DistressBeacon(from, forcesRequired, secondsRemaining));
   }
 
   public void add(DistressBeacon b)

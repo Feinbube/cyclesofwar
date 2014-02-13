@@ -97,8 +97,8 @@ public class Hydralisks extends AndreasG
             forces -= f.getForce();
             if (forces < 0)
               {
-                debug("  distress: " + p + " needs " + -forces + " by " + f.getRoundsToTarget());
-                beacons.add(new DistressBeacon(p, -forces, f.getRoundsToTarget()));
+                debug("  distress: " + p + " needs " + -forces + " by " + f.getTimeToTarget());
+                beacons.add(new DistressBeacon(p, -forces, f.getTimeToTarget()));
                 return;
               }
             if (forces < free_forces) 
@@ -115,13 +115,13 @@ public class Hydralisks extends AndreasG
 
   private void tryToSendHelp(DistressBeacon b)
   {
-    if (b.roundsRemaining < 2)
+    if (b.secondsRemaining <= getRoundDuration())
       troops.add(new AvailableForces(b.from, b.from.getForces()));
 
     int troops_in_range = 0;
 
     for (AvailableForces a : troops)
-      if (a.from.getRoundsTo(b.from) < b.roundsRemaining)
+      if (a.from.getTimeTo(b.from) < b.secondsRemaining)
         troops_in_range += (int)a.forces;
 
     if (troops_in_range < b.forcesRequired)
