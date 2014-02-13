@@ -52,77 +52,51 @@ public class Mutalisks extends AndreasG
 
   private void contactPlanet(Planet p)
   {
-    //PlanetSimulationResult r = new PlanetSimulationResult(p);
+    PlanetSimulationResult r = new PlanetSimulationResult(p, this);
 
-    //if (r.beacon != null)
-    //  beacons.add(r.beacon);
-
-    double forces = p.getForces();
-    double free_forces = forces;
-    double production = p.getProductionRatePerRound();
-
-    int lastevent = 0;
-
-    List<Fleet> fleets = Fleet.sortedBy(Fleet.ArrivalTimeComparator, getFleetsWithTarget(p));
-    for (Fleet f : fleets)
+    if (r.beacon != null)
       {
-        debug("  fleet " + f + " will arrive at " + p + " in " + f.getRoundsToTarget());
-        forces += production * (f.getRoundsToTarget() - lastevent);
-        lastevent = f.getRoundsToTarget();
-        if (f.getPlayer() == this)
-          forces += f.getForce();
-        else
-          {
-            forces -= f.getForce();
-            if (forces < 0)
-              {
-                debug("  distress: " + p + " needs " + -forces + " by " + f.getRoundsToTarget());
-                beacons.add(p, -forces, f.getRoundsToTarget());
-                return;
-              }
-            if (forces < free_forces) 
-              free_forces = forces;
-          }
+        debug("  distress: " + p + " needs " + r.beacon.forcesRequired + " by " + r.beacon.secondsRemaining);
+        beacons.add(r.beacon);
       }
-
-    if (free_forces >= 1)
+    else if (r.available >= 1)
       {
-        debug("  available forces from " + p + ": " + free_forces);
-        troops.add(new AvailableForces(p, free_forces));
+        debug("  troops:   " + p + " has   " + r.available);
+        troops.add(new AvailableForces(p, r.available));
       }
   }
 
   private void tryToSendHelp(DistressBeacon b)
   {
-    if (b.roundsRemaining < 2)
-      troops.add(new AvailableForces(b.from, b.from.getForces()));
-
     int troops_in_range = 0;
 
     for (AvailableForces a : troops)
-      if (a.from.getRoundsTo(b.from) < b.roundsRemaining)
-        troops_in_range += (int)a.forces;
+      if (a.from.getTimeTo(b.from) < b.secondsRemaining)
+        troops_in_range += (int)(a.forces + (b.secondsRemaining - a.from.getTimeTo(b.from)) * a.from.getProductionRatePerSecond());
 
-    if (troops_in_range < b.forcesRequired)
-      return;
-    
+    // in 1on1, sending help regardless of how much troops we have seems to be a good idea 
+    if (getOtherAlivePlayers().size() > 1 && troops_in_range < b.forcesRequired)
+      {
+        b.evacuate();
+        return;
+      }
+
     thePlanetThatIAmCurrentlySortingFor = b.from;
-    Collections.sort(troops);
+    Collections.sort(troops, AvailableForces.ArrivalTimeComparator);
     for (AvailableForces a : troops)
       {
         if (a.from == b.from)
           continue;
 
         debug("  help from " + b.from + " " + a.from.getRoundsTo(b.from));
-        if (a.forces > Math.ceil(b.forcesRequired))
-          {
-            actions.add(a.from, b.from, (int)Math.ceil(b.forcesRequired));
-            a.forces -= Math.ceil(b.forcesRequired);
-            b.forcesRequired = 0;
-            break;
-          }
-        actions.add(a.from, b.from, (int)Math.floor(a.forces));
-        a.forces = 0;
+        double tosend = Math.min(Math.ceil(b.forcesRequired), Math.floor(a.forces));
+        actions.add(a.from, b.from, (int)tosend);
+        a.forces -= tosend;
+        if (a.forces < 1)
+          a.forces = 0;
+        b.forcesRequired -= tosend;
+        if (b.forcesRequired < 0)
+          b.forcesRequired = 0;
       }
   }
 
@@ -130,16 +104,13 @@ public class Mutalisks extends AndreasG
   {
     for (AvailableForces a : troops)
       {
-        if (a.forces < 1)
-          continue;
-       
         List<Planet> cluster = new ArrayList<Planet>();
         cluster.add(a.from);
         for (Planet p : a.from.getOthersByDistance())
           {
             if (cluster.size() >= 1)
               break;
-            if (p.getPlayer() == this)
+            if (p.getPlayer().equals(this))
               cluster.add(p);
           }
 
@@ -156,116 +127,22 @@ public class Mutalisks extends AndreasG
         int dist = 0;
         for (Entry<Double, Planet> e : cluster_targets.entrySet())
           {
-            if (e.getValue().getPlayer() == this)
+            if (e.getValue().getPlayer().equals(this))
               continue;
 
-            if (a.forces > 100 || possibleConquer(a, e.getValue()))
-              {
-                debug("  spreading from " + e.getValue() + " with " + Math.floor(a.forces));
-                actions.add(a.from, e.getValue(), (int)Math.floor(a.forces));
-                a.forces = 0;
-              }
+            PlanetSimulationResult r = new PlanetSimulationResult(e.getValue(), this);
+            if (r.owner.equals(this))
+              continue;
 
-            if (++dist > 1)
+            r = new PlanetSimulationResult(e.getValue(), this, a);
+            if (!r.owner.equals(this) && a.forces < 100)
               break;
+
+            debug("  spreading from " + e.getValue() + " with " + Math.floor(a.forces));
+            actions.add(a.from, e.getValue(), (int)Math.floor(a.forces));
+            a.forces = 0;
           }
       }
-  }
-
-  private boolean possibleConquer(AvailableForces a, Planet p)
-  {
-    Player owner = p.getPlayer();
-    double forces = p.getForces();
-
-    int myArrival = a.from.getRoundsTo(p);
-    int lastevent = 0;
-
-    List<Fleet> fleets = Fleet.sortedBy(Fleet.ArrivalTimeComparator, getFleetsWithTarget(p));    
-
-    for (Fleet f : fleets)
-      {
-        if (owner != Player.NonePlayer)
-          forces += p.getProductionRatePerRound() * (f.getRoundsToTarget() - lastevent);
-
-        lastevent = f.getRoundsToTarget();
-        if (f.getPlayer() == owner)
-          forces += f.getForce();
-        else
-          {
-            forces -= f.getForce();
-            if (forces < 0)
-              {
-                owner = f.getPlayer();
-                forces = -forces;
-              }
-          }
-      }
-
-    if (owner == this)
-      return false;
-
-    owner = p.getPlayer();
-    forces = p.getForces();
-
-    for (Fleet f : fleets)
-      {
-        if (f.getRoundsToTarget() > myArrival && myArrival != 0)
-          {
-            myArrival = 0;
-            if (owner != Player.NonePlayer)
-              forces += p.getProductionRatePerRound() * (myArrival - lastevent);
-
-            lastevent = myArrival;
-            if (owner == this)
-              forces += a.forces;
-            else
-              {
-                forces -= a.forces;
-                if (forces < 0)
-                  {
-                    owner = this;
-                    forces = -forces;
-                  }
-              }
-          }
-
-        if (owner != Player.NonePlayer)
-          forces += p.getProductionRatePerRound() * (f.getRoundsToTarget() - lastevent);
-
-        lastevent = f.getRoundsToTarget();
-        if (f.getPlayer() == owner)
-          forces += f.getForce();
-        else
-          {
-            forces -= f.getForce();
-            if (forces < 0)
-              {
-                owner = f.getPlayer();
-                forces = -forces;
-              }
-          }
-      }
-
-    if (myArrival != 0)
-      {
-        if (owner != Player.NonePlayer)
-          forces += p.getProductionRatePerRound() * (myArrival - lastevent);
-
-        lastevent = myArrival;
-        if (owner == this)
-          forces += a.forces;
-        else
-          {
-            forces -= a.forces;
-            if (forces < 0)
-              {
-                owner = this;
-                forces = -forces;
-              }
-          }
-      }
-
-    return (owner == this);
   }
 
 }
