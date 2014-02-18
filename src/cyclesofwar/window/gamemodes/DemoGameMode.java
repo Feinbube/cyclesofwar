@@ -62,7 +62,7 @@ public class DemoGameMode extends GameMode {
     private List<Player> getChampions() {
         int i = random.nextInt(Arena.champions().size());
         int j = random.nextInt(Arena.champions().size() - 1);
-        if(i == j) {
+        if(i >= j) {
             j++;
         }
 
