@@ -225,10 +225,10 @@ public class SimpleRendering extends Rendering {
                 drawSpiralFormation(g, fleet, x, y, d, localTime);
             }
 
-            if (d == MaxRenderedFleet) {
-                drawText(g, (int) x, (int) y, fleet.getForce() + "", getPlayerTextColor(fleet.getPlayer()), null, HAlign.CENTER,
+            //if (d == MaxRenderedFleet) {
+                drawText(g, (int) x, (int) y, fleet.getForce() + "", Color.WHITE, null, HAlign.CENTER,
                         VAlign.CENTER, 10);
-            }
+            //}
         }
     }
 
