@@ -9,7 +9,6 @@ import cyclesofwar.window.GameModes;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import cyclesofwar.window.GamePanel;
-import java.util.Arrays;
 import java.util.List;
 
 public class DemoGameMode extends GameMode {
@@ -45,7 +44,7 @@ public class DemoGameMode extends GameMode {
     @Override
     protected void updateGame() {
         if (state == DemoStates.TITLETOARENA) {
-            switchToTournamentOnTime(DemoStates.ARENA, getChampions());
+            switchToTournamentOnTime(DemoStates.ARENA, Arena.getTwoChampions(random));
         } else if (state == DemoStates.ARENA) {
             updateUniverse(DemoStates.ARENASTATS, oneOnOneTournament);
         } else if (state == DemoStates.ARENASTATS) {
@@ -57,16 +56,6 @@ public class DemoGameMode extends GameMode {
         } else if (state == DemoStates.TOURNAMENTSTATS) {
             switchToDemoState(DemoStates.TITLETOARENA);
         }
-    }
-
-    private List<Player> getChampions() {
-        int i = random.nextInt(Arena.champions().size());
-        int j = random.nextInt(Arena.champions().size() - 1);
-        if(i >= j) {
-            j++;
-        }
-
-        return Arrays.asList(Arena.champions().get(i), Arena.champions().get(j));
     }
     
     private void switchToTournamentOnTime(DemoStates state, List<Player> champions) {
