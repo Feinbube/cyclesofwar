@@ -95,7 +95,9 @@ public class Prediction {
         reset();
 
         double roundDuration = Universe.getRoundDuration();
+        
         List<Fleet> fleets = arrivingBefore(player.getFleetsWithTarget(planet), elapsedSeconds + roundDuration);
+        
         Fleet.sortBy(Fleet.ArrivalTimeComparator, fleets);
 
         while (time < elapsedSeconds) {

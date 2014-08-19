@@ -20,18 +20,17 @@ public class Valentine extends Player {
             if (planet.getForces() < 1) {
                 continue;
             }
-
-            double overproduction = planet.getForces() - new Advise(this, planet, this.getlastFleetArrivalTime()).getForcesToKeep();
+            
+            double overproduction = planet.getForces() - Math.ceil(new Advise(this, planet, this.getlastFleetArrivalTime() + 1).getForcesToKeep());
 
             if (overproduction <= 1) {
                 continue;
             }
 
             for (Planet other : planet.getOthersByDistance()) {
+                double attackBalance = new Prediction(this, other, planet.getTimeTo(other) - 0.2).getBalance();
 
-                double attackBalance = new Prediction(this, other, planet.getTimeTo(other)).getBalance();
-
-                if (attackBalance > 0) {
+                if (attackBalance >= 0) {
                     continue;
                 }
 
@@ -70,10 +69,7 @@ public class Valentine extends Player {
     }
 
     private boolean iAmTheStrongest() {
-        if (this.getPlanets().size() > this.getAllPlanets().size() / 1.5) {
-            return true;
-        }
-        return false;
+        return this.getPlanets().size() > this.getAllPlanets().size() / 1.5;
     }
 
     private void beABraveBunny() {
