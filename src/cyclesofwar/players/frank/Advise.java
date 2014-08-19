@@ -83,7 +83,9 @@ public class Advise {
         reset();
 
         double roundDuration = Universe.getRoundDuration();
-        List<Fleet> fleets = removeEarlyFleets(arrivingBefore(player.getFleetsWithTarget(planet), elapsedSeconds + roundDuration), this.startTime);
+        elapsedSeconds += roundDuration;
+        
+        List<Fleet> fleets = arrivingBefore(player.getFleetsWithTarget(planet), elapsedSeconds);
         
         if(!this.player.containsHostileItem(fleets))
             return;
@@ -96,8 +98,6 @@ public class Advise {
     
             time += roundDuration;
         }
-
-        updateFleets(fleets, time + roundDuration);
     }
 
     private void updatePlanet() {
@@ -126,7 +126,7 @@ public class Advise {
     private List<Fleet> arrivingBefore(List<Fleet> fleets, double time) {
         List<Fleet> activeFleets = new ArrayList<>();
         for (Fleet fleet : fleets) {
-            if (fleet.getTimeToTarget() > time) {
+            if (fleet.getTimeToTarget() > time + 0.2) {
                 break;                
             }
             activeFleets.add(fleet);
