@@ -179,8 +179,7 @@ Rules Of The Game
   way.
 
 Train Your Champion
-* You can download the current version of the game from:
-         svn://code.hpi.uni-potsdam.de/cyclesofwar
+* You can download the current version of the game from here.
 * Please add your bot as a new class into your own package: 
   e.g. /*public class CptAwesome extends Player { }*/ 
   in /*cyclesofwar.players.john*/. You will have to implement the
@@ -199,8 +198,7 @@ Train Your Champion
   champion in the arena for the nightly tournaments.
 
 Register Your Champion for the Nightly Arena
-* In order to submit a bot for the nightly arena, please contact:
-  Frank@Feinbube.de
+* In order to submit a bot for the nightly arena, please contact me.
 
 
 Now, it's up to you to:
