@@ -12,4 +12,4 @@ This game / artificial intelligence battleground was developed, because my finge
 ![Demo image for cow](/demo/cow2.png)
 ![Demo image for cow](/demo/cow3.png)
 
-### I you want to get started, please read the MANUAL.
+### I you want to get started, please read the [MANUAL](MANUAL).
