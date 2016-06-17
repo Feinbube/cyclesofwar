@@ -4,15 +4,17 @@ import java.util.*;
 
 /**
  * the game is all about planets. get as much as you can ;)
- * 
- * every planet has a position in the 2-dimensional universe. (position can be acquired using getX() and getY())
- * every round a planet produces some troops for its owner. (numbers can be acquired using getForces() and getProductionRatePerRound())
- * the distance to the next planet is always so big that you need at least one round to send a fleet there
+ *
+ * every planet has a position in the 2-dimensional universe. (position can be
+ * acquired using getX() and getY()) every round a planet produces some troops
+ * for its owner. (numbers can be acquired using getForces() and
+ * getProductionRatePerRound()) the distance to the next planet is always so big
+ * that you need at least one round to send a fleet there
  */
 public class Planet extends GameObject {
 
     public final static int MaximumProductionRatePerSecond = 5;
-    
+
     private final int id;
 
     private double forces;
@@ -24,7 +26,7 @@ public class Planet extends GameObject {
     private double[] times;
 
     private double lastTimeOwnershipChanged;
-    
+
     /**
      * gets the unique id of a planet
      */
@@ -60,17 +62,18 @@ public class Planet extends GameObject {
     public double getProductionRatePerRound() {
         return productionRatePerRound;
     }
-    
+
     public double getActualProductionPerSecond() {
-    	return this.getPlayer().equals(Player.NonePlayer) ? 0.0 : this.getProductionRatePerSecond();
+        return this.getPlayer().equals(Player.NonePlayer) ? 0.0 : this.getProductionRatePerSecond();
     }
-    
+
     public double getActualProductionPerRound() {
-    	return this.getActualProductionPerSecond() * Universe.getRoundDuration();
+        return this.getActualProductionPerSecond() * Universe.getRoundDuration();
     }
 
     /**
-     * gets the latest point in time when the ownership of that planet was changed
+     * gets the latest point in time when the ownership of that planet was
+     * changed
      */
     public double getLastTimeOwnershipChanged() {
         return lastTimeOwnershipChanged;
@@ -90,12 +93,12 @@ public class Planet extends GameObject {
         this.id = id;
 
         if (productionRatePerSecond <= 0) {
-            productionRatePerSecond = random.nextInt(Planet.MaximumProductionRatePerSecond-2) + 1;
+            productionRatePerSecond = random.nextInt(Planet.MaximumProductionRatePerSecond - 2) + 1;
         }
 
         this.productionRatePerSecond = productionRatePerSecond;
         this.productionRatePerRound = productionRatePerSecond * Universe.getRoundDuration();
-        
+
         forces = productionRatePerSecond * 10;
         newForces = forces;
         lastTimeOwnershipChanged = universe.getNow();
@@ -150,7 +153,7 @@ public class Planet extends GameObject {
      * time needed to go from this planet to the other planet in seconds
      */
     public double getTimeTo(Planet other) {
-        return times[other.getId()];                
+        return times[other.getId()];
     }
 
     /**
@@ -203,12 +206,12 @@ public class Planet extends GameObject {
         others.clear();
         others.addAll(newOthers);
     }
-    
+
     /**
      * used to sort planets by force count (descending)
-     * 
-     * use Planet.sortBy(planets, ForceCountComparator)
-     * or Planet.sortedBy(planets, ForceCountComparator)
+     *
+     * use Planet.sortBy(planets, ForceCountComparator) or
+     * Planet.sortedBy(planets, ForceCountComparator)
      */
     public static Comparator<Planet> ForceCountComparator = new Comparator<Planet>() {
         @Override
@@ -216,12 +219,12 @@ public class Planet extends GameObject {
             return Double.compare(planet2.getForces(), planet1.getForces());
         }
     };
-    
+
     /**
      * used to sort planets by production rate (descending)
-     * 
-     * use Planet.sortBy(planets, ProductivityComparator)
-     * or Planet.sortedBy(planets, ProductivityComparator)
+     *
+     * use Planet.sortBy(planets, ProductivityComparator) or
+     * Planet.sortedBy(planets, ProductivityComparator)
      */
     public static Comparator<Planet> ProductivityComparator = new Comparator<Planet>() {
         @Override
@@ -229,12 +232,13 @@ public class Planet extends GameObject {
             return Double.compare(planet2.getProductionRatePerSecond(), planet1.getProductionRatePerSecond());
         }
     };
-    
+
     /**
-     * used to sort planets by the most recent time the ownership has changed (descending)
-     * 
-     * use Planet.sortBy(planets, OwnershipChangeTimeComparator)
-     * or Planet.sortedBy(planets, OwnershipChangeTimeComparator)
+     * used to sort planets by the most recent time the ownership has changed
+     * (descending)
+     *
+     * use Planet.sortBy(planets, OwnershipChangeTimeComparator) or
+     * Planet.sortedBy(planets, OwnershipChangeTimeComparator)
      */
     public static Comparator<Planet> OwnershipChangeTimeComparator = new Comparator<Planet>() {
         @Override
@@ -264,10 +268,7 @@ public class Planet extends GameObject {
     }
 
     double calculateDistance(Planet other) {
-        double xDiff = other.x - this.x;
-        double yDiff = other.y - this.y;
-
-        return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+        return ruleEngine.calculateDistance(universe.getSize(), this, other);
     }
 
     boolean fits(List<Planet> others) {
