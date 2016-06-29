@@ -33,7 +33,8 @@ public abstract class GameObject extends Sortable {
 	 * horizontal coordinate in the 2-dimensional universe (0 means left,
 	 * sqrt(numberOfPlayers) means right)
 	 */
-	public double getX() {
+	@Deprecated
+        public double getX() {
 		return x;
 	}
 
@@ -41,6 +42,7 @@ public abstract class GameObject extends Sortable {
 	 * vertical coordinate in the 2-dimensional universe (0 means top,
 	 * sqrt(numberOfPlayers) means bottom)
 	 */
+        @Deprecated
 	public double getY() {
 		return y;
 	}

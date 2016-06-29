@@ -42,7 +42,7 @@ public class Universe {
         currentRound = 0;
         nothingHappenedCounter = 0;
         
-        this.ruleEngine = new RuleEngine(this, new Rule[]{});
+        this.ruleEngine = new RuleEngine(this, new Rule[]{ new ProductionRateDecay() });
         
         this.universeSizeFactor = universeSizeFactor;
         this.planetCountPerPlayer = planetCountPerPlayer;
@@ -133,6 +133,8 @@ public class Universe {
         fleetsAtDestination.clear();
 
         lastFleetArrivalTime = getlastFleetArrivalTime(fleets);
+        
+        ruleEngine.preUniverseRoundUpdate(elapsedSeconds);
         
         for (Planet planet : planets) {
             planet.prepare();
@@ -360,5 +362,12 @@ public class Universe {
 
     RuleEngine getRuleEngine() {
         return ruleEngine;
+    }
+    
+    public void setProductionRatePerSecond(Planet planet, double value)  throws PlayerDisqualifiedException  {
+        if(currentPlayer.equals(Player.NonePlayer) || currentPlayer.equals(Player.GoldenPlayer))
+            planet.setProductionRatePerSecond(value);
+        else
+            throw new PlayerDisqualifiedException(currentPlayer, new Exception("Players are not allowed to use this function!"));
     }
 }

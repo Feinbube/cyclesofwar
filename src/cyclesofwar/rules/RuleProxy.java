@@ -31,4 +31,9 @@ public class RuleProxy extends Rule {
     public double getNewPositionY(Universe universe, Fleet fleet, double elapsedSeconds) {
         return this.getNext().getNewPositionY(universe, fleet, elapsedSeconds);
     }
+    
+    @Override
+    public void preUniverseRoundUpdate(double elapsedSeconds) {
+        this.getNext().preUniverseRoundUpdate(elapsedSeconds);
+    }
 }

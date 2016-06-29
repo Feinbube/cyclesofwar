@@ -19,8 +19,8 @@ public class Planet extends GameObject {
 
     private double forces;
     private double newForces;
-    private final double productionRatePerSecond;
-    private final double productionRatePerRound;
+    private double productionRatePerSecond;
+    private double productionRatePerRound;
 
     private double[] distances;
     private double[] times;
@@ -96,8 +96,7 @@ public class Planet extends GameObject {
             productionRatePerSecond = random.nextInt(Planet.MaximumProductionRatePerSecond - 2) + 1;
         }
 
-        this.productionRatePerSecond = productionRatePerSecond;
-        this.productionRatePerRound = productionRatePerSecond * Universe.getRoundDuration();
+        setProductionRatePerSecond(productionRatePerSecond);
 
         forces = productionRatePerSecond * 10;
         newForces = forces;
@@ -284,5 +283,10 @@ public class Planet extends GameObject {
     private boolean istooCloseTo(Planet other) {
         return calculateDistance(other) < (other.getProductionRatePerSecond() + this.getProductionRatePerSecond()) / 2
                 * Fleet.getFlightSpeed();
+    }
+    
+    void setProductionRatePerSecond(double value) {
+        this.productionRatePerSecond = value;
+        this.productionRatePerRound = productionRatePerSecond * Universe.getRoundDuration();
     }
 }

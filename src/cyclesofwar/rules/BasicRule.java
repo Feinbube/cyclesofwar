@@ -35,4 +35,8 @@ public class BasicRule extends Rule {
     public double getNewPositionY(Universe universe, Fleet fleet, double elapsedSeconds) {
         return fleet.getY() - Fleet.getFlightSpeed() * elapsedSeconds * (fleet.getY() - fleet.getTarget().getY()) / fleet.getDistanceToTarget();
     }
+    
+    @Override
+    public void preUniverseRoundUpdate(double elapsedSeconds) {
+    }
 }

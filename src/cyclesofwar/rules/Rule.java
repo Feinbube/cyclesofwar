@@ -16,6 +16,7 @@ public abstract class Rule {
         return ruleEngine.getNext(this);
     }
     
+    abstract public void preUniverseRoundUpdate(double elapsedSeconds);
     abstract public double getNewForces(Planet planet, double elapsedSeconds);
     abstract public double getForcesAfterLanding(Planet planet, Fleet fleet);
     abstract public double calculateDistance(double universeSize, GameObject start, GameObject destination);
